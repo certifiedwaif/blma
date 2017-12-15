@@ -172,16 +172,11 @@ double sd(const VectorXd& x)
 void centre(VectorXd& v)
 {
 	const auto n = v.size();
-	VectorXd v_bar(n);
-	v_bar.fill(v.mean());
-	auto sd_v = sd(v);
+	auto v_norm = v.norm();
 
-	if (sd_v > 0.0) {
-		VectorXd centred_v = v - v_bar;
-		v = centred_v / sd_v;
-	}
-	else {
-		// If sd_v is zero, the data is constant. So leave it alone.
+	if (v_norm > 0.0) {
+		VectorXd centred_v = v.array() - v.mean();
+		v = centred_v * sqrt(n) / v_norm;
 	}
 }
 
