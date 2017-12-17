@@ -97,7 +97,7 @@ MatrixXd parseCSVfile_double(string infilename)
 
 vector<uint>& get_indices_from_dbitset(const dbitset& gamma, vector<uint>& v)
 {
-	for (auto i = 0; i < gamma.size(); i++) {
+	for (size_t i = 0; i < gamma.size(); i++) {
 		if (gamma[i]) {
 			v.push_back(i);
 		}
@@ -117,7 +117,7 @@ Eigen::MatrixBase<Derived2>& get_cols(const Eigen::MatrixBase<Derived1>& m1, con
 	vector<uint> columns;
 	columns = get_indices_from_dbitset(gamma, columns);
 
-	for (auto i = 0; i < columns.size(); i++) {
+	for (size_t i = 0; i < columns.size(); i++) {
 		m2.col(i) = m1.col(columns[i]);
 	}
 
@@ -133,7 +133,7 @@ Eigen::MatrixBase<Derived2>& get_rows(const Eigen::MatrixBase<Derived1>& m1, con
 	rows = get_indices_from_dbitset(gamma, rows);
 	// MatrixXd m2(rows.size(), m1.cols());
 
-	for (auto i = 0; i < rows.size(); i++) {
+	for (size_t i = 0; i < rows.size(); i++) {
 		m2.row(i) = m1.row(rows[i]);
 	}
 
@@ -152,8 +152,8 @@ const dbitset& cols_bs, Eigen::MatrixBase<Derived2>& m2)
 
 	// Matrices are stored in column major order, so the intent is to access contiguous memory in
 	// sequence by looping down each row in the inner loop.
-	for (auto j = 0; j < col_indices.size(); j++) {
-		for (auto i = 0; i < row_indices.size(); i++) {
+	for (size_t j = 0; j < col_indices.size(); j++) {
+		for (size_t i = 0; i < row_indices.size(); i++) {
 			m2(i, j) = m1(row_indices[i], col_indices[j]);
 		}
 	}
@@ -370,8 +370,64 @@ double logp2(int n, double R2, int p)
 }
 
 
+void calculate_probabilities(const std::string prior, const std::string modelprior, const VectorXd& modelpriorvec,
+														 const int n, const int p, const VectorXd& vR2_all,
+														 const VectorXi& vpgamma_all, const Graycode& graycode,
+														 VectorXd& vlogp_all, VectorXd& vinclusion_prob)
+{
+	std::function<double (const int n, const int p, double vR2, int vp_gamma)> log_prob;
+	if (prior == "maruyama") {
+		log_prob = maruyama;
+	} else if (prior == "BIC") {
+		log_prob = BIC;
+	} else if (prior == "ZE") {
+		log_prob = ZE;
+	} else if (prior == "liang_g1") {
+		log_prob = liang_g1;
+	} else if (prior == "liang_g2") {
+		log_prob = liang_g2;
+	} else if (prior == "liang_g_n_appell") {
+		log_prob = liang_g_n_appell;
+	} else if (prior == "liang_g_n_approx") {
+		log_prob = liang_g_n_approx;
+	} else if (prior == "liang_g_n_quad") {
+		log_prob = liang_g_n_quad;
+	} else if (prior == "robust_bayarri1") {
+		log_prob = robust_bayarri1;
+	} else if (prior == "robust_bayarri2") {
+		log_prob = robust_bayarri2;
+	} else {
+		stringstream ss;
+		ss << "Prior " << prior << " unknown";
+		Rcpp::stop(ss.str());
+	}
+
+	auto nmodels = vR2_all.size();
+	for (auto i = 1; i < nmodels; i++) {
+		vlogp_all(i) = log_prob(n, p, vR2_all(i), vpgamma_all(i));
+		if (modelprior == "beta-binomial") {
+			double alpha = modelpriorvec(0);
+			double beta = modelpriorvec(1);
+			vlogp_all(i) += ::Rf_lbeta(alpha + vpgamma_all(i), beta + p - vpgamma_all(i));
+		}
+	}
+	auto M = vlogp_all.array().maxCoeff(); // Maximum log-likelihood
+	// Rcpp::Rcout << "M " << M << std::endl;
+	VectorXd vmodel_prob = (vlogp_all.array() - M).array().exp() / (vlogp_all.array() - M).array().exp().sum();
+	// If we have memory problems, this can be recoded so that we don't have to construct the entire mGamma
+	// matrix
+	MatrixXd mGamma = graycode.to_MatrixXi().cast<double>();
+	if (modelprior == "uniform" || modelprior == "beta-binomial") {
+		vinclusion_prob = mGamma.transpose() * vmodel_prob;
+	} else if (modelprior == "bernoulli") {
+		vinclusion_prob = mGamma.transpose() * vmodel_prob * modelpriorvec;
+	}
+}
+
+
 // Calculate the correlations for every subset of the covariates in mX
 List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, std::string prior,
+	std::string modelprior, VectorXd modelpriorvec,
 	const uint fixed, const uint intercept_col, const uint max_iterations, const bool bNatural_Order = false,
 	const bool bIntercept = false,
 	const bool bCentre = true)
@@ -530,51 +586,18 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
 	VectorXd se_beta_hat = (1 - R2_full) * mXTX.inverse().diagonal();
 	VectorXd t_beta = vbeta_hat.array() / se_beta_hat.array();
 	double threshold = ::Rf_qt(0.975, n - p, 1, 0);
-	for (int i = 1; i < p; i++) {
-		if (abs(t_beta(i)) > threshold) 
+	for (uint i = 1; i < p; i++) {
+		if (abs(t_beta(i)) > threshold)
 			p_star++;
-	}
-
-	std::function<double (const int n, const int p, double vR2, int vp_gamma)> log_prob;
-	if (prior == "maruyama") {
-		log_prob = maruyama;
-	} else if (prior == "BIC") {
-		log_prob = BIC;
-	} else if (prior == "ZE") {
-		log_prob = ZE;
-	} else if (prior == "liang_g1") {
-		log_prob = liang_g1;
-	} else if (prior == "liang_g2") {
-		log_prob = liang_g2;
-	} else if (prior == "liang_g_n_appell") {
-		log_prob = liang_g_n_appell;
-	} else if (prior == "liang_g_n_approx") {
-		log_prob = liang_g_n_approx;
-	} else if (prior == "liang_g_n_quad") {
-		log_prob = liang_g_n_quad;
-	} else if (prior == "robust_bayarri1") {
-		log_prob = robust_bayarri1;
-	} else if (prior == "robust_bayarri2") {
-		log_prob = robust_bayarri2;
-	} else {
-		stringstream ss;
-		ss << "Prior " << prior << " unknown";
-		Rcpp::stop(ss.str());
 	}
 
 	// auto M = 0.;
 	VectorXd vlogp_all(max_iterations);				 // Vector of model likelihoods
 	VectorXd vinclusion_prob(p);							 // Vector of variable inclusion likelihoods
-	for (auto i = 1; i < max_iterations; i++) {
-		vlogp_all(i) = log_prob(n, p, vR2_all(i), vpgamma_all(i));
-	}
-	auto M = vlogp_all.array().maxCoeff(); // Maximum log-likelihood
-	// Rcpp::Rcout << "M " << M << std::endl;
-	VectorXd vmodel_prob = (vlogp_all.array() - M).array().exp() / (vlogp_all.array() - M).array().exp().sum();
-	// If we have memory problems, this can be recoded so that we don't have to construct the entire mGamma
-	// matrix
-	MatrixXd mGamma = graycode.to_MatrixXi().cast<double>();
-	vinclusion_prob = mGamma.transpose() * vmodel_prob;
+	calculate_probabilities(prior, modelprior, modelpriorvec,
+													n, p, vR2_all, vpgamma_all, graycode,
+													vlogp_all, vinclusion_prob);
+
 	// Rcpp::Rcout << "vmodel_prob " << vmodel_prob << std::endl;
 	// Rcpp::Rcout << "vinclusion_prob " << vinclusion_prob << std::endl;
 
@@ -587,7 +610,7 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
 		VectorXd vR2(max_iterations);
 		VectorXi vp_gamma(max_iterations);
 		VectorXd vlogp(max_iterations);
-		for (auto i = 1; i < max_iterations; i++) {
+		for (uint i = 1; i < max_iterations; i++) {
 			vR2(i) = vR2_all(graycode.gray_to_binary(i));
 			vp_gamma(i) = vpgamma_all(graycode.gray_to_binary(i));
 			vlogp(i) = vlogp_all(graycode.gray_to_binary(i));
@@ -601,7 +624,9 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
 }
 
 // [[Rcpp:export]]
-List blma_cpp(VectorXd vy, MatrixXd mX, std::string prior, const uint intercept_col,
+List blma_cpp(VectorXd vy, MatrixXd mX, std::string prior, std::string modelprior,
+							VectorXd modelpriorvec,
+							const uint intercept_col,
 							const bool bNatural_Order, const bool bIntercept, const bool bCentre)
 {
 	const uint p = mX.cols();
@@ -609,7 +634,8 @@ List blma_cpp(VectorXd vy, MatrixXd mX, std::string prior, const uint intercept_
 	const uint max_iterations = 1 << p;
 
 	Graycode graycode(p);
-	return all_correlations_main(graycode, vy, mX, prior, fixed, intercept_col, max_iterations, bNatural_Order,
+	return all_correlations_main(graycode, vy, mX, prior, modelprior, modelpriorvec,
+																fixed, intercept_col, max_iterations, bNatural_Order,
 																bIntercept, bCentre);
 }
 
@@ -617,6 +643,7 @@ List blma_cpp(VectorXd vy, MatrixXd mX, std::string prior, const uint intercept_
 // Calculate the correlations for every subset of the covariates in mX
 // [[Rcpp:export]]
 List blma_fixed_cpp(VectorXd vy, MatrixXd mX, MatrixXd mZ, std::string prior,
+										std::string modelprior, VectorXd modelpriorvec,
 										const uint intercept_col, const bool bNatural_Order, const bool bIntercept,
 										const bool bCentre)
 {
@@ -630,7 +657,8 @@ List blma_fixed_cpp(VectorXd vy, MatrixXd mX, MatrixXd mZ, std::string prior,
 	mC.leftCols(p1) = mX;
 	mC.rightCols(p2) = mZ;
 	Graycode graycode(p1, p2);
-	return all_correlations_main(graycode, vy, mC, prior, p1, intercept_col, max_iterations, bNatural_Order, 
+	return all_correlations_main(graycode, vy, mC, prior, modelprior, modelpriorvec,
+																p1, intercept_col, max_iterations, bNatural_Order,
 																bIntercept, bCentre);
 }
 
