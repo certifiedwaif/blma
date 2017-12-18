@@ -75,12 +75,17 @@ using namespace std;
 //'  $ vinclusion_prob: num [1:15] 0.284 0.054 0.525 0.679 0.344 ...
 //' @export
 // [[Rcpp::export]]
-List blma(NumericVector vy, NumericMatrix mX, std::string prior, std::string modelprior, NumericVector modelpriorvec,
+List blma(NumericVector vy, NumericMatrix mX, std::string prior,
+					std::string modelprior = "uniform", Nullable<NumericVector> modelpriorvec = R_NilValue,
 					int intercept_col = 1, bool bNatural_Order = false, bool bIntercept = false, bool bCentre = false,
 					int cores = 1) {
 	Map<VectorXd> vy_m = as< Map<VectorXd> >(vy);
 	Map<MatrixXd> mX_m = as< Map<MatrixXd> >(mX);
-	Map<VectorXd> modelpriorvec_m = as< Map<VectorXd> >(modelpriorvec);
+	NumericVector modelpriorvec_r(0);
+	if (modelpriorvec.isNotNull()) {
+		modelpriorvec_r = modelpriorvec.get();
+	}
+	Map<VectorXd> modelpriorvec_m = as< Map<VectorXd> >(modelpriorvec_r);
 	#if defined(_OPENMP)
 		omp_set_num_threads(cores);
 	#endif;
@@ -154,13 +159,17 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior, std::string mod
 //' 
 //' @export
 // [[Rcpp::export]]
-List blma_fixed(NumericVector vy, NumericMatrix mX, NumericMatrix mZ, std::string prior, std::string modelprior,
-								NumericVector modelpriorvec, int intercept_col = 1, bool bNatural_Order = false,
+List blma_fixed(NumericVector vy, NumericMatrix mX, NumericMatrix mZ, std::string prior,
+								std::string modelprior = "uniform", Nullable<NumericVector> modelpriorvec = R_NilValue,
+								int intercept_col = 1, bool bNatural_Order = false,
 								bool bIntercept = false, bool bCentre = false, int cores = 1) {
 	Map<VectorXd> vy_m = as< Map<VectorXd> >(vy);
 	Map<MatrixXd> mX_m = as< Map<MatrixXd> >(mX);
-	Map<MatrixXd> mZ_m = as< Map<MatrixXd> >(mZ);
-	Map<VectorXd> modelpriorvec_m = as< Map<VectorXd> >(modelpriorvec);
+	NumericVector modelpriorvec_r(0);
+	if (modelpriorvec.isNotNull()) {
+		modelpriorvec_r = modelpriorvec.get();
+	}
+	Map<VectorXd> modelpriorvec_m = as< Map<VectorXd> >(modelpriorvec_r);
 	#if defined(_OPENMP)
 		omp_set_num_threads(cores);
 	#endif;
