@@ -23,12 +23,8 @@ using namespace std;
 //' "robust_bayarri1" and "robust_bayarri2"
 //' @param modelprior
 //' @param modelpriorvec
-//' @param intercept_col The index of the column in mX containing the intercept, if any
-//' @param bNatural_Order Whether to return the results in natural order or graycode order. Defaults to graycode order.
-//' @param bIntercept Logical value indicating whether there is an intercept column or not
-//' @param bCentre Logical value indicating whether to centre the response vector and covariance matrix or not
 //' @param cores The number of cores to use
-//' @return A list containing 
+//' @return A list containing
 //' \describe{
 //' \item{vR2}{the vector of correlations for each model}
 //' \item{vp_gamma}{the vector of number of covariates for each model}
@@ -65,23 +61,26 @@ using namespace std;
 //'
 //' y.t <- mD$y
 //' X.f <- data.matrix(cbind(mD[1:15]))
-//' colnames(X.f) <- varnames 
+//' colnames(X.f) <- varnames
 //' blma_result <- blma(y.t, X.f, "maruyama")
-//' > str(blma_result)
+//' \dontrun{str(blma_result)
 //' List of 4
 //'  $ vR2            : num [1:32768] 0 0.00759 0.01 0.00822 0.13921 ...
 //'  $ vp_gamma       : int [1:32768] 0 1 2 1 2 3 2 1 2 3 ...
 //'  $ vlogp          : num [1:32768] 6.92e-310 -8.51 -1.30e+01 -8.50 -9.74 ...
-//'  $ vinclusion_prob: num [1:15] 0.284 0.054 0.525 0.679 0.344 ...
+//'  $ vinclusion_prob: num [1:15] 0.284 0.054 0.525 0.679 0.344 ...}
 //' @export
 // [[Rcpp::export]]
 List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 					std::string modelprior = "uniform", Nullable<NumericVector> modelpriorvec = R_NilValue,
-					int intercept_col = 1, bool bNatural_Order = false, bool bIntercept = false, bool bCentre = false,
 					int cores = 1) {
 	Map<VectorXd> vy_m = as< Map<VectorXd> >(vy);
 	Map<MatrixXd> mX_m = as< Map<MatrixXd> >(mX);
 	NumericVector modelpriorvec_r(0);
+	const int intercept_col = 1;
+	const bool bNatural_Order = false;
+	const bool bIntercept = false;
+	const bool bCentre = false;
 	if (modelpriorvec.isNotNull()) {
 		modelpriorvec_r = modelpriorvec.get();
 	}
@@ -105,12 +104,8 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 //' "robust_bayarri1" and "robust_bayarri2"
 //' @param modelprior
 //' @param modelpriorvec
-//' @param intercept_col The index of the column in mX containing the intercept, if any
-//' @param bNatural_Order Whether to return the results in natural order or graycode order. Defaults to graycode order.
-//' @param bIntercept Logical value indicating whether there is an intercept column or not
-//' @param bCentre Logical value indicating whether to centre the response vector and covariance matrix or not
 //' @param cores The number of cores to use
-//' @return A list containing 
+//' @return A list containing
 //' \describe{
 //' \item{vR2}{the vector of correlations for each model}
 //' \item{vp_gamma}{the vector of number of covariates for each model}
@@ -147,24 +142,28 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 //'
 //' y.t <- mD$y
 //' X.f <- data.matrix(cbind(mD[, 1:10]))
-//' colnames(X.f) <- varnames 
+//' colnames(X.f) <- varnames
 //' Z.f <- data.matrix(cbind(mD[, 11:15]))
 //' blma_result <- blma_fixed(y.t, X.f, Z.f, "maruyama")
-//' > str(blma_result)
+//' \donrun{str(blma_result)
 //' List of 4
 //'  $ vR2            : num [1:32] 0 0.719 0.724 0.688 0.771 ...
 //'  $ vp_gamma       : int [1:32] 0 11 12 11 12 13 12 11 12 13 ...
 //'  $ vlogp          : num [1:32] 9.56e-316 -1.21e+01 -1.40e+01 -1.46e+01 -9.60 ...
 //'  $ vinclusion_prob: num [1:15] 1 1 1 1 1 1 1 1 1 1 ...
-//' 
+//' }
 //' @export
 // [[Rcpp::export]]
 List blma_fixed(NumericVector vy, NumericMatrix mX, NumericMatrix mZ, std::string prior,
 								std::string modelprior = "uniform", Nullable<NumericVector> modelpriorvec = R_NilValue,
-								int intercept_col = 1, bool bNatural_Order = false,
-								bool bIntercept = false, bool bCentre = false, int cores = 1) {
+								int cores = 1) {
 	Map<VectorXd> vy_m = as< Map<VectorXd> >(vy);
 	Map<MatrixXd> mX_m = as< Map<MatrixXd> >(mX);
+	Map<MatrixXd> mZ_m = as< Map<MatrixXd> >(mZ);
+	const int intercept_col = 1;
+	const bool bNatural_Order = false;
+	const bool bIntercept = false;
+	const bool bCentre = false;
 	NumericVector modelpriorvec_r(0);
 	if (modelpriorvec.isNotNull()) {
 		modelpriorvec_r = modelpriorvec.get();
@@ -173,7 +172,7 @@ List blma_fixed(NumericVector vy, NumericMatrix mX, NumericMatrix mZ, std::strin
 	#if defined(_OPENMP)
 		omp_set_num_threads(cores);
 	#endif;
-	List result = blma_fixed_cpp(vy_m, mX_m, mZ_m, prior, modelprior, modelpriorvec_m, intercept_col - 1, 
+	List result = blma_fixed_cpp(vy_m, mX_m, mZ_m, prior, modelprior, modelpriorvec_m, intercept_col - 1,
 																bNatural_Order, bIntercept, bCentre);
 	return result;
 }
