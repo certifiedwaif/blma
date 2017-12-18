@@ -73,6 +73,7 @@ test_that("blma check modelprior parameters", {
   y.t <- UScrime_data$y.t
   X.f <- UScrime_data$X.f
   expect_error(blma(y.t, X.f, "ZE", "beta-binomial", c(2)), label="Wrong length, should be 2")
+  expect_error(blma(y.t, X.f, "ZE", "beta-binomial", c(2, -2)), label="Beta parameters have to be positive")
   expect_error(blma(y.t, X.f, "ZE", "bernoulli", c(1)), label="Wrong length, should be p=15")
   expect_error(blma(y.t, X.f, "ZE", "bernoulli", rep(1, 15)), label="Does not sum to 1")
 })

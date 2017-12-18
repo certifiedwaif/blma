@@ -315,14 +315,24 @@ bool check_model_prior_parameters(const std::string modelprior, const VectorXd& 
 	if (modelprior == "uniform") {
 		return true;
 	} else if (modelprior == "beta-binomial") {
-		if (modelpriorvec.size() == 2)
-			return true;
+		if (modelpriorvec.size() == 2) {
+			if (modelpriorvec(0) > 0 && modelpriorvec(1) > 0)
+				return true;
+			else {
+				invalid_reason = "elements of modelpriorvec should be positive";
+				return false;
+			}
+		}
 		else {
 			invalid_reason = "modelpriorvec was not of size 2";
 			return false;
 		}
 	} else if (modelprior == "bernoulli") {
 		if (modelpriorvec.size() == mX.cols()) {
+			if (abs(modelpriorvec.sum() - 1.) > 1e-5) {
+				invalid_reason = "modelpriorvec does not sum to 1";
+				return false;
+			}
 			return true;
 		} else {
 			invalid_reason = "modelpriorvec was not of the same size as the number of columns in mX";
