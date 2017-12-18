@@ -11,9 +11,10 @@ Imports:
     Rcpp (>= 0.12.5),
     RcppEigen,
     RcppGSL,
-    BH
+    BH,
+    appell
 LinkingTo: Rcpp (>= 0.12.5),
     RcppEigen,
     RcppGSL,
     BH
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
