@@ -66,3 +66,12 @@ test_that("blma bernoulli modelprior", {
   expect_equal(blma_result$vinclusion_prob, c(0.1028, 0.0153, 0.2835, 0.6781, 0.3292, 0.0281, 0.3078, 0.1760,
   																						0.0260, 0.0129, 0.0248, 0.0213, 0.9771, 0.2505, 0.0256), tolerance=1e-3)
 })
+
+
+test_that("blma check modelprior parameters", {
+  UScrime_data <- gen_UScrime()
+  y.t <- UScrime_data$y.t
+  X.f <- UScrime_data$X.f
+  expect_error(blma(y.t, X.f, "ZE", "beta-binomial", c(2)))
+  expect_error(blma(y.t, X.f, "ZE", "bernoulli", c(1)))
+})
