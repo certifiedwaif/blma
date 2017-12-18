@@ -370,6 +370,33 @@ double logp2(int n, double R2, int p)
 }
 
 
+bool check_model_prior_parameters(const std::string modelprior, const VectorXd& modelpriorvec,
+																	const MatrixXd& mX, std::string invalid_reason)
+{
+	if (modelprior == "uniform") {
+		return true;
+	} else if (modelprior == "beta-binomial") {
+		if (modelpriorvec.size() == 2)
+			return true;
+		else {
+			invalid_reason = "modelpriorvec was not of size 2";
+			return false;
+		}
+	} else if (modelprior == "bernoulli") {
+		if (modelpriorvec.size() == mX.cols()) {
+			return true;
+		} else {
+			invalid_reason = "modelpriorvec was not of the same size as the number of columns in mX";
+			return false;
+		}
+	}
+	else {
+		invalid_reason = "modelprior unknown";
+		return false;
+	}
+}
+
+
 void calculate_probabilities(const std::string prior, const std::string modelprior, const VectorXd& modelpriorvec,
 														 const int n, const int p, const VectorXd& vR2_all,
 														 const VectorXi& vpgamma_all, const Graycode& graycode,
@@ -450,6 +477,12 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
 	const MatrixXd mXTX = mX.transpose() * mX;
 	const MatrixXd mXTy = mX.transpose() * vy;
 	const double yTy = vy.squaredNorm();
+
+	// Check that modelprior parameters are correct
+	std::string invalid_reason;
+	if (!check_model_prior_parameters(modelprior, modelpriorvec, mX, invalid_reason)) {
+		Rcpp::stop("modelprior parameters are invalid");
+	}
 
 	// Pre-allocate memory
 	for (uint i = 0; i < p; i++) {
