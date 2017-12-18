@@ -437,17 +437,28 @@ void calculate_probabilities(const std::string prior, const std::string modelpri
 			double beta = modelpriorvec(1);
 			vlogp_all(i) += ::Rf_lbeta(alpha + vpgamma_all(i), beta + p - vpgamma_all(i));
 		}
+		if (modelprior == "bernoulli") {
+			for (auto j = 0; j < p; j++) {
+				auto gamma = graycode[i][j] ? 1. : 0.;
+				if (modelpriorvec(j) == 0. || modelpriorvec(j) == 1.)
+					continue;
+				vlogp_all(i) += gamma * log(modelpriorvec(j)) + (1 - gamma) * log(1. - modelpriorvec(j));
+			}
+		}
 	}
 	auto M = vlogp_all.array().maxCoeff(); // Maximum log-likelihood
 	// Rcpp::Rcout << "M " << M << std::endl;
 	VectorXd vmodel_prob = (vlogp_all.array() - M).array().exp() / (vlogp_all.array() - M).array().exp().sum();
 	// If we have memory problems, this can be recoded so that we don't have to construct the entire mGamma
 	// matrix
-	MatrixXd mGamma = graycode.to_MatrixXi().cast<double>();
-	if (modelprior == "uniform" || modelprior == "beta-binomial") {
-		vinclusion_prob = mGamma.transpose() * vmodel_prob;
-	} else if (modelprior == "bernoulli") {
-		vinclusion_prob = mGamma.transpose() * vmodel_prob * modelpriorvec;
+	// MatrixXd mGamma = graycode.to_MatrixXi().cast<double>();
+	// vinclusion_prob = mGamma.transpose() * vmodel_prob;
+	vinclusion_prob = VectorXd::Zero(p);
+	for (int i = 0; i < nmodels; i++) {
+		for (int j = 0; j < p; j++) {
+			auto gamma = graycode[i][j] ? 1. : 0.;
+			vinclusion_prob(j) += gamma * vmodel_prob(i);
+		}
 	}
 }
 
