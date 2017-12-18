@@ -63,9 +63,6 @@ test_that("blma bernoulli modelprior", {
   y.t <- UScrime_data$y.t
   X.f <- UScrime_data$X.f
   blma_result <- blma(y.t, X.f, "BIC", "bernoulli", rep(1/15, 15))
-  expect_equal(blma_result$vinclusion_prob, c(0.0472, 0.01270852,0.06138092, 0.0483536,
-  																						0.02467466, 0.01054849, 0.01803831,
-  																						0.04042873, 0.02461602, 0.0146143,
-  																						0.03722526, 0.01159106, 0.06661513,
-  																						0.06018038, 0.01175592), tolerance=1e-3)
+  expect_equal(blma_result$vinclusion_prob, c(0.1028, 0.0153, 0.2835, 0.6781, 0.3292, 0.0281, 0.3078, 0.1760,
+  																						0.0260, 0.0129, 0.0248, 0.0213, 0.9771, 0.2505, 0.0256), tolerance=1e-3)
 })
