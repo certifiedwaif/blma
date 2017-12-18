@@ -33,67 +33,6 @@ using namespace Rcpp;
 const bool NUMERIC_FIX = false;
 // #define DEBUG
 
-// Code copied from here: https://gist.github.com/stephenjbarr/2266900
-MatrixXd parseCSVfile_double(string infilename)
-{
-	ifstream in(infilename.c_str());
-	if (!in.is_open()) {
-		throw runtime_error("Could not open " + infilename);
-	}
-
-	typedef tokenizer< escaped_list_separator<char> > Tokenizer;
-
-	vector< string > vec;
-	string line;
-	vector< vector< string > > matrows;
-
-	while (getline(in, line)) {
-		Tokenizer tok(line);
-		vec.assign(tok.begin(),tok.end());
-
-		// // Print each row
-		// copy(vec.begin(), vec.end(),
-		//      ostream_iterator<string>(cout, "|"));
-		// cout << "\n----------------------" << endl;
-
-		matrows.push_back(vec);
-	}
-	in.close();
-
-	// FIGURE OUT HOW MANY OF THE ROWS HAVE THE RIGHT NUMBER
-	// OF COLUMNS
-	uint Nrows = matrows.size();
-	uint Ncols = matrows[0].size();
-	uint Ngoodrows = 0;
-	for(uint i = 0; i < Nrows; i++) {
-		if(matrows[i].size() == Ncols) {
-			Ngoodrows++;
-		}
-	}
-
-	// TRANSFORM THE VECTOR OF ROWS INTO AN EIGEN INTEGER MATRIX
-	MatrixXd xmat = MatrixXd(Ngoodrows, Ncols);
-	// cout << "INPUT MATRIX: " << Nrows << "x" << Ncols << endl;
-
-	int rc = 0;
-
-	for(uint i = 0; i < Nrows; i++) {
-		uint rowsize = matrows[i].size();
-
-		if(rowsize != Ncols) {
-			// cout << "Row " << i << " has bad column count" << endl;
-			continue;
-		}
-
-		for(uint j = 0; j < Ncols; j++) {
-			xmat(rc,j) = strtod(matrows[i][j].c_str(), NULL);
-		}
-		rc++;
-	}
-
-	return(xmat);
-}
-
 
 vector<uint>& get_indices_from_dbitset(const dbitset& gamma, vector<uint>& v)
 {
