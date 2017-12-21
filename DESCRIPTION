@@ -11,8 +11,7 @@ Imports:
     Rcpp (>= 0.12.5),
     RcppEigen,
     RcppGSL,
-    BH,
-    appell
+    BH
 LinkingTo: Rcpp (>= 0.12.5),
     RcppEigen,
     RcppGSL,
