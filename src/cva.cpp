@@ -402,34 +402,38 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //' @param mX Matrix of covariates
 //' @param K The number of particles in the population
 //' @param lambda The weighting factor for the entropy in f_lambda. Defaults to 1.
-//' @param prior -- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices available include:
+//' @param prior -- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices
+//' available include:
 //' 	\itemize{
 //' 		\item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior 
 //' 		of Ormerod et al. (2017).}
 //' 		
 //' 		\item{"ZE"}{-- special case of the prior structure described by Maruyama and George (2011).}
 //' 		
-//' 		\item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter \eqn{a=3}
-//' 		evaluated directly using (ref{eq:hyperGmarginal}) where the Gaussian hypergeometric function is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only meant to be used for comparative purposes.}
+//' 		\item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
+//'     \eqn{a=3} evaluated directly using (ref{eq:hyperGmarginal}) where the Gaussian hypergeometric function
+//'      is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only
+//'      meant to be used for comparative purposes.}
 //' 		
-//' 		\item{"liang_g2"}{-- the mixture $g$-prior of Liang et al. (2008) with prior hyperparameter \eqn{a=3}
-//' 		evaluated directly using (ref{eq:hyperGmarginal2}).}
+//' 		\item{"liang_g2"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
+//' 		 \eqn{a=3} evaluated directly using (ref{eq:hyperGmarginal2}).}
 //' 		
-//' 		\item{"liang_g_n_appell"}{-- the mixture $g/n$-prior of Liang et al. (2008) with prior hyperparameter $a=3$ evaluated using the {appell R} package.}
+//' 		\item{"liang_g_n_appell"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior
+//'			 hyperparameter \eqn{a=3} evaluated using the {appell R} package.}
 //' 		
-//' 		\item{"liang_g_approx"}{-- the mixture $g/n$-prior of Liang et al. (2008) with prior hyperparameter \eqn{a=3} using the approximation (ref{eq:hyperGonNmarginalApprox}) for \eqn{p_vgamma >2} and
+//' 		\item{"liang_g_approx"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
+//'      \eqn{a=3} using the approximation (ref{eq:hyperGonNmarginalApprox}) for \eqn{p_vgamma >2} and
 //' 		numerical quadrature (see below) ofr \eqn{p_vgamma in \{1,2\}}.}
 //' 		
-//' 		\item{"liang_g_n_quad"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter \eqn{a=3} evaluated using a composite trapezoid rule.}
+//' 		\item{"liang_g_n_quad"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
+//'			 \eqn{a=3} evaluated using a composite trapezoid rule.}
 //' 		
-//' 		\item{"robust_bayarri1"}{-- the robust prior of Bayarri et al. (2012)
-//' 		using default prior hyper parameter choices evaluated directly using 
-//' 		(ref{eq:yGivenGammaRobust}) with the {gsl} library.}
+//' 		\item{"robust_bayarri1"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
+//'			parameter choices evaluated directly using (ref{eq:yGivenGammaRobust}) with the {gsl} library.}
 //' 		
-//' 		\item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012)
-//' 		using default prior hyper parameter choices evaluated directly using 
-//' 		(ref{eq:yGivenGammaRobust2}).}
-//' 	}
+//' 		\item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
+//'			parameter choices evaluated directly using (ref{eq:yGivenGammaRobust2}).}
+//' }
 //' @param bUnique Whether to ensure uniqueness in the population of particles or not. Defaults to true.
 //' @return A list containing the named element models, which is a K by p matrix of the models
 //'					selected by the algorithm, and the named element trajectory, which includes a list
