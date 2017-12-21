@@ -11,18 +11,54 @@ using namespace Eigen;
 using namespace Rcpp;
 using namespace std;
 
-//' @importFrom Rcpp evalCpp
-//' @useDynLib blma
-
 //' Perform Bayesian Linear Model Averaging over all of the possible linear models where vy is the response
 //' and the covariates are in mX.
+//'
+//' @importFrom Rcpp evalCpp
+//' @useDynLib blma
+//'
 //' @param vy Vector of responses
 //' @param mX Covariate matrix
-//' @param prior The prior to use. The choices of prior available are "maruyama", "BIC", "ZE",
-//' "liang_g1", "liang_g2", "liang_g_n_appell", "liang_g_approx", "liang_g_n_quad",
-//' "robust_bayarri1" and "robust_bayarri2"
-//' @param modelprior
-//' @param modelpriorvec
+//' @param prior -- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices available include:
+//' 	\itemize{
+//' 		\item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior 
+//' 		of Ormerod et al. (2017).}
+//' 		
+//' 		\item{"ZE"}{-- special case of the prior structure described by Maruyama and George (2011).}
+//' 		
+//' 		\item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter \eqn{a=3}
+//' 		evaluated directly using (ref{eq:hyperGmarginal}) where the Gaussian hypergeometric function is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only meant to be used for comparative purposes.}
+//' 		
+//' 		\item{"liang_g2"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter \eqn{a=3}
+//' 		evaluated directly using (ref{eq:hyperGmarginal2}).}
+//' 		
+//' 		\item{"liang_g_n_appell"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter $a=3$ evaluated using the {appell R} package.}
+//' 		
+//' 		\item{"liang_g_approx"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter \eqn{a=3} using the approximation (ref{eq:hyperGonNmarginalApprox}) for \eqn{p_vgamma >2} and
+//' 		numerical quadrature (see below) ofr \eqn{p_vgamma in \{1,2\}}.}
+//' 		
+//' 		\item{"liang_g_n_quad"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter \eqn{a=3} evaluated using a composite trapezoid rule.}
+//' 		
+//' 		\item{"robust_bayarri1"}{-- the robust prior of Bayarri et al. (2012)
+//' 		using default prior hyper parameter choices evaluated directly using 
+//' 		(ref{eq:yGivenGammaRobust}) with the {gsl} library.}
+//' 		
+//' 		\item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012)
+//' 		using default prior hyper parameter choices evaluated directly using 
+//' 		(ref{eq:yGivenGammaRobust2}).}
+//' 	}
+//' @param modelprior The model prior to use. The choices of model prior are "uniform", "beta-binomial" or
+//' "bernoulli". The choice of model prior dictates the meaning of the parameter modelpriorvec.
+//' @param modelpriorvec If modelprior is "uniform", then the modelpriorvec is ignored and can be null.
+//'
+//' If
+//' the modelprior is "beta-binomial" then modelpriorvec should be length 2 with the first element containing
+//' the alpha hyperparameter for the beta prior and the second element containing the beta hyperparameter for
+//' the beta prior.
+//'
+//' If modelprior is "bernoulli", then modelpriorvec must be of the same length as the number
+//' of columns in mX. Each element i of modelpriorvec contains the prior probability of the the ith covariate
+//' being included in the model.
 //' @param cores The number of cores to use
 //' @return A list containing
 //' \describe{
@@ -102,8 +138,46 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 //' @param prior The prior to use. The choices of prior available are "maruyama", "BIC", "ZE",
 //' "liang_g1", "liang_g2", "liang_g_n_appell", "liang_g_approx", "liang_g_n_quad",
 //' "robust_bayarri1" and "robust_bayarri2"
-//' @param modelprior
-//' @param modelpriorvec
+//' @param prior -- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices available include:
+//' 	\itemize{
+//' 		\item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior 
+//' 		of Ormerod et al. (2017).}
+//' 		
+//' 		\item{"ZE"}{-- special case of the prior structure described by Maruyama and George (2011).}
+//' 		
+//' 		\item{"liang_g1"}{-- the mixture $g$-prior of Liang et al. (2008) with prior hyperparameter \eqn{a=3}
+//' 		evaluated directly using (ref{eq:hyperGmarginal}) where the Gaussian hypergeometric function is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only meant to be used for comparative purposes.}
+//' 		
+//' 		\item{"liang_g2"}{-- the mixture $g$-prior of Liang et al. (2008) with prior hyperparameter \eqn{a=3}
+//' 		evaluated directly using (ref{eq:hyperGmarginal2}).}
+//' 		
+//' 		\item{"liang_g_n_appell"}{-- the mixture $g/n$-prior of Liang et al. (2008) with prior hyperparameter $a=3$ evaluated using the {appell R} package.}
+//' 		
+//' 		\item{"liang_g_approx"}{-- the mixture $g/n$-prior of Liang et al. (2008) with prior hyperparameter \eqn{a=3} using the approximation (ref{eq:hyperGonNmarginalApprox}) for \eqn{p_vgamma >2} and
+//' 		numerical quadrature (see below) ofr \eqn{p_vgamma in \{1,2\}}.}
+//' 		
+//' 		\item{"liang_g_n_quad"}{-- the mixture $g/n$-prior of Liang et al. (2008) with prior hyperparameter \eqn{a=3} evaluated using a composite trapezoid rule.}
+//' 		
+//' 		\item{"robust_bayarri1"}{-- the robust prior of Bayarri et al. (2012)
+//' 		using default prior hyper parameter choices evaluated directly using 
+//' 		(ref{eq:yGivenGammaRobust}) with the {gsl} library.}
+//' 		
+//' 		\item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012)
+//' 		using default prior hyper parameter choices evaluated directly using 
+//' 		(ref{eq:yGivenGammaRobust2}).}
+//' 	}
+//' @param modelprior The model prior to use. The choices of model prior are "uniform", "beta-binomial" or
+//' "bernoulli". The choice of model prior dictates the meaning of the parameter modelpriorvec.
+//' @param modelpriorvec If modelprior is "uniform", then the modelpriorvec is ignored and can be null.
+//'
+//' If
+//' the modelprior is "beta-binomial" then modelpriorvec should be length 2 with the first element containing
+//' the alpha hyperparameter for the beta prior and the second element containing the beta hyperparameter for
+//' the beta prior.
+//'
+//' If modelprior is "bernoulli", then modelpriorvec must be of the same length as the number
+//' of columns in mX. Each element i of modelpriorvec contains the prior probability of the the ith covariate
+//' being included in the model.
 //' @param cores The number of cores to use
 //' @return A list containing
 //' \describe{
