@@ -10,6 +10,10 @@ cva(gamma_initial, vy_in, mX_in, K, lambda = 1, prior = "maruyama",
 \arguments{
 \item{gamma_initial}{Matrix of initial models, a K by p logical matrix}
 
+\item{vy_in}{Vector of responses}
+
+\item{mX_in}{The matrix of covariates which may or may not be included in each model}
+
 \item{K}{The number of particles in the population}
 
 \item{lambda}{The weighting factor for the entropy in f_lambda. Defaults to 1.}
@@ -49,10 +53,6 @@ available include:
 }}
 
 \item{bUnique}{Whether to ensure uniqueness in the population of particles or not. Defaults to true.}
-
-\item{vy}{Vector of responses}
-
-\item{mX}{The matrix of covariates which may or may not be included in each model}
 }
 \value{
 A list containing the named element models, which is a K by p matrix of the models
@@ -97,8 +97,8 @@ initial_gamma <- matrix(rbinom(K * p, 1, .5), K, p)
 cva_result <- cva(initial_gamma, y.t, X.f, K, lambda = 1.0, prior = "maruyama")
 }
 \references{
-Bayarri, M. J., Berger, J. O., Forte, A., Garc??a-Donato, G., 2012. Criteria for Bayesian
-model choice with application to variable selection. Annals of Statistics 40 (3), 1550–
+Bayarri, M. J., Berger, J. O., Forte, A., Garcia-Donato, G., 2012. Criteria for Bayesian
+model choice with application to variable selection. Annals of Statistics 40 (3), 1550-
 1577.
 
 Greenaway, M. J., J. T. Ormerod (2018) Numerical aspects of Bayesian linear models averaging using mixture
@@ -106,7 +106,7 @@ g-priors.
 
 Liang, F., Paulo, R., Molina, G., Clyde, M. a., Berger, J. O., 2008. Mixtures of g priors for
 Bayesian variable selection. Journal of the American Statistical Association 103 (481),
-410–423.
+410-423.
 
 Ormerod, J. T., Stewart, M., Yu, W., Romanes, S. E., 2017. Bayesian hypothesis tests
 with diffuse priors: Can we have our cake and eat it too?

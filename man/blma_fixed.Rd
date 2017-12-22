@@ -110,8 +110,8 @@ Z.f <- data.matrix(cbind(mD[, 11:15]))
 blma_result <- blma_fixed(y.t, X.f, Z.f, "maruyama")
 }
 \references{
-Bayarri, M. J., Berger, J. O., Forte, A., Garc??a-Donato, G., 2012. Criteria for Bayesian
-model choice with application to variable selection. Annals of Statistics 40 (3), 1550–
+Bayarri, M. J., Berger, J. O., Forte, A., Garcia-Donato, G., 2012. Criteria for Bayesian
+model choice with application to variable selection. Annals of Statistics 40 (3), 1550-
 1577.
 
 Greenaway, M. J., J. T. Ormerod (2018) Numerical aspects of Bayesian linear models averaging using mixture
@@ -119,7 +119,7 @@ g-priors.
 
 Liang, F., Paulo, R., Molina, G., Clyde, M. a., Berger, J. O., 2008. Mixtures of g priors for
 Bayesian variable selection. Journal of the American Statistical Association 103 (481),
-410–423.
+410-423.
 
 Ormerod, J. T., Stewart, M., Yu, W., Romanes, S. E., 2017. Bayesian hypothesis tests
 with diffuse priors: Can we have our cake and eat it too?

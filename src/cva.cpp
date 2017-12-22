@@ -398,8 +398,8 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //' Run a Collapsed Variational Approximation to find the K best linear models
 //'
 //' @param gamma_initial Matrix of initial models, a K by p logical matrix
-//' @param vy Vector of responses
-//' @param mX The matrix of covariates which may or may not be included in each model
+//' @param vy_in Vector of responses
+//' @param mX_in The matrix of covariates which may or may not be included in each model
 //' @param K The number of particles in the population
 //' @param lambda The weighting factor for the entropy in f_lambda. Defaults to 1.
 //' @param prior -- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices
@@ -473,8 +473,8 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //' initial_gamma <- matrix(rbinom(K * p, 1, .5), K, p)
 //' cva_result <- cva(initial_gamma, y.t, X.f, K, lambda = 1.0, prior = "maruyama")
 //' @references
-//' Bayarri, M. J., Berger, J. O., Forte, A., Garc??a-Donato, G., 2012. Criteria for Bayesian
-//' model choice with application to variable selection. Annals of Statistics 40 (3), 1550–
+//' Bayarri, M. J., Berger, J. O., Forte, A., Garcia-Donato, G., 2012. Criteria for Bayesian
+//' model choice with application to variable selection. Annals of Statistics 40 (3), 1550-
 //' 1577.
 //'
 //' Greenaway, M. J., J. T. Ormerod (2018) Numerical aspects of Bayesian linear models averaging using mixture
@@ -482,7 +482,7 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //'
 //' Liang, F., Paulo, R., Molina, G., Clyde, M. a., Berger, J. O., 2008. Mixtures of g priors for
 //' Bayesian variable selection. Journal of the American Statistical Association 103 (481),
-//' 410–423.
+//' 410-423.
 //'
 //' Ormerod, J. T., Stewart, M., Yu, W., Romanes, S. E., 2017. Bayesian hypothesis tests
 //' with diffuse priors: Can we have our cake and eat it too?

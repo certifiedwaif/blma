@@ -103,8 +103,8 @@ using namespace std;
 //' colnames(X.f) <- varnames
 //' blma_result <- blma(y.t, X.f, "maruyama")
 //' @references
-//' Bayarri, M. J., Berger, J. O., Forte, A., Garc??a-Donato, G., 2012. Criteria for Bayesian
-//' model choice with application to variable selection. Annals of Statistics 40 (3), 1550–
+//' Bayarri, M. J., Berger, J. O., Forte, A., Garcia-Donato, G., 2012. Criteria for Bayesian
+//' model choice with application to variable selection. Annals of Statistics 40 (3), 1550-
 //' 1577.
 //'
 //' Greenaway, M. J., J. T. Ormerod (2018) Numerical aspects of Bayesian linear models averaging using mixture
@@ -112,7 +112,7 @@ using namespace std;
 //'
 //' Liang, F., Paulo, R., Molina, G., Clyde, M. a., Berger, J. O., 2008. Mixtures of g priors for
 //' Bayesian variable selection. Journal of the American Statistical Association 103 (481),
-//' 410–423.
+//' 410-423.
 //'
 //' Ormerod, J. T., Stewart, M., Yu, W., Romanes, S. E., 2017. Bayesian hypothesis tests
 //' with diffuse priors: Can we have our cake and eat it too?
@@ -142,7 +142,7 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 
 //' Perform Bayesian Linear Model Averaging over all of the possible linear models where vy is the response,
 //' covariates that may be included are in mZ and covariates which are always included are in mX.
-//'
+//' 
 //' @param vy The vector of responses
 //' @param mX The matrix of fixed covariates which will be included in every model
 //' @param mZ The matrix of varying covariates, which may or may not be included in each model
@@ -232,8 +232,8 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 //' Z.f <- data.matrix(cbind(mD[, 11:15]))
 //' blma_result <- blma_fixed(y.t, X.f, Z.f, "maruyama")
 //' @references
-//' Bayarri, M. J., Berger, J. O., Forte, A., Garc??a-Donato, G., 2012. Criteria for Bayesian
-//' model choice with application to variable selection. Annals of Statistics 40 (3), 1550–
+//' Bayarri, M. J., Berger, J. O., Forte, A., Garcia-Donato, G., 2012. Criteria for Bayesian
+//' model choice with application to variable selection. Annals of Statistics 40 (3), 1550-
 //' 1577.
 //'
 //' Greenaway, M. J., J. T. Ormerod (2018) Numerical aspects of Bayesian linear models averaging using mixture
@@ -241,7 +241,7 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 //'
 //' Liang, F., Paulo, R., Molina, G., Clyde, M. a., Berger, J. O., 2008. Mixtures of g priors for
 //' Bayesian variable selection. Journal of the American Statistical Association 103 (481),
-//' 410–423.
+//' 410-423.
 //'
 //' Ormerod, J. T., Stewart, M., Yu, W., Romanes, S. E., 2017. Bayesian hypothesis tests
 //' with diffuse priors: Can we have our cake and eat it too?
