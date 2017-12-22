@@ -5,5 +5,4 @@ sudo: false
 cache: packages
 
 install:
-    - ./travis-tool.sh install_deps
-    - ./travis-tool.sh aptget_install r-cran-rcppgsl
+    - sudo apt-get install r-cran-rcppgsl
