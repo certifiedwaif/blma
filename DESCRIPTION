@@ -11,7 +11,8 @@ Imports:
     Rcpp (>= 0.12.5),
     RcppEigen,
     RcppGSL,
-    BH
+    BH,
+    MASS
 LinkingTo: Rcpp (>= 0.12.5),
     RcppEigen,
     RcppGSL,

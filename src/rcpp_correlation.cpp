@@ -73,8 +73,6 @@ using namespace std;
 //' \item{vinclusion_prob}{the vector of inclusion probabilities for each of the covariates}
 //' }
 //' @examples
-//' library(MASS)
-//'
 //' mD <- UScrime
 //' notlog <- c(2,ncol(UScrime))
 //' mD[,-notlog] <- log(mD[,-notlog])
@@ -209,8 +207,6 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 //' \item{vinclusion_prob}{the vector of inclusion probabilities for each of the covariates}
 //' }
 //' @examples
-//' library(MASS)
-//'
 //' mD <- UScrime
 //' notlog <- c(2,ncol(UScrime))
 //' mD[,-notlog] <- log(mD[,-notlog])
