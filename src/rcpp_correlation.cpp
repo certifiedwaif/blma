@@ -64,7 +64,7 @@ using namespace std;
 //' If modelprior is "bernoulli", then modelpriorvec must be of the same length as the number
 //' of columns in mX. Each element i of modelpriorvec contains the prior probability of the the ith covariate
 //' being included in the model.
-//' @param cores The number of cores to use
+//' @param cores The number of cores to use. Defaults to 1
 //' @return A list containing
 //' \describe{
 //' \item{vR2}{the vector of correlations for each model}
@@ -199,7 +199,7 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 //' of columns in mX. Each element i of modelpriorvec contains the prior probability of the the ith covariate
 //' being included in the model.
 //'
-//' @param cores The number of cores to use
+//' @param cores The number of cores to use. Defaults to 1
 //'
 //' @return A list containing
 //' \describe{
