@@ -5,7 +5,7 @@
 #'
 #' @param gamma_initial Matrix of initial models, a K by p logical matrix
 #' @param vy Vector of responses
-#' @param mX Matrix of covariates
+#' @param mX The matrix of covariates which may or may not be included in each model
 #' @param K The number of particles in the population
 #' @param lambda The weighting factor for the entropy in f_lambda. Defaults to 1.
 #' @param prior -- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices
@@ -17,28 +17,29 @@
 #' 		\item{"ZE"}{-- special case of the prior structure described by Maruyama and George (2011).}
 #' 		
 #' 		\item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
-#'     \eqn{a=3} evaluated directly using (ref{eq:hyperGmarginal}) where the Gaussian hypergeometric function
-#'      is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only
-#'      meant to be used for comparative purposes.}
+#'     \eqn{a=3} evaluated directly using Equation (10) of Greenaway and Ormerod (2018) where the Gaussian
+#'			hypergeometric function is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only
+#''    meant to be used for comparative purposes.}
 #' 		
 #' 		\item{"liang_g2"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
-#' 		 \eqn{a=3} evaluated directly using (ref{eq:hyperGmarginal2}).}
+#' 		 \eqn{a=3} evaluated directly using Equation (11)  of Greenaway and Ormerod (2018).}
 #' 		
 #' 		\item{"liang_g_n_appell"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior
 #'			 hyperparameter \eqn{a=3} evaluated using the {appell R} package.}
 #' 		
 #' 		\item{"liang_g_approx"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
-#'      \eqn{a=3} using the approximation (ref{eq:hyperGonNmarginalApprox}) for \eqn{p_vgamma >2} and
-#' 		numerical quadrature (see below) ofr \eqn{p_vgamma in \{1,2\}}.}
+#'      \eqn{a=3} using the approximation Equation (15)  of Greenaway and Ormerod (2018) for model with more
+#' 		  than two covariates and numerical quadrature (see below) for models with one or two covariates.}
 #' 		
 #' 		\item{"liang_g_n_quad"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
 #'			 \eqn{a=3} evaluated using a composite trapezoid rule.}
 #' 		
 #' 		\item{"robust_bayarri1"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
-#'			parameter choices evaluated directly using (ref{eq:yGivenGammaRobust}) with the {gsl} library.}
+#'			parameter choices evaluated directly using Equation (18)  of Greenaway and Ormerod (2018) with the 
+#'     {gsl} library.}
 #' 		
 #' 		\item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
-#'			parameter choices evaluated directly using (ref{eq:yGivenGammaRobust2}).}
+#'			parameter choices evaluated directly using Equation (19) of Greenaway and Ormerod (2018).}
 #' }
 #' @param bUnique Whether to ensure uniqueness in the population of particles or not. Defaults to true.
 #' @return A list containing the named element models, which is a K by p matrix of the models
@@ -90,6 +91,20 @@
 #'   ..$ : num [1:100, 1:15] 1 0 0 0 0 0 0 0 0 1 ...
 #'   ..$ : num [1:100, 1:15] 1 0 0 0 0 0 0 0 0 1 ...
 #'  $ trajectory_probs: num [1:100, 1:6] 4.20e-07 1.74e-06 4.77e-12 2.80e-13 1.02e-05 ...
+#' @references
+#' Bayarri, M. J., Berger, J. O., Forte, A., Garc??a-Donato, G., 2012. Criteria for Bayesian
+#' model choice with application to variable selection. Annals of Statistics 40 (3), 1550–
+#' 1577.
+#'
+#' Greenaway, M. J., J. T. Ormerod (2018) Numerical aspects of Bayesian linear models averaging using mixture
+#' g-priors.
+#'
+#' Liang, F., Paulo, R., Molina, G., Clyde, M. a., Berger, J. O., 2008. Mixtures of g priors for
+#' Bayesian variable selection. Journal of the American Statistical Association 103 (481),
+#' 410–423.
+#'
+#' Ormerod, J. T., Stewart, M., Yu, W., Romanes, S. E., 2017. Bayesian hypothesis tests
+#' with diffuse priors: Can we have our cake and eat it too?
 #' @export
 cva <- function(gamma_initial, vy_in, mX_in, K, lambda = 1., prior = "maruyama", bUnique = TRUE) {
     .Call('_blma_cva', PACKAGE = 'blma', gamma_initial, vy_in, mX_in, K, lambda, prior, bUnique)
@@ -112,28 +127,29 @@ cva <- function(gamma_initial, vy_in, mX_in, K, lambda = 1., prior = "maruyama",
 #' 		\item{"ZE"}{-- special case of the prior structure described by Maruyama and George (2011).}
 #' 		
 #' 		\item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
-#'     \eqn{a=3} evaluated directly using (ref{eq:hyperGmarginal}) where the Gaussian hypergeometric function
-#'      is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only
-#'      meant to be used for comparative purposes.}
+#'     \eqn{a=3} evaluated directly using Equation (10) of Greenaway and Ormerod (2018) where the Gaussian
+#'			hypergeometric function is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only
+#''    meant to be used for comparative purposes.}
 #' 		
 #' 		\item{"liang_g2"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
-#' 		 \eqn{a=3} evaluated directly using (ref{eq:hyperGmarginal2}).}
+#' 		 \eqn{a=3} evaluated directly using Equation (11)  of Greenaway and Ormerod (2018).}
 #' 		
 #' 		\item{"liang_g_n_appell"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior
 #'			 hyperparameter \eqn{a=3} evaluated using the {appell R} package.}
 #' 		
 #' 		\item{"liang_g_approx"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
-#'      \eqn{a=3} using the approximation (ref{eq:hyperGonNmarginalApprox}) for \eqn{p_vgamma >2} and
-#' 		numerical quadrature (see below) ofr \eqn{p_vgamma in \{1,2\}}.}
+#'      \eqn{a=3} using the approximation Equation (15)  of Greenaway and Ormerod (2018) for model with more
+#' 		  than two covariates and numerical quadrature (see below) for models with one or two covariates.}
 #' 		
 #' 		\item{"liang_g_n_quad"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
 #'			 \eqn{a=3} evaluated using a composite trapezoid rule.}
 #' 		
 #' 		\item{"robust_bayarri1"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
-#'			parameter choices evaluated directly using (ref{eq:yGivenGammaRobust}) with the {gsl} library.}
+#'			parameter choices evaluated directly using Equation (18)  of Greenaway and Ormerod (2018) with the 
+#'     {gsl} library.}
 #' 		
 #' 		\item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
-#'			parameter choices evaluated directly using (ref{eq:yGivenGammaRobust2}).}
+#'			parameter choices evaluated directly using Equation (19) of Greenaway and Ormerod (2018).}
 #' }
 #' @param modelprior The model prior to use. The choices of model prior are "uniform", "beta-binomial" or
 #' "bernoulli". The choice of model prior dictates the meaning of the parameter modelpriorvec.
@@ -193,6 +209,20 @@ cva <- function(gamma_initial, vy_in, mX_in, K, lambda = 1., prior = "maruyama",
 #'  $ vp_gamma       : int [1:32768] 0 1 2 1 2 3 2 1 2 3 ...
 #'  $ vlogp          : num [1:32768] 6.92e-310 -8.51 -1.30e+01 -8.50 -9.74 ...
 #'  $ vinclusion_prob: num [1:15] 0.284 0.054 0.525 0.679 0.344 ...}
+#' @references
+#' Bayarri, M. J., Berger, J. O., Forte, A., Garc??a-Donato, G., 2012. Criteria for Bayesian
+#' model choice with application to variable selection. Annals of Statistics 40 (3), 1550–
+#' 1577.
+#'
+#' Greenaway, M. J., J. T. Ormerod (2018) Numerical aspects of Bayesian linear models averaging using mixture
+#' g-priors.
+#'
+#' Liang, F., Paulo, R., Molina, G., Clyde, M. a., Berger, J. O., 2008. Mixtures of g priors for
+#' Bayesian variable selection. Journal of the American Statistical Association 103 (481),
+#' 410–423.
+#'
+#' Ormerod, J. T., Stewart, M., Yu, W., Romanes, S. E., 2017. Bayesian hypothesis tests
+#' with diffuse priors: Can we have our cake and eat it too?
 #' @export
 blma <- function(vy, mX, prior, modelprior = "uniform", modelpriorvec = NULL, cores = 1L) {
     .Call('_blma_blma', PACKAGE = 'blma', vy, mX, prior, modelprior, modelpriorvec, cores)
@@ -201,12 +231,9 @@ blma <- function(vy, mX, prior, modelprior = "uniform", modelpriorvec = NULL, co
 #' Perform Bayesian Linear Model Averaging over all of the possible linear models where vy is the response,
 #' covariates that may be included are in mZ and covariates which are always included are in mX.
 #'
-#' @param vy Vector of responses
-#' @param mX Fixed covariate matrix
-#' @param mZ Varying covariate matrix
-#' @param prior The prior to use. The choices of prior available are "maruyama", "BIC", "ZE",
-#' "liang_g1", "liang_g2", "liang_g_n_appell", "liang_g_approx", "liang_g_n_quad",
-#' "robust_bayarri1" and "robust_bayarri2"
+#' @param vy The vector of responses
+#' @param mX The matrix of fixed covariates which will be included in every model
+#' @param mZ The matrix of varying covariates, which may or may not be included in each model
 #' @param prior -- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices
 #' available include:
 #' 	\itemize{
@@ -216,42 +243,44 @@ blma <- function(vy, mX, prior, modelprior = "uniform", modelpriorvec = NULL, co
 #' 		\item{"ZE"}{-- special case of the prior structure described by Maruyama and George (2011).}
 #' 		
 #' 		\item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
-#'     \eqn{a=3} evaluated directly using (ref{eq:hyperGmarginal}) where the Gaussian hypergeometric function
-#'      is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only
-#'      meant to be used for comparative purposes.}
+#'     \eqn{a=3} evaluated directly using Equation (10) of Greenaway and Ormerod (2018) where the Gaussian
+#'			hypergeometric function is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only
+#''    meant to be used for comparative purposes.}
 #' 		
 #' 		\item{"liang_g2"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
-#' 		 \eqn{a=3} evaluated directly using (ref{eq:hyperGmarginal2}).}
+#' 		 \eqn{a=3} evaluated directly using Equation (11)  of Greenaway and Ormerod (2018).}
 #' 		
 #' 		\item{"liang_g_n_appell"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior
 #'			 hyperparameter \eqn{a=3} evaluated using the {appell R} package.}
 #' 		
 #' 		\item{"liang_g_approx"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
-#'      \eqn{a=3} using the approximation (ref{eq:hyperGonNmarginalApprox}) for \eqn{p_vgamma >2} and
-#' 		numerical quadrature (see below) ofr \eqn{p_vgamma in \{1,2\}}.}
+#'      \eqn{a=3} using the approximation Equation (15)  of Greenaway and Ormerod (2018) for model with more
+#' 		  than two covariates and numerical quadrature (see below) for models with one or two covariates.}
 #' 		
 #' 		\item{"liang_g_n_quad"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
 #'			 \eqn{a=3} evaluated using a composite trapezoid rule.}
 #' 		
 #' 		\item{"robust_bayarri1"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
-#'			parameter choices evaluated directly using (ref{eq:yGivenGammaRobust}) with the {gsl} library.}
+#'			parameter choices evaluated directly using Equation (18)  of Greenaway and Ormerod (2018) with the 
+#'     {gsl} library.}
 #' 		
 #' 		\item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
-#'			parameter choices evaluated directly using (ref{eq:yGivenGammaRobust2}).}
+#'			parameter choices evaluated directly using Equation (19) of Greenaway and Ormerod (2018).}
 #' }
 #' @param modelprior The model prior to use. The choices of model prior are "uniform", "beta-binomial" or
 #' "bernoulli". The choice of model prior dictates the meaning of the parameter modelpriorvec.
 #' @param modelpriorvec If modelprior is "uniform", then the modelpriorvec is ignored and can be null.
 #'
-#' If
-#' the modelprior is "beta-binomial" then modelpriorvec should be length 2 with the first element containing
+#' If the modelprior is "beta-binomial" then modelpriorvec should be length 2 with the first element containing
 #' the alpha hyperparameter for the beta prior and the second element containing the beta hyperparameter for
 #' the beta prior.
 #'
 #' If modelprior is "bernoulli", then modelpriorvec must be of the same length as the number
 #' of columns in mX. Each element i of modelpriorvec contains the prior probability of the the ith covariate
 #' being included in the model.
+#'
 #' @param cores The number of cores to use
+#'
 #' @return A list containing
 #' \describe{
 #' \item{vR2}{the vector of correlations for each model}
@@ -299,6 +328,20 @@ blma <- function(vy, mX, prior, modelprior = "uniform", modelpriorvec = NULL, co
 #'  $ vlogp          : num [1:32] 9.56e-316 -1.21e+01 -1.40e+01 -1.46e+01 -9.60 ...
 #'  $ vinclusion_prob: num [1:15] 1 1 1 1 1 1 1 1 1 1 ...
 #' }
+#' @references
+#' Bayarri, M. J., Berger, J. O., Forte, A., Garc??a-Donato, G., 2012. Criteria for Bayesian
+#' model choice with application to variable selection. Annals of Statistics 40 (3), 1550–
+#' 1577.
+#'
+#' Greenaway, M. J., J. T. Ormerod (2018) Numerical aspects of Bayesian linear models averaging using mixture
+#' g-priors.
+#'
+#' Liang, F., Paulo, R., Molina, G., Clyde, M. a., Berger, J. O., 2008. Mixtures of g priors for
+#' Bayesian variable selection. Journal of the American Statistical Association 103 (481),
+#' 410–423.
+#'
+#' Ormerod, J. T., Stewart, M., Yu, W., Romanes, S. E., 2017. Bayesian hypothesis tests
+#' with diffuse priors: Can we have our cake and eat it too?
 #' @export
 blma_fixed <- function(vy, mX, mZ, prior, modelprior = "uniform", modelpriorvec = NULL, cores = 1L) {
     .Call('_blma_blma_fixed', PACKAGE = 'blma', vy, mX, mZ, prior, modelprior, modelpriorvec, cores)

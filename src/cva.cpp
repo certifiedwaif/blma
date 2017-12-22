@@ -399,7 +399,7 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //'
 //' @param gamma_initial Matrix of initial models, a K by p logical matrix
 //' @param vy Vector of responses
-//' @param mX Matrix of covariates
+//' @param mX The matrix of covariates which may or may not be included in each model
 //' @param K The number of particles in the population
 //' @param lambda The weighting factor for the entropy in f_lambda. Defaults to 1.
 //' @param prior -- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices
@@ -411,28 +411,29 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //' 		\item{"ZE"}{-- special case of the prior structure described by Maruyama and George (2011).}
 //' 		
 //' 		\item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
-//'     \eqn{a=3} evaluated directly using (ref{eq:hyperGmarginal}) where the Gaussian hypergeometric function
-//'      is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only
-//'      meant to be used for comparative purposes.}
+//'     \eqn{a=3} evaluated directly using Equation (10) of Greenaway and Ormerod (2018) where the Gaussian
+//'			hypergeometric function is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only
+//''    meant to be used for comparative purposes.}
 //' 		
 //' 		\item{"liang_g2"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
-//' 		 \eqn{a=3} evaluated directly using (ref{eq:hyperGmarginal2}).}
+//' 		 \eqn{a=3} evaluated directly using Equation (11)  of Greenaway and Ormerod (2018).}
 //' 		
 //' 		\item{"liang_g_n_appell"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior
 //'			 hyperparameter \eqn{a=3} evaluated using the {appell R} package.}
 //' 		
 //' 		\item{"liang_g_approx"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
-//'      \eqn{a=3} using the approximation (ref{eq:hyperGonNmarginalApprox}) for \eqn{p_vgamma >2} and
-//' 		numerical quadrature (see below) ofr \eqn{p_vgamma in \{1,2\}}.}
+//'      \eqn{a=3} using the approximation Equation (15)  of Greenaway and Ormerod (2018) for model with more
+//' 		  than two covariates and numerical quadrature (see below) for models with one or two covariates.}
 //' 		
 //' 		\item{"liang_g_n_quad"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
 //'			 \eqn{a=3} evaluated using a composite trapezoid rule.}
 //' 		
 //' 		\item{"robust_bayarri1"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
-//'			parameter choices evaluated directly using (ref{eq:yGivenGammaRobust}) with the {gsl} library.}
+//'			parameter choices evaluated directly using Equation (18)  of Greenaway and Ormerod (2018) with the 
+//'     {gsl} library.}
 //' 		
 //' 		\item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
-//'			parameter choices evaluated directly using (ref{eq:yGivenGammaRobust2}).}
+//'			parameter choices evaluated directly using Equation (19) of Greenaway and Ormerod (2018).}
 //' }
 //' @param bUnique Whether to ensure uniqueness in the population of particles or not. Defaults to true.
 //' @return A list containing the named element models, which is a K by p matrix of the models
@@ -484,6 +485,20 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //'   ..$ : num [1:100, 1:15] 1 0 0 0 0 0 0 0 0 1 ...
 //'   ..$ : num [1:100, 1:15] 1 0 0 0 0 0 0 0 0 1 ...
 //'  $ trajectory_probs: num [1:100, 1:6] 4.20e-07 1.74e-06 4.77e-12 2.80e-13 1.02e-05 ...
+//' @references
+//' Bayarri, M. J., Berger, J. O., Forte, A., Garc??a-Donato, G., 2012. Criteria for Bayesian
+//' model choice with application to variable selection. Annals of Statistics 40 (3), 1550–
+//' 1577.
+//'
+//' Greenaway, M. J., J. T. Ormerod (2018) Numerical aspects of Bayesian linear models averaging using mixture
+//' g-priors.
+//'
+//' Liang, F., Paulo, R., Molina, G., Clyde, M. a., Berger, J. O., 2008. Mixtures of g priors for
+//' Bayesian variable selection. Journal of the American Statistical Association 103 (481),
+//' 410–423.
+//'
+//' Ormerod, J. T., Stewart, M., Yu, W., Romanes, S. E., 2017. Bayesian hypothesis tests
+//' with diffuse priors: Can we have our cake and eat it too?
 //' @export
 // [[Rcpp::export]]
 List cva(NumericMatrix gamma_initial, NumericVector vy_in, NumericMatrix mX_in, const int K,
