@@ -182,7 +182,7 @@ double trapint(const VectorXd& xgrid, const VectorXd& fgrid)
 {
 	auto sum = 0.0;
 
-	#pragma omp parallel for simd reduction(+:sum)
+	#pragma omp simd reduction(+:sum)
 	for (auto i = 0; i < xgrid.size() - 1; i++) {
 		sum += 0.5 * (xgrid(i + 1) - xgrid(i)) * (fgrid(i) + fgrid(i + 1));
 	}
