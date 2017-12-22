@@ -440,8 +440,6 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //'					selected by the algorithm, and the named element trajectory, which includes a list
 //'					of the populations of models for each iteration of the algorithm until it converged
 //' @examples
-//' library(MASS)
-//'
 //' mD <- UScrime
 //' notlog <- c(2,ncol(UScrime))
 //' mD[,-notlog] <- log(mD[,-notlog])
@@ -474,7 +472,7 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //' p <- ncol(X.f)
 //' initial_gamma <- matrix(rbinom(K * p, 1, .5), K, p)
 //' cva_result <- cva(initial_gamma, y.t, X.f, K, lambda = 1.0, prior = "maruyama")
-//' > str(cva_result)
+//' \dontrun{str(cva_result)
 //' List of 3
 //'  $ models          : num [1:100, 1:15] 1 0 0 0 0 0 0 0 0 1 ...
 //'  $ trajectory      :List of 6
@@ -484,7 +482,7 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //'   ..$ : num [1:100, 1:15] 1 0 0 0 0 0 0 0 0 1 ...
 //'   ..$ : num [1:100, 1:15] 1 0 0 0 0 0 0 0 0 1 ...
 //'   ..$ : num [1:100, 1:15] 1 0 0 0 0 0 0 0 0 1 ...
-//'  $ trajectory_probs: num [1:100, 1:6] 4.20e-07 1.74e-06 4.77e-12 2.80e-13 1.02e-05 ...
+//'  $ trajectory_probs: num [1:100, 1:6] 4.20e-07 1.74e-06 4.77e-12 2.80e-13 1.02e-05 ...}
 //' @references
 //' Bayarri, M. J., Berger, J. O., Forte, A., Garc??a-Donato, G., 2012. Criteria for Bayesian
 //' model choice with application to variable selection. Annals of Statistics 40 (3), 1550–
