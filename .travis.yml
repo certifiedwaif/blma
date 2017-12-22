@@ -5,4 +5,4 @@ sudo: false
 cache: packages
 
 install:
-    - sudo apt-get install r-cran-rcppgsl
+    - sudo apt-get install r-cran-rcppgsl r-cran-rcppeigen
