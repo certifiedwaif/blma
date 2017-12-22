@@ -102,12 +102,6 @@ using namespace std;
 //' X.f <- data.matrix(cbind(mD[1:15]))
 //' colnames(X.f) <- varnames
 //' blma_result <- blma(y.t, X.f, "maruyama")
-//' \dontrun{str(blma_result)
-//' List of 4
-//'  $ vR2            : num [1:32768] 0 0.00759 0.01 0.00822 0.13921 ...
-//'  $ vp_gamma       : int [1:32768] 0 1 2 1 2 3 2 1 2 3 ...
-//'  $ vlogp          : num [1:32768] 6.92e-310 -8.51 -1.30e+01 -8.50 -9.74 ...
-//'  $ vinclusion_prob: num [1:15] 0.284 0.054 0.525 0.679 0.344 ...}
 //' @references
 //' Bayarri, M. J., Berger, J. O., Forte, A., Garc??a-Donato, G., 2012. Criteria for Bayesian
 //' model choice with application to variable selection. Annals of Statistics 40 (3), 1550–
@@ -237,13 +231,6 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 //' colnames(X.f) <- varnames
 //' Z.f <- data.matrix(cbind(mD[, 11:15]))
 //' blma_result <- blma_fixed(y.t, X.f, Z.f, "maruyama")
-//' \donrun{str(blma_result)
-//' List of 4
-//'  $ vR2            : num [1:32] 0 0.719 0.724 0.688 0.771 ...
-//'  $ vp_gamma       : int [1:32] 0 11 12 11 12 13 12 11 12 13 ...
-//'  $ vlogp          : num [1:32] 9.56e-316 -1.21e+01 -1.40e+01 -1.46e+01 -9.60 ...
-//'  $ vinclusion_prob: num [1:15] 1 1 1 1 1 1 1 1 1 1 ...
-//' }
 //' @references
 //' Bayarri, M. J., Berger, J. O., Forte, A., Garc??a-Donato, G., 2012. Criteria for Bayesian
 //' model choice with application to variable selection. Annals of Statistics 40 (3), 1550–
