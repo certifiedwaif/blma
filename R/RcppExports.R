@@ -163,7 +163,7 @@ cva <- function(gamma_initial, vy_in, mX_in, K, lambda = 1., prior = "maruyama",
 #' If modelprior is "bernoulli", then modelpriorvec must be of the same length as the number
 #' of columns in mX. Each element i of modelpriorvec contains the prior probability of the the ith covariate
 #' being included in the model.
-#' @param cores The number of cores to use
+#' @param cores The number of cores to use. Defaults to 1
 #' @return A list containing
 #' \describe{
 #' \item{vR2}{the vector of correlations for each model}
@@ -279,7 +279,7 @@ blma <- function(vy, mX, prior, modelprior = "uniform", modelpriorvec = NULL, co
 #' of columns in mX. Each element i of modelpriorvec contains the prior probability of the the ith covariate
 #' being included in the model.
 #'
-#' @param cores The number of cores to use
+#' @param cores The number of cores to use. Defaults to 1
 #'
 #' @return A list containing
 #' \describe{
