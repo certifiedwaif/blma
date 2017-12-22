@@ -3,7 +3,7 @@
 language: R
 sudo: false
 cache: packages
-r_packages: BH
 
 install:
     - sudo apt-get install r-cran-rcppgsl r-cran-rcppeigen
+    - Rscript -e 'install.packages("BH", dependencies = TRUE)'
