@@ -73,8 +73,8 @@ using namespace std;
 //' \item{vinclusion_prob}{the vector of inclusion probabilities for each of the covariates}
 //' }
 //' @examples
-//' mD <- UScrime
-//' notlog <- c(2,ncol(UScrime))
+//' mD <- MASS::UScrime
+//' notlog <- c(2,ncol(MASS::UScrime))
 //' mD[,-notlog] <- log(mD[,-notlog])
 //'
 //' for (j in 1:ncol(mD)) {
@@ -201,8 +201,8 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 //' \item{vinclusion_prob}{the vector of inclusion probabilities for each of the covariates}
 //' }
 //' @examples
-//' mD <- UScrime
-//' notlog <- c(2,ncol(UScrime))
+//' mD <- MASS::UScrime
+//' notlog <- c(2,ncol(MASS::UScrime))
 //' mD[,-notlog] <- log(mD[,-notlog])
 //'
 //' for (j in 1:ncol(mD)) {
@@ -228,7 +228,7 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 //'
 //' y.t <- mD$y
 //' X.f <- data.matrix(cbind(mD[, 1:10]))
-//' colnames(X.f) <- varnames
+//' colnames(X.f) <- varnames[1:10]
 //' Z.f <- data.matrix(cbind(mD[, 11:15]))
 //' blma_result <- blma_fixed(y.t, X.f, Z.f, "maruyama")
 //' @references

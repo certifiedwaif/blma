@@ -62,7 +62,7 @@ If modelprior is "bernoulli", then modelpriorvec must be of the same length as t
 of columns in mX. Each element i of modelpriorvec contains the prior probability of the the ith covariate
 being included in the model.}
 
-\item{cores}{The number of cores to use}
+\item{cores}{The number of cores to use. Defaults to 1}
 }
 \value{
 A list containing
@@ -78,10 +78,8 @@ Perform Bayesian Linear Model Averaging over all of the possible linear models w
 covariates that may be included are in mZ and covariates which are always included are in mX.
 }
 \examples{
-library(MASS)
-
-mD <- UScrime
-notlog <- c(2,ncol(UScrime))
+mD <- MASS::UScrime
+notlog <- c(2,ncol(MASS::UScrime))
 mD[,-notlog] <- log(mD[,-notlog])
 
 for (j in 1:ncol(mD)) {
@@ -107,16 +105,9 @@ varnames <- c(
 
 y.t <- mD$y
 X.f <- data.matrix(cbind(mD[, 1:10]))
-colnames(X.f) <- varnames
+colnames(X.f) <- varnames[1:10]
 Z.f <- data.matrix(cbind(mD[, 11:15]))
 blma_result <- blma_fixed(y.t, X.f, Z.f, "maruyama")
-\\donrun{str(blma_result)
-List of 4
- $ vR2            : num [1:32] 0 0.719 0.724 0.688 0.771 ...
- $ vp_gamma       : int [1:32] 0 11 12 11 12 13 12 11 12 13 ...
- $ vlogp          : num [1:32] 9.56e-316 -1.21e+01 -1.40e+01 -1.46e+01 -9.60 ...
- $ vinclusion_prob: num [1:15] 1 1 1 1 1 1 1 1 1 1 ...
-}
 }
 \references{
 Bayarri, M. J., Berger, J. O., Forte, A., Garc??a-Donato, G., 2012. Criteria for Bayesian

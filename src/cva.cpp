@@ -440,8 +440,8 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //'					selected by the algorithm, and the named element trajectory, which includes a list
 //'					of the populations of models for each iteration of the algorithm until it converged
 //' @examples
-//' mD <- UScrime
-//' notlog <- c(2,ncol(UScrime))
+//' mD <- MASS::UScrime
+//' notlog <- c(2,ncol(MASS::UScrime))
 //' mD[,-notlog] <- log(mD[,-notlog])
 //'
 //' for (j in 1:ncol(mD)) {

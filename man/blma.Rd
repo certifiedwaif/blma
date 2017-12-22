@@ -61,7 +61,7 @@ If modelprior is "bernoulli", then modelpriorvec must be of the same length as t
 of columns in mX. Each element i of modelpriorvec contains the prior probability of the the ith covariate
 being included in the model.}
 
-\item{cores}{The number of cores to use}
+\item{cores}{The number of cores to use. Defaults to 1}
 }
 \value{
 A list containing
@@ -77,10 +77,8 @@ Perform Bayesian Linear Model Averaging over all of the possible linear models w
 and the covariates are in mX.
 }
 \examples{
-library(MASS)
-
-mD <- UScrime
-notlog <- c(2,ncol(UScrime))
+mD <- MASS::UScrime
+notlog <- c(2,ncol(MASS::UScrime))
 mD[,-notlog] <- log(mD[,-notlog])
 
 for (j in 1:ncol(mD)) {
@@ -108,12 +106,6 @@ y.t <- mD$y
 X.f <- data.matrix(cbind(mD[1:15]))
 colnames(X.f) <- varnames
 blma_result <- blma(y.t, X.f, "maruyama")
-\dontrun{str(blma_result)
-List of 4
- $ vR2            : num [1:32768] 0 0.00759 0.01 0.00822 0.13921 ...
- $ vp_gamma       : int [1:32768] 0 1 2 1 2 3 2 1 2 3 ...
- $ vlogp          : num [1:32768] 6.92e-310 -8.51 -1.30e+01 -8.50 -9.74 ...
- $ vinclusion_prob: num [1:15] 0.284 0.054 0.525 0.679 0.344 ...}
 }
 \references{
 Bayarri, M. J., Berger, J. O., Forte, A., Garc??a-Donato, G., 2012. Criteria for Bayesian

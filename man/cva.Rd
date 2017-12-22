@@ -63,10 +63,8 @@ A list containing the named element models, which is a K by p matrix of the mode
 Run a Collapsed Variational Approximation to find the K best linear models
 }
 \examples{
-library(MASS)
-
-mD <- UScrime
-notlog <- c(2,ncol(UScrime))
+mD <- MASS::UScrime
+notlog <- c(2,ncol(MASS::UScrime))
 mD[,-notlog] <- log(mD[,-notlog])
 
 for (j in 1:ncol(mD)) {
@@ -97,17 +95,6 @@ K <- 100
 p <- ncol(X.f)
 initial_gamma <- matrix(rbinom(K * p, 1, .5), K, p)
 cva_result <- cva(initial_gamma, y.t, X.f, K, lambda = 1.0, prior = "maruyama")
-> str(cva_result)
-List of 3
- $ models          : num [1:100, 1:15] 1 0 0 0 0 0 0 0 0 1 ...
- $ trajectory      :List of 6
-  ..$ : num [1:100, 1:15] 1 0 1 1 0 1 1 0 0 1 ...
-  ..$ : num [1:100, 1:15] 1 0 0 0 1 1 0 0 0 0 ...
-  ..$ : num [1:100, 1:15] 1 0 0 0 0 0 0 0 0 1 ...
-  ..$ : num [1:100, 1:15] 1 0 0 0 0 0 0 0 0 1 ...
-  ..$ : num [1:100, 1:15] 1 0 0 0 0 0 0 0 0 1 ...
-  ..$ : num [1:100, 1:15] 1 0 0 0 0 0 0 0 0 1 ...
- $ trajectory_probs: num [1:100, 1:6] 4.20e-07 1.74e-06 4.77e-12 2.80e-13 1.02e-05 ...
 }
 \references{
 Bayarri, M. J., Berger, J. O., Forte, A., Garc??a-Donato, G., 2012. Criteria for Bayesian
