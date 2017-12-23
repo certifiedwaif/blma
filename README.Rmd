@@ -19,7 +19,6 @@ should install and build the package.
 Windows installation instructions
 ---------------------------------
 To install the package:
-
 1. Download [local323.zip](http://www.stats.ox.ac.uk/pub/Rtools/goodies/multilib/local323.zip)
 2. Extract the contents into the directory R is installed, e.g., C:\Program Files\R\R-3.4.2
 3. If you have not done so already install the devtools package (if you have not done so already) via the R command:
