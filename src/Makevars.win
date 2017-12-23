@@ -1,7 +1,11 @@
-#CXX_STD = CXX11
-#PKG_CXXFLAGS = -O3 $(SHLIB_OPENMP_CXXFLAGS) $(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e "RcppGSL:::CFlags()") -I../inst/include
-#PKG_LIBS = -O3 $(SHLIB_OPENMP_CFLAGS) $(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e "RcppGSL:::LdFlags()") -L../inst/lib -lgsl -lgslcblas
-## This assumes that the LIB_GSL variable points to working GSL libraries
-PKG_CPPFLAGS=-I$(LIB_GSL)/include -I../inst/include
-PKG_LIBS=-L$(LIB_GSL)/lib -L../inst/libs/$(R_ARCH)/ -lgsl -lgslcblas
+PKG_CPPFLAGS= -I../windows/gsl-2.4/include
+PKG_LIBS= -L../windows/gsl-2.4/lib${R_ARCH} -lgsl -lgslcblas
 CXX_STD = CXX11
+
+all: clean winlibs
+
+winlibs:
+	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R"
+
+clean:
+	rm -f $(SHLIB) $(OBJECTS)
