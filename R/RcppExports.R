@@ -94,7 +94,7 @@
 #' with diffuse priors: Can we have our cake and eat it too?
 #' @export
 cva <- function(gamma_initial, vy_in, mX_in, K, lambda = 1., prior = "maruyama", bUnique = TRUE) {
-    .Call('_blma_cva', PACKAGE = 'blma', gamma_initial, vy_in, mX_in, K, lambda, prior, bUnique)
+    .Call('blma_cva', PACKAGE = 'blma', gamma_initial, vy_in, mX_in, K, lambda, prior, bUnique)
 }
 
 #' Perform Bayesian Linear Model Averaging over all of the possible linear models where vy is the response
@@ -204,7 +204,7 @@ cva <- function(gamma_initial, vy_in, mX_in, K, lambda = 1., prior = "maruyama",
 #' with diffuse priors: Can we have our cake and eat it too?
 #' @export
 blma <- function(vy, mX, prior, modelprior = "uniform", modelpriorvec = NULL, cores = 1L) {
-    .Call('_blma_blma', PACKAGE = 'blma', vy, mX, prior, modelprior, modelpriorvec, cores)
+    .Call('blma_blma', PACKAGE = 'blma', vy, mX, prior, modelprior, modelpriorvec, cores)
 }
 
 #' Perform Bayesian Linear Model Averaging over all of the possible linear models where vy is the response,
@@ -314,7 +314,7 @@ blma <- function(vy, mX, prior, modelprior = "uniform", modelpriorvec = NULL, co
 #' with diffuse priors: Can we have our cake and eat it too?
 #' @export
 blma_fixed <- function(vy, mX, mZ, prior, modelprior = "uniform", modelpriorvec = NULL, cores = 1L) {
-    .Call('_blma_blma_fixed', PACKAGE = 'blma', vy, mX, mZ, prior, modelprior, modelpriorvec, cores)
+    .Call('blma_blma_fixed', PACKAGE = 'blma', vy, mX, mZ, prior, modelprior, modelpriorvec, cores)
 }
 
 #' Return the graycode matrix
@@ -326,6 +326,6 @@ blma_fixed <- function(vy, mX, mZ, prior, modelprior = "uniform", modelpriorvec 
 #' set of covariates is included or not.
 #' @export
 graycode <- function(varying, fixed = 0L) {
-    .Call('_blma_graycode', PACKAGE = 'blma', varying, fixed)
+    .Call('blma_graycode', PACKAGE = 'blma', varying, fixed)
 }
 
