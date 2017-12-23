@@ -18,13 +18,16 @@ should install and build the package.
 
 Windows installation instructions
 ---------------------------------
-Our package depends on the GNU Scientific Library to evaluate special functions. On Windows, download
-[local323.zip](http://www.stats.ox.ac.uk/pub/Rtools/goodies/multilib/local323.zip) and unzip it in the directory
-of your R installation. Then you can run
+To install the package:
 
+1. Download [local323.zip](http://www.stats.ox.ac.uk/pub/Rtools/goodies/multilib/local323.zip)
+2. Extract the contents into the directory R is installed, e.g., C:\Program Files\R\R-3.4.2
+3. If you have not done so already install the devtools package (if you have not done so already) via the R command:
+```r
+install.packages("devtools")
+```
+4. Install the blma package via the R commands:
 ```r
 library(devtools)
-devtools::install_devtools("certifiedwaif/blma")
+install_github("certifiedwaif/blma")
 ```
-
-to install and build the package.
