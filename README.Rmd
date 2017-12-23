@@ -11,7 +11,8 @@ If you have libgsl installed,
 
 ```r
 library(devtools)
-devtools::install_devtools("certifiedwaif/blma")```
+devtools::install_devtools("certifiedwaif/blma")
+```
 
 should install and build the package.
 
@@ -23,6 +24,7 @@ of your R installation. Then you can run
 
 ```r
 library(devtools)
-devtools::install_devtools("certifiedwaif/blma")```
+devtools::install_devtools("certifiedwaif/blma")
+```
 
 to install and build the package.
