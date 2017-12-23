@@ -9,7 +9,8 @@ Linux and Mac installation instructions
 ---------------------------------------
 If you have libgsl installed,
 
-`install_devtools("certifiedwaif/blma")`
+`library(devtools)
+devtools::install_devtools("certifiedwaif/blma")`
 
 should install and build the package.
 
@@ -19,6 +20,7 @@ Our package depends on the GNU Scientific Library to evaluate special functions.
 [local323.zip](http://www.stats.ox.ac.uk/pub/Rtools/goodies/multilib/local323.zip) and unzip it in the directory
 of your R installation. Then you can run
 
-`install_devtools("certifiedwaif/blma")`
+`library(devtools)
+devtools::install_devtools("certifiedwaif/blma")`
 
 to install and build the package.
