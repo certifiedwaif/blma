@@ -1,9 +1,7 @@
 Bayesian Linear Model Averaging
 ===============================
 
-[![Travis-CI Build Status](https://travis-ci.org/certifiedwaif/blma.svg?branch=master)](https://travis-ci.org/certifiedwaif/blma)
-
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/certifiedwaif/blma?branch=master&svg=true)](https://ci.appveyor.com/project/certifiedwaif/blma)
+[![Travis-CI Build Status](https://travis-ci.org/certifiedwaif/blma.svg?branch=master)](https://travis-ci.org/certifiedwaif/blma) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/certifiedwaif/blma?branch=master&svg=true)](https://ci.appveyor.com/project/certifiedwaif/blma)
 
 Linux and Mac installation instructions
 ---------------------------------------
@@ -18,15 +16,13 @@ should install and build the package.
 
 Windows installation instructions
 ---------------------------------
-To install the package:
-1. Download [local323.zip](http://www.stats.ox.ac.uk/pub/Rtools/goodies/multilib/local323.zip)
-2. Extract the contents into the directory R is installed, e.g., C:\Program Files\R\R-3.4.2
-3. If you have not done so already install the devtools package (if you have not done so already) via the R command:
-```r
-install.packages("devtools")
 ```
-4. Install the blma package via the R commands:
+Install the blma package via the R commands:
 ```r
 library(devtools)
 install_github("certifiedwaif/blma")
 ```
+
+Special thanks to Jerone Ooms (@opencpu) for his help with getting the package building on Windows
+automatically, and to Maëlle Salmon (@ma_salmon) for CCing him in the first place and introducing me to
+Travis-CI and RAppVeyor.
