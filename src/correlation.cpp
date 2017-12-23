@@ -310,7 +310,7 @@ double logp2(int n, double R2, int p)
 
 
 bool check_model_prior_parameters(const std::string modelprior, const VectorXd& modelpriorvec,
-																	const MatrixXd& mX, std::string invalid_reason)
+																	const MatrixXd& mX, std::string& invalid_reason)
 {
 	if (modelprior == "uniform") {
 		return true;
@@ -378,6 +378,7 @@ void calculate_probabilities(const std::string prior, const std::string modelpri
 	}
 
 	auto nmodels = vR2_all.size();
+	#pragma omp parallel for
 	for (auto i = 1; i < nmodels; i++) {
 		vlogp_all(i) = log_prob(n, p, vR2_all(i), vpgamma_all(i));
 		if (modelprior == "beta-binomial") {
@@ -440,7 +441,9 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
 	// Check that modelprior parameters are correct
 	std::string invalid_reason;
 	if (!check_model_prior_parameters(modelprior, modelpriorvec, mX, invalid_reason)) {
-		Rcpp::stop("modelprior parameters are invalid");
+		stringstream ss;
+		ss << "modelprior parameters are invalid - " << invalid_reason;
+		Rcpp::stop(ss.str());
 	}
 
 	// Pre-allocate memory
