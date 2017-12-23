@@ -1,5 +1,24 @@
 Bayesian Linear Model Averaging
+===============================
 
 [![Travis-CI Build Status](https://travis-ci.org/certifiedwaif/blma.svg?branch=master)](https://travis-ci.org/certifiedwaif/blma)
 
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/certifiedwaif/blma?branch=master&svg=true)](https://ci.appveyor.com/project/certifiedwaif/blma)
+
+Linux and Mac installation instructions
+---------------------------------------
+If you have libgsl installed,
+
+`install_devtools("certifiedwaif/blma")`
+
+should install and build the package.
+
+Windows installation instructions
+---------------------------------
+Our package depends on the GNU Scientific Library to evaluate special functions. On Windows, download
+[local323.zip](http://www.stats.ox.ac.uk/pub/Rtools/goodies/multilib/local323.zip) and unzip it in the directory
+of your R installation. Then you can run
+
+`install_devtools("certifiedwaif/blma")`
+
+to install and build the package.
