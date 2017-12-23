@@ -14,6 +14,7 @@ devtools::install_devtools("certifiedwaif/blma")
 
 should install and build the package. On Mac OS X, if you are using Homebrew, gsl can be installed by executing
 the command
+
 ```shell
 brew install gsl
 ```
@@ -22,8 +23,9 @@ If you are using Linux, consult your distribution's documentation on how to inst
 
 Windows installation instructions
 ---------------------------------
-```
+
 Install the blma package via the R commands:
+
 ```r
 library(devtools)
 install_github("certifiedwaif/blma")
