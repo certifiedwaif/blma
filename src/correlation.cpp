@@ -384,7 +384,7 @@ void calculate_probabilities(const std::string prior, const std::string modelpri
 		if (modelprior == "beta-binomial") {
 			double alpha = modelpriorvec(0);
 			double beta = modelpriorvec(1);
-			vlogp_all(i) += ::Rf_lbeta(alpha + vpgamma_all(i), beta + p - vpgamma_all(i));
+			vlogp_all(i) += ::Rf_lbeta(alpha + vpgamma_all(i), beta + p - vpgamma_all(i)) - ::Rf_lbeta(alpha, beta);
 		}
 		if (modelprior == "bernoulli") {
 			for (auto j = 0; j < p; j++) {
