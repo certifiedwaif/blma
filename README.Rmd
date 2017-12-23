@@ -5,14 +5,20 @@ Bayesian Linear Model Averaging
 
 Linux and Mac installation instructions
 ---------------------------------------
-If you have libgsl installed,
+If you have gsl installed,
 
 ```r
 library(devtools)
 devtools::install_devtools("certifiedwaif/blma")
 ```
 
-should install and build the package.
+should install and build the package. On Mac OS X, if you are using Homebrew, gsl can be installed by executing
+the command
+```shell
+brew install gsl
+```
+
+If you are using Linux, consult your distribution's documentation on how to install gsl.
 
 Windows installation instructions
 ---------------------------------
