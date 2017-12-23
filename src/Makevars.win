@@ -1,5 +1,5 @@
-PKG_CPPFLAGS= -I../windows/gsl-2.4/include
-PKG_LIBS= -L../windows/gsl-2.4/lib${R_ARCH} -lgsl -lgslcblas
+PKG_CPPFLAGS= -O4 -I../windows/gsl-2.4/include
+PKG_LIBS= -O4 -L../windows/gsl-2.4/lib${R_ARCH} -lgsl -lgslcblas
 CXX_STD = CXX11
 
 all: clean winlibs
