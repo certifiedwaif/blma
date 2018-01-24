@@ -311,10 +311,10 @@ double robust_bayarri2(const int n, const int p, double R2, int p_gamma)
 }
 
 
-double calculate_log_prob(uint n, uint p, double R2, uint p_gamma,
-													dbitset gamma,
-													std::function<double (const int n, const int p, double vR2, int vp_gamma)> log_prob,
-													std::string modelprior, VectorXd modelpriorvec)
+double calculate_log_prob(const uint n, const uint p, const double R2, const uint p_gamma,
+													const dbitset gamma,
+													const std::function<double (const int n, const int p, double vR2, int vp_gamma)> log_prob,
+													const std::string modelprior, const VectorXd modelpriorvec)
 {
 	double result = log_prob(n, p, R2, p_gamma);
 
@@ -339,8 +339,8 @@ double calculate_log_prob(uint n, uint p, double R2, uint p_gamma,
 
 void calculate_log_probabilities(const vector< dbitset >& gamma, const VectorXd& sigma2, const int n,
 																	VectorXd& log_probs,
-																	std::function<double (const int n, const int p, double vR2, int vp_gamma)> log_prob,
-																	std::string modelprior, VectorXd modelpriorvec)
+																	const std::function<double (const int n, const int p, double vR2, int vp_gamma)> log_prob,
+																	const std::string modelprior, const VectorXd modelpriorvec)
 {
 	auto K = gamma.size();
 	auto p = gamma[0].size();
