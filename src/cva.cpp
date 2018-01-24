@@ -440,11 +440,8 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //'
 //' @param vy_in Vector of responses
 //' @param mX_in The matrix of covariates which may or may not be included in each model
-//' @param mGamma Matrix of initial models, a K by p logical matrix
+//' @param mGamma_in Matrix of initial models, a K by p logical matrix
 //' @param prior -- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices
-//' @param modelprior
-//' @param modelpriorvec
-//' @param lambda The weighting factor for the entropy in f_lambda. Defaults to 1.
 //' available include:
 //' 	\itemize{
 //' 		\item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior
@@ -477,7 +474,20 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //' 		\item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
 //'			parameter choices evaluated directly using Equation (19) of Greenaway and Ormerod (2018).}
 //' }
+//' @param modelprior The model prior to use. The choices of model prior are "uniform", "beta-binomial" or
+//' "bernoulli". The choice of model prior dictates the meaning of the parameter modelpriorvec.
+//' @param modelpriorvec If modelprior is "uniform", then the modelpriorvec is ignored and can be null.
+//'
+//' If
+//' the modelprior is "beta-binomial" then modelpriorvec should be length 2 with the first element containing
+//' the alpha hyperparameter for the beta prior and the second element containing the beta hyperparameter for
+//' the beta prior.
+//'
+//' If modelprior is "bernoulli", then modelpriorvec must be of the same length as the number
+//' of columns in mX. Each element i of modelpriorvec contains the prior probability of the the ith covariate
+//' being included in the model.
 //' @param bUnique Whether to ensure uniqueness in the population of particles or not. Defaults to true.
+//' @param lambda The weighting factor for the entropy in f_lambda. Defaults to 1.
 //' @return A list containing the named element models, which is a K by p matrix of the models
 //'					selected by the algorithm, and the named element trajectory, which includes a list
 //'					of the populations of models for each iteration of the algorithm until it converged

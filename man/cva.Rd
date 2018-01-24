@@ -4,55 +4,53 @@
 \alias{cva}
 \title{Run a Collapsed Variational Approximation to find the K best linear models}
 \usage{
-cva(gamma_initial, vy_in, mX_in, K, lambda = 1, prior = "maruyama",
-  bUnique = TRUE)
+cva(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in,
+  bUnique = TRUE, lambda = 1)
 }
 \arguments{
-\item{gamma_initial}{Matrix of initial models, a K by p logical matrix}
-
 \item{vy_in}{Vector of responses}
 
 \item{mX_in}{The matrix of covariates which may or may not be included in each model}
 
-\item{K}{The number of particles in the population}
+\item{mGamma_in}{Matrix of initial models, a K by p logical matrix}
 
-\item{lambda}{The weighting factor for the entropy in f_lambda. Defaults to 1.}
+\item{prior}{-- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices}
 
-\item{prior}{-- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices
+\item{bUnique}{Whether to ensure uniqueness in the population of particles or not. Defaults to true.}
+
+\item{lambda}{The weighting factor for the entropy in f_lambda. Defaults to 1.
 available include:
     \itemize{
-        \item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior 
+        \item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior
         of Ormerod et al. (2017).}
-        
+
         \item{"ZE"}{-- special case of the prior structure described by Maruyama and George (2011).}
-        
+
         \item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
     \eqn{a=3} evaluated directly using Equation (10) of Greenaway and Ormerod (2018) where the Gaussian
         hypergeometric function is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only
 '    meant to be used for comparative purposes.}
-        
+
         \item{"liang_g2"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
          \eqn{a=3} evaluated directly using Equation (11)  of Greenaway and Ormerod (2018).}
-        
+
         \item{"liang_g_n_appell"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior
          hyperparameter \eqn{a=3} evaluated using the {appell R} package.}
-        
+
         \item{"liang_g_approx"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
      \eqn{a=3} using the approximation Equation (15)  of Greenaway and Ormerod (2018) for model with more
           than two covariates and numerical quadrature (see below) for models with one or two covariates.}
-        
+
         \item{"liang_g_n_quad"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
          \eqn{a=3} evaluated using a composite trapezoid rule.}
-        
+
         \item{"robust_bayarri1"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
-        parameter choices evaluated directly using Equation (18)  of Greenaway and Ormerod (2018) with the 
+        parameter choices evaluated directly using Equation (18)  of Greenaway and Ormerod (2018) with the
     {gsl} library.}
-        
+
         \item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
         parameter choices evaluated directly using Equation (19) of Greenaway and Ormerod (2018).}
 }}
-
-\item{bUnique}{Whether to ensure uniqueness in the population of particles or not. Defaults to true.}
 }
 \value{
 A list containing the named element models, which is a K by p matrix of the models
@@ -90,11 +88,11 @@ varnames <- c(
 
 y.t <- mD$y
 X.f <- data.matrix(cbind(mD[1:15]))
-colnames(X.f) <- varnames 
+colnames(X.f) <- varnames
 K <- 100
 p <- ncol(X.f)
 initial_gamma <- matrix(rbinom(K * p, 1, .5), K, p)
-cva_result <- cva(initial_gamma, y.t, X.f, K, lambda = 1.0, prior = "maruyama")
+cva_result <- cva(y.t, X.f, initial_gamma, prior = "BIC", modelprior = "uniform", modelpriorvec=c(0.), lambda = 1.0)
 }
 \references{
 Bayarri, M. J., Berger, J. O., Forte, A., Garcia-Donato, G., 2012. Criteria for Bayesian
@@ -111,4 +109,3 @@ Bayesian variable selection. Journal of the American Statistical Association 103
 Ormerod, J. T., Stewart, M., Yu, W., Romanes, S. E., 2017. Bayesian hypothesis tests
 with diffuse priors: Can we have our cake and eat it too?
 }
-
