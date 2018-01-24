@@ -513,7 +513,7 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //' K <- 100
 //' p <- ncol(X.f)
 //' initial_gamma <- matrix(rbinom(K * p, 1, .5), K, p)
-//' cva_result <- cva(initial_gamma, y.t, X.f, K, lambda = 1.0, prior = "maruyama")
+//' cva_result <- cva(y.t, X.f, initial_gamma, prior = "BIC", modelprior = "uniform", modelpriorvec=c(0.), lambda = 1.0)
 //' @references
 //' Bayarri, M. J., Berger, J. O., Forte, A., Garcia-Donato, G., 2012. Criteria for Bayesian
 //' model choice with application to variable selection. Annals of Statistics 40 (3), 1550-
@@ -554,7 +554,7 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 	const auto p = mX.cols();
 	const MatrixXd mXTX = mX.transpose() * mX;
 	const MatrixXd mXTy = mX.transpose() * vy;
-	const uint K = mGamma.cols();
+	const uint K = mGamma.rows();
 	vector< dbitset > gamma(K);
 	VectorXd log_probs(K);
 	VectorXd w(K);
