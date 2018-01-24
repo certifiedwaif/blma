@@ -1,11 +1,11 @@
 Package: blma
 Type: Package
-Title: Calculate correlations of a lot of linear models.
+Title: Bayesian Linear Model Averaging
 Version: 0.1
 Date: 2016-07-29
 Author: Mark Greenaway
 Maintainer: Mark Greenaway <markg@maths.usyd.edu.au>
-Description: Calculate correlations of a lot of linear models.
+Description: Bayesian Linear Model Averaging
 License: GPL (>= 2)
 Imports:
     Rcpp (>= 0.12.5),

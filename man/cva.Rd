@@ -51,11 +51,7 @@ available include:
 \item{modelprior}{The model prior to use. The choices of model prior are "uniform", "beta-binomial" or
 "bernoulli". The choice of model prior dictates the meaning of the parameter modelpriorvec.}
 
-\item{bUnique}{Whether to ensure uniqueness in the population of particles or not. Defaults to true.}
-
-\item{lambda}{The weighting factor for the entropy in f_lambda. Defaults to 1.}
-
-\item{modelpriorvec}{If modelprior is "uniform", then the modelpriorvec is ignored and can be null.
+\item{modelpriorvec_in}{If modelprior is "uniform", then the modelpriorvec is ignored and can be null.
 
 If
 the modelprior is "beta-binomial" then modelpriorvec should be length 2 with the first element containing
@@ -65,6 +61,10 @@ the beta prior.
 If modelprior is "bernoulli", then modelpriorvec must be of the same length as the number
 of columns in mX. Each element i of modelpriorvec contains the prior probability of the the ith covariate
 being included in the model.}
+
+\item{bUnique}{Whether to ensure uniqueness in the population of particles or not. Defaults to true.}
+
+\item{lambda}{The weighting factor for the entropy in f_lambda. Defaults to 1.}
 }
 \value{
 A list containing the named element models, which is a K by p matrix of the models

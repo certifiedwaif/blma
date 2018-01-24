@@ -476,7 +476,7 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //' }
 //' @param modelprior The model prior to use. The choices of model prior are "uniform", "beta-binomial" or
 //' "bernoulli". The choice of model prior dictates the meaning of the parameter modelpriorvec.
-//' @param modelpriorvec If modelprior is "uniform", then the modelpriorvec is ignored and can be null.
+//' @param modelpriorvec_in If modelprior is "uniform", then the modelpriorvec is ignored and can be null.
 //'
 //' If
 //' the modelprior is "beta-binomial" then modelpriorvec should be length 2 with the first element containing
