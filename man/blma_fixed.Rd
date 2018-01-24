@@ -124,3 +124,4 @@ Bayesian variable selection. Journal of the American Statistical Association 103
 Ormerod, J. T., Stewart, M., Yu, W., Romanes, S. E., 2017. Bayesian hypothesis tests
 with diffuse priors: Can we have our cake and eat it too?
 }
+

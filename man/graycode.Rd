@@ -19,3 +19,4 @@ set of covariates is included or not.
 \description{
 Return the graycode matrix
 }
+

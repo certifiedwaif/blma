@@ -3,41 +3,42 @@
 
 #' Run a Collapsed Variational Approximation to find the K best linear models
 #'
-#' @param gamma_initial Matrix of initial models, a K by p logical matrix
 #' @param vy_in Vector of responses
 #' @param mX_in The matrix of covariates which may or may not be included in each model
-#' @param K The number of particles in the population
-#' @param lambda The weighting factor for the entropy in f_lambda. Defaults to 1.
+#' @param mGamma Matrix of initial models, a K by p logical matrix
 #' @param prior -- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices
+#' @param modelprior
+#' @param modelpriorvec
+#' @param lambda The weighting factor for the entropy in f_lambda. Defaults to 1.
 #' available include:
 #' 	\itemize{
-#' 		\item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior 
+#' 		\item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior
 #' 		of Ormerod et al. (2017).}
-#' 		
+#'
 #' 		\item{"ZE"}{-- special case of the prior structure described by Maruyama and George (2011).}
-#' 		
+#'
 #' 		\item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
 #'     \eqn{a=3} evaluated directly using Equation (10) of Greenaway and Ormerod (2018) where the Gaussian
 #'			hypergeometric function is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only
 #''    meant to be used for comparative purposes.}
-#' 		
+#'
 #' 		\item{"liang_g2"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
 #' 		 \eqn{a=3} evaluated directly using Equation (11)  of Greenaway and Ormerod (2018).}
-#' 		
+#'
 #' 		\item{"liang_g_n_appell"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior
 #'			 hyperparameter \eqn{a=3} evaluated using the {appell R} package.}
-#' 		
+#'
 #' 		\item{"liang_g_approx"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
 #'      \eqn{a=3} using the approximation Equation (15)  of Greenaway and Ormerod (2018) for model with more
 #' 		  than two covariates and numerical quadrature (see below) for models with one or two covariates.}
-#' 		
+#'
 #' 		\item{"liang_g_n_quad"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
 #'			 \eqn{a=3} evaluated using a composite trapezoid rule.}
-#' 		
+#'
 #' 		\item{"robust_bayarri1"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
-#'			parameter choices evaluated directly using Equation (18)  of Greenaway and Ormerod (2018) with the 
+#'			parameter choices evaluated directly using Equation (18)  of Greenaway and Ormerod (2018) with the
 #'     {gsl} library.}
-#' 		
+#'
 #' 		\item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
 #'			parameter choices evaluated directly using Equation (19) of Greenaway and Ormerod (2018).}
 #' }
@@ -73,7 +74,7 @@
 #'
 #' y.t <- mD$y
 #' X.f <- data.matrix(cbind(mD[1:15]))
-#' colnames(X.f) <- varnames 
+#' colnames(X.f) <- varnames
 #' K <- 100
 #' p <- ncol(X.f)
 #' initial_gamma <- matrix(rbinom(K * p, 1, .5), K, p)
@@ -93,8 +94,8 @@
 #' Ormerod, J. T., Stewart, M., Yu, W., Romanes, S. E., 2017. Bayesian hypothesis tests
 #' with diffuse priors: Can we have our cake and eat it too?
 #' @export
-cva <- function(gamma_initial, vy_in, mX_in, K, lambda = 1., prior = "maruyama", bUnique = TRUE) {
-    .Call('blma_cva', PACKAGE = 'blma', gamma_initial, vy_in, mX_in, K, lambda, prior, bUnique)
+cva <- function(vy_in, mX_in, prior, modelprior, modelpriorvec_in, mGamma_in, bUnique = TRUE, lambda = 1.) {
+    .Call('_blma_cva', PACKAGE = 'blma', vy_in, mX_in, prior, modelprior, modelpriorvec_in, mGamma_in, bUnique, lambda)
 }
 
 #' Perform Bayesian Linear Model Averaging over all of the possible linear models where vy is the response
@@ -204,7 +205,7 @@ cva <- function(gamma_initial, vy_in, mX_in, K, lambda = 1., prior = "maruyama",
 #' with diffuse priors: Can we have our cake and eat it too?
 #' @export
 blma <- function(vy, mX, prior, modelprior = "uniform", modelpriorvec = NULL, cores = 1L) {
-    .Call('blma_blma', PACKAGE = 'blma', vy, mX, prior, modelprior, modelpriorvec, cores)
+    .Call('_blma_blma', PACKAGE = 'blma', vy, mX, prior, modelprior, modelpriorvec, cores)
 }
 
 #' Perform Bayesian Linear Model Averaging over all of the possible linear models where vy is the response,
@@ -314,7 +315,7 @@ blma <- function(vy, mX, prior, modelprior = "uniform", modelpriorvec = NULL, co
 #' with diffuse priors: Can we have our cake and eat it too?
 #' @export
 blma_fixed <- function(vy, mX, mZ, prior, modelprior = "uniform", modelpriorvec = NULL, cores = 1L) {
-    .Call('blma_blma_fixed', PACKAGE = 'blma', vy, mX, mZ, prior, modelprior, modelpriorvec, cores)
+    .Call('_blma_blma_fixed', PACKAGE = 'blma', vy, mX, mZ, prior, modelprior, modelpriorvec, cores)
 }
 
 #' Return the graycode matrix
@@ -326,6 +327,6 @@ blma_fixed <- function(vy, mX, mZ, prior, modelprior = "uniform", modelpriorvec 
 #' set of covariates is included or not.
 #' @export
 graycode <- function(varying, fixed = 0L) {
-    .Call('blma_graycode', PACKAGE = 'blma', varying, fixed)
+    .Call('_blma_graycode', PACKAGE = 'blma', varying, fixed)
 }
 

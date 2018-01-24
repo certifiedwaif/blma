@@ -438,12 +438,13 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 
 //' Run a Collapsed Variational Approximation to find the K best linear models
 //'
-//' @param gamma_initial Matrix of initial models, a K by p logical matrix
 //' @param vy_in Vector of responses
 //' @param mX_in The matrix of covariates which may or may not be included in each model
-//' @param K The number of particles in the population
-//' @param lambda The weighting factor for the entropy in f_lambda. Defaults to 1.
+//' @param mGamma Matrix of initial models, a K by p logical matrix
 //' @param prior -- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices
+//' @param modelprior
+//' @param modelpriorvec
+//' @param lambda The weighting factor for the entropy in f_lambda. Defaults to 1.
 //' available include:
 //' 	\itemize{
 //' 		\item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior
