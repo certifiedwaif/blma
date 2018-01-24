@@ -8,7 +8,7 @@
 using namespace Rcpp;
 
 // cva
-List cva(const NumericVector vy_in, const NumericMatrix mX_in, const NumericMatrix mGamma_in, const std::string prior, const std::string modelprior, const NumericVector modelpriorvec_in, const bool bUnique, const double lambda);
+List cva(const NumericVector vy_in, const NumericMatrix mX_in, const NumericMatrix mGamma_in, const std::string prior, const std::string modelprior, const Nullable<NumericVector> modelpriorvec_in, const bool bUnique, const double lambda);
 RcppExport SEXP _blma_cva(SEXP vy_inSEXP, SEXP mX_inSEXP, SEXP mGamma_inSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvec_inSEXP, SEXP bUniqueSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -18,7 +18,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const NumericMatrix >::type mGamma_in(mGamma_inSEXP);
     Rcpp::traits::input_parameter< const std::string >::type prior(priorSEXP);
     Rcpp::traits::input_parameter< const std::string >::type modelprior(modelpriorSEXP);
-    Rcpp::traits::input_parameter< const NumericVector >::type modelpriorvec_in(modelpriorvec_inSEXP);
+    Rcpp::traits::input_parameter< const Nullable<NumericVector> >::type modelpriorvec_in(modelpriorvec_inSEXP);
     Rcpp::traits::input_parameter< const bool >::type bUnique(bUniqueSEXP);
     Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
     rcpp_result_gen = Rcpp::wrap(cva(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in, bUnique, lambda));

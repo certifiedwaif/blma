@@ -524,7 +524,7 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //' p <- ncol(X.f)
 //' initial_gamma <- matrix(rbinom(K * p, 1, .5), K, p)
 //' cva_result <- cva(y.t, X.f, initial_gamma, prior = "BIC", modelprior = "uniform",
-//'                   modelpriorvec=c(0.))
+//'                   modelpriorvec_in=NULL)
 //' @references
 //' Bayarri, M. J., Berger, J. O., Forte, A., Garcia-Donato, G., 2012. Criteria for Bayesian
 //' model choice with application to variable selection. Annals of Statistics 40 (3), 1550-
@@ -542,9 +542,9 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //' @export
 // [[Rcpp::export]]
 List cva(const NumericVector vy_in, const NumericMatrix mX_in,
-				 const NumericMatrix mGamma_in, 
+				 const NumericMatrix mGamma_in,
 				 const std::string prior,
-				 const std::string modelprior, const NumericVector modelpriorvec_in,
+				 const std::string modelprior, const Nullable<NumericVector> modelpriorvec_in = R_NilValue,
 				 const bool bUnique = true,
 				 const double lambda = 1.)
 {
@@ -555,9 +555,13 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 	for (auto i = 0; i < mX_in.nrow(); i++)
 		for (auto j = 0; j < mX_in.ncol(); j++)
 			mX(i, j) = mX_in(i, j);
-	VectorXd modelpriorvec(modelpriorvec_in.length());
-	for (auto i = 0; i < modelpriorvec_in.length(); i++)
-		modelpriorvec(i) = modelpriorvec_in(i);
+	NumericVector modelpriorvec_r(0);
+	if (!modelpriorvec_in.isNull()) {
+		modelpriorvec_r = modelpriorvec_in.get();
+	}
+	VectorXd modelpriorvec(modelpriorvec_r.length());
+	for (auto i = 0; i < modelpriorvec_r.length(); i++)
+		modelpriorvec(i) = modelpriorvec_r(i);
 	MatrixXd mGamma(mGamma_in.nrow(), mGamma_in.ncol());
 	for (auto i = 0; i < mGamma_in.nrow(); i++)
 		for (auto j = 0; j < mGamma_in.ncol(); j++)

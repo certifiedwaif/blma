@@ -4,7 +4,7 @@
 \alias{cva}
 \title{Run a Collapsed Variational Approximation to find the K best linear models}
 \usage{
-cva(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in,
+cva(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in = NULL,
   bUnique = TRUE, lambda = 1)
 }
 \arguments{
@@ -107,7 +107,7 @@ K <- 100
 p <- ncol(X.f)
 initial_gamma <- matrix(rbinom(K * p, 1, .5), K, p)
 cva_result <- cva(y.t, X.f, initial_gamma, prior = "BIC", modelprior = "uniform",
-                  modelpriorvec=c(0.))
+                  modelpriorvec_in=NULL)
 }
 \references{
 Bayarri, M. J., Berger, J. O., Forte, A., Garcia-Donato, G., 2012. Criteria for Bayesian
