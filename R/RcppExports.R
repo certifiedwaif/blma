@@ -88,7 +88,8 @@
 #' K <- 100
 #' p <- ncol(X.f)
 #' initial_gamma <- matrix(rbinom(K * p, 1, .5), K, p)
-#' cva_result <- cva(y.t, X.f, initial_gamma, prior = "BIC", modelprior = "uniform", modelpriorvec=c(0.))
+#' cva_result <- cva(y.t, X.f, initial_gamma, prior = "BIC", modelprior = "uniform",
+#'                   modelpriorvec=c(0.))
 #' @references
 #' Bayarri, M. J., Berger, J. O., Forte, A., Garcia-Donato, G., 2012. Criteria for Bayesian
 #' model choice with application to variable selection. Annals of Statistics 40 (3), 1550-
