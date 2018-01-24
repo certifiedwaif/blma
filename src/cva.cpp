@@ -531,9 +531,10 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //' @export
 // [[Rcpp::export]]
 List cva(const NumericVector vy_in, const NumericMatrix mX_in,
+				 const NumericMatrix mGamma_in, 
 				 const std::string prior,
 				 const std::string modelprior, const NumericVector modelpriorvec_in,
-				 const NumericMatrix mGamma_in, const bool bUnique = true,
+				 const bool bUnique = true,
 				 const double lambda = 1.)
 {
 	VectorXd vy(vy_in.length());   // = Rcpp::as<Eigen::Map<Eigen::VectorXd>>(vy_in);
