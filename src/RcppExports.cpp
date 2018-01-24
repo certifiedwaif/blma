@@ -8,25 +8,26 @@
 using namespace Rcpp;
 
 // cva
-List cva(NumericMatrix gamma_initial, NumericVector vy_in, NumericMatrix mX_in, const int K, const double lambda, std::string prior, const bool bUnique);
-RcppExport SEXP blma_cva(SEXP gamma_initialSEXP, SEXP vy_inSEXP, SEXP mX_inSEXP, SEXP KSEXP, SEXP lambdaSEXP, SEXP priorSEXP, SEXP bUniqueSEXP) {
+List cva(const NumericVector vy_in, const NumericMatrix mX_in, const std::string prior, const std::string modelprior, const NumericVector modelpriorvec_in, const NumericMatrix mGamma_in, const bool bUnique, const double lambda);
+RcppExport SEXP _blma_cva(SEXP vy_inSEXP, SEXP mX_inSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvec_inSEXP, SEXP mGamma_inSEXP, SEXP bUniqueSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type gamma_initial(gamma_initialSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type vy_in(vy_inSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type mX_in(mX_inSEXP);
-    Rcpp::traits::input_parameter< const int >::type K(KSEXP);
-    Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
-    Rcpp::traits::input_parameter< std::string >::type prior(priorSEXP);
+    Rcpp::traits::input_parameter< const NumericVector >::type vy_in(vy_inSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix >::type mX_in(mX_inSEXP);
+    Rcpp::traits::input_parameter< const std::string >::type prior(priorSEXP);
+    Rcpp::traits::input_parameter< const std::string >::type modelprior(modelpriorSEXP);
+    Rcpp::traits::input_parameter< const NumericVector >::type modelpriorvec_in(modelpriorvec_inSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix >::type mGamma_in(mGamma_inSEXP);
     Rcpp::traits::input_parameter< const bool >::type bUnique(bUniqueSEXP);
-    rcpp_result_gen = Rcpp::wrap(cva(gamma_initial, vy_in, mX_in, K, lambda, prior, bUnique));
+    Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(cva(vy_in, mX_in, prior, modelprior, modelpriorvec_in, mGamma_in, bUnique, lambda));
     return rcpp_result_gen;
 END_RCPP
 }
 // blma
 List blma(NumericVector vy, NumericMatrix mX, std::string prior, std::string modelprior, Nullable<NumericVector> modelpriorvec, int cores);
-RcppExport SEXP blma_blma(SEXP vySEXP, SEXP mXSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvecSEXP, SEXP coresSEXP) {
+RcppExport SEXP _blma_blma(SEXP vySEXP, SEXP mXSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvecSEXP, SEXP coresSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -42,7 +43,7 @@ END_RCPP
 }
 // blma_fixed
 List blma_fixed(NumericVector vy, NumericMatrix mX, NumericMatrix mZ, std::string prior, std::string modelprior, Nullable<NumericVector> modelpriorvec, int cores);
-RcppExport SEXP blma_blma_fixed(SEXP vySEXP, SEXP mXSEXP, SEXP mZSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvecSEXP, SEXP coresSEXP) {
+RcppExport SEXP _blma_blma_fixed(SEXP vySEXP, SEXP mXSEXP, SEXP mZSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvecSEXP, SEXP coresSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -59,7 +60,7 @@ END_RCPP
 }
 // graycode
 IntegerMatrix graycode(unsigned int varying, unsigned int fixed);
-RcppExport SEXP blma_graycode(SEXP varyingSEXP, SEXP fixedSEXP) {
+RcppExport SEXP _blma_graycode(SEXP varyingSEXP, SEXP fixedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -68,4 +69,17 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(graycode(varying, fixed));
     return rcpp_result_gen;
 END_RCPP
+}
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_blma_cva", (DL_FUNC) &_blma_cva, 8},
+    {"_blma_blma", (DL_FUNC) &_blma_blma, 6},
+    {"_blma_blma_fixed", (DL_FUNC) &_blma_blma_fixed, 7},
+    {"_blma_graycode", (DL_FUNC) &_blma_graycode, 2},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_blma(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
 }
