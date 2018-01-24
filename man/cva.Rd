@@ -14,11 +14,7 @@ cva(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in,
 
 \item{mGamma_in}{Matrix of initial models, a K by p logical matrix}
 
-\item{prior}{-- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices}
-
-\item{bUnique}{Whether to ensure uniqueness in the population of particles or not. Defaults to true.}
-
-\item{lambda}{The weighting factor for the entropy in f_lambda. Defaults to 1.
+\item{prior}{-- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices
 available include:
     \itemize{
         \item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior
@@ -51,6 +47,24 @@ available include:
         \item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
         parameter choices evaluated directly using Equation (19) of Greenaway and Ormerod (2018).}
 }}
+
+\item{modelprior}{The model prior to use. The choices of model prior are "uniform", "beta-binomial" or
+"bernoulli". The choice of model prior dictates the meaning of the parameter modelpriorvec.}
+
+\item{bUnique}{Whether to ensure uniqueness in the population of particles or not. Defaults to true.}
+
+\item{lambda}{The weighting factor for the entropy in f_lambda. Defaults to 1.}
+
+\item{modelpriorvec}{If modelprior is "uniform", then the modelpriorvec is ignored and can be null.
+
+If
+the modelprior is "beta-binomial" then modelpriorvec should be length 2 with the first element containing
+the alpha hyperparameter for the beta prior and the second element containing the beta hyperparameter for
+the beta prior.
+
+If modelprior is "bernoulli", then modelpriorvec must be of the same length as the number
+of columns in mX. Each element i of modelpriorvec contains the prior probability of the the ith covariate
+being included in the model.}
 }
 \value{
 A list containing the named element models, which is a K by p matrix of the models
@@ -92,7 +106,7 @@ colnames(X.f) <- varnames
 K <- 100
 p <- ncol(X.f)
 initial_gamma <- matrix(rbinom(K * p, 1, .5), K, p)
-cva_result <- cva(y.t, X.f, initial_gamma, prior = "BIC", modelprior = "uniform", modelpriorvec=c(0.), lambda = 1.0)
+cva_result <- cva(y.t, X.f, initial_gamma, prior = "BIC", modelprior = "uniform", modelpriorvec=c(0.))
 }
 \references{
 Bayarri, M. J., Berger, J. O., Forte, A., Garcia-Donato, G., 2012. Criteria for Bayesian
