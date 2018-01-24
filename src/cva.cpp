@@ -149,15 +149,15 @@ double liang_g2(const int n, const int p, double R2, int p_gamma)
 double liang_g_n_appell(const int n, const int p, double R2, int p_gamma)
 {
 	auto a = 3.;
-	
+
 	Rcpp::Environment appell("package:appell");
 	Rcpp::Function appellf1_r = appell["appellf1"];
 	Rcpp::ComplexVector val(1);
 	try {
 		Rcpp::List res = appellf1_r(Rcpp::_["a"] = 1.,
 																Rcpp::_["b1"] = a / 2.,
-																Rcpp::_["b2"] = (n - 1.)/2., 
-																Rcpp::_["c"] = (p_gamma + a) / 2., 
+																Rcpp::_["b2"] = (n - 1.)/2.,
+																Rcpp::_["c"] = (p_gamma + a) / 2.,
 																Rcpp::_["x"] = 1. - 1. / n,
 																Rcpp::_["y"] = R2,
 																Rcpp::_["userflag"] = 1,
@@ -224,7 +224,7 @@ double liang_g_n_approx(const int n, const int p, double R2, int p_gamma)
 		return liang_g_n_quad(n, p, R2, p_gamma);
 
 	auto a = 3.;
-	
+
 	auto shape1 = 0.5*(p_gamma - 1.);
 	auto shape2 = 0.5*(n - p_gamma + 1.);
 
@@ -311,8 +311,36 @@ double robust_bayarri2(const int n, const int p, double R2, int p_gamma)
 }
 
 
+double calculate_log_prob(uint n, uint p, double R2, uint p_gamma,
+													dbitset gamma,
+													std::function<double (const int n, const int p, double vR2, int vp_gamma)> log_prob,
+													std::string modelprior, VectorXd modelpriorvec)
+{
+	double result = log_prob(n, p, R2, p_gamma);
+
+	if (modelprior == "beta-binomial") {
+		double alpha = modelpriorvec(0);
+		double beta = modelpriorvec(1);
+		result += ::Rf_lbeta(alpha + p_gamma, beta + p - p_gamma) - ::Rf_lbeta(alpha, beta);
+	}
+
+	if (modelprior == "bernoulli") {
+		for (auto j = 0; j < p; j++) {
+			auto igamma = gamma[j] ? 1. : 0.;
+			if (modelpriorvec(j) == 0. || modelpriorvec(j) == 1.)
+				continue;
+			result += igamma * log(modelpriorvec(j)) + (1 - igamma) * log(1. - modelpriorvec(j));
+		}
+	}
+
+	return result;
+}
+
+
 void calculate_log_probabilities(const vector< dbitset >& gamma, const VectorXd& sigma2, const int n,
-																	VectorXd& log_probs, std::function<double (const int n, const int p, double vR2, int vp_gamma)> log_prob)
+																	VectorXd& log_probs,
+																	std::function<double (const int n, const int p, double vR2, int vp_gamma)> log_prob,
+																	std::string modelprior, VectorXd modelpriorvec)
 {
 	auto K = gamma.size();
 	auto p = gamma[0].size();
@@ -321,10 +349,23 @@ void calculate_log_probabilities(const vector< dbitset >& gamma, const VectorXd&
 	for (auto k = 0; k < K; k++) {
 		auto p_gamma = gamma[k].count();
 		auto b = p;
-		log_probs[k] = log_prob(n, p, 1. - sigma2[k], p_gamma);
+		log_probs(k) = log_prob(n, p, 1. - sigma2[k], p_gamma);
 		#ifdef DEBUG
 		// Rcpp::Rcout << "log_probs[" << k << "] " << log_probs[k] << std::endl;
 		#endif
+		if (modelprior == "beta-binomial") {
+			double alpha = modelpriorvec(0);
+			double beta = modelpriorvec(1);
+			log_probs(k) += ::Rf_lbeta(alpha + p_gamma, beta + p - p_gamma) - ::Rf_lbeta(alpha, beta);
+		}
+		if (modelprior == "bernoulli") {
+			for (auto j = 0; j < p; j++) {
+				auto igamma = gamma[k][j] ? 1. : 0.;
+				if (modelpriorvec(j) == 0. || modelpriorvec(j) == 1.)
+					continue;
+				log_probs(k) += igamma * log(modelpriorvec(j)) + (1 - igamma) * log(1. - modelpriorvec(j));
+			}
+		}
 	}
 	// Re-normalise
 	log_probs = log_probs.array() - log_probs.maxCoeff();
@@ -405,33 +446,33 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //' @param prior -- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices
 //' available include:
 //' 	\itemize{
-//' 		\item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior 
+//' 		\item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior
 //' 		of Ormerod et al. (2017).}
-//' 		
+//'
 //' 		\item{"ZE"}{-- special case of the prior structure described by Maruyama and George (2011).}
-//' 		
+//'
 //' 		\item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
 //'     \eqn{a=3} evaluated directly using Equation (10) of Greenaway and Ormerod (2018) where the Gaussian
 //'			hypergeometric function is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only
 //''    meant to be used for comparative purposes.}
-//' 		
+//'
 //' 		\item{"liang_g2"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
 //' 		 \eqn{a=3} evaluated directly using Equation (11)  of Greenaway and Ormerod (2018).}
-//' 		
+//'
 //' 		\item{"liang_g_n_appell"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior
 //'			 hyperparameter \eqn{a=3} evaluated using the {appell R} package.}
-//' 		
+//'
 //' 		\item{"liang_g_approx"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
 //'      \eqn{a=3} using the approximation Equation (15)  of Greenaway and Ormerod (2018) for model with more
 //' 		  than two covariates and numerical quadrature (see below) for models with one or two covariates.}
-//' 		
+//'
 //' 		\item{"liang_g_n_quad"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
 //'			 \eqn{a=3} evaluated using a composite trapezoid rule.}
-//' 		
+//'
 //' 		\item{"robust_bayarri1"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
-//'			parameter choices evaluated directly using Equation (18)  of Greenaway and Ormerod (2018) with the 
+//'			parameter choices evaluated directly using Equation (18)  of Greenaway and Ormerod (2018) with the
 //'     {gsl} library.}
-//' 		
+//'
 //' 		\item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
 //'			parameter choices evaluated directly using Equation (19) of Greenaway and Ormerod (2018).}
 //' }
@@ -467,7 +508,7 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //'
 //' y.t <- mD$y
 //' X.f <- data.matrix(cbind(mD[1:15]))
-//' colnames(X.f) <- varnames 
+//' colnames(X.f) <- varnames
 //' K <- 100
 //' p <- ncol(X.f)
 //' initial_gamma <- matrix(rbinom(K * p, 1, .5), K, p)
@@ -488,8 +529,11 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //' with diffuse priors: Can we have our cake and eat it too?
 //' @export
 // [[Rcpp::export]]
-List cva(NumericMatrix gamma_initial, NumericVector vy_in, NumericMatrix mX_in, const int K,
-				 const double lambda = 1., std::string prior = "maruyama", const bool bUnique = true)
+List cva(const NumericVector vy_in, const NumericMatrix mX_in,
+				 const std::string prior,
+				 const std::string modelprior, const NumericVector modelpriorvec_in,
+				 const NumericMatrix mGamma_in, const bool bUnique = true,
+				 const double lambda = 1.)
 {
 	VectorXd vy(vy_in.length());   // = Rcpp::as<Eigen::Map<Eigen::VectorXd>>(vy_in);
 	for (auto i = 0; i < vy_in.length(); i++) vy[i] = vy_in[i];
@@ -498,13 +542,21 @@ List cva(NumericMatrix gamma_initial, NumericVector vy_in, NumericMatrix mX_in, 
 	for (auto i = 0; i < mX_in.nrow(); i++)
 		for (auto j = 0; j < mX_in.ncol(); j++)
 			mX(i, j) = mX_in(i, j);
+	VectorXd modelpriorvec(modelpriorvec_in.length());
+	for (auto i = 0; i < modelpriorvec_in.length(); i++)
+		modelpriorvec(i) = modelpriorvec_in(i);
+	MatrixXd mGamma(mGamma_in.nrow(), mGamma_in.ncol());
+	for (auto i = 0; i < mGamma_in.nrow(); i++)
+		for (auto j = 0; j < mGamma_in.ncol(); j++)
+			mGamma(i, j) = mGamma_in(i, j);
 	const auto n = mX.rows();
 	const auto p = mX.cols();
 	const MatrixXd mXTX = mX.transpose() * mX;
 	const MatrixXd mXTy = mX.transpose() * vy;
+	const uint K = mGamma.cols();
+	vector< dbitset > gamma(K);
 	VectorXd log_probs(K);
 	VectorXd w(K);
-	vector< dbitset > gamma(K);
 	vector< vector< dbitset > > trajectory;
 	vector< VectorXd > trajectory_probs;
 	vector< MatrixXd > mXTX_inv(K);
@@ -558,9 +610,9 @@ List cva(NumericMatrix gamma_initial, NumericVector vy_in, NumericMatrix mX_in, 
 	// 	Rcpp::Rcout << "gamma[" << k << "] " << gamma[k] << std::endl;
 	// }
 
-	if (gamma_initial.nrow() != K || gamma_initial.ncol() != p) {
+	if (mGamma.rows() != K || mGamma.cols() != p) {
 		stringstream ss;
-		ss << "initial_gamma is " << to_string(gamma_initial.nrow()) << " by " << to_string(gamma_initial.ncol()) << ", expected " << K << " by " << p;
+		ss << "initial_gamma is " << to_string(mGamma.rows()) << " by " << to_string(mGamma.cols()) << ", expected " << K << " by " << p;
 		stop(ss.str());
 	}
 
@@ -570,7 +622,7 @@ List cva(NumericMatrix gamma_initial, NumericVector vy_in, NumericMatrix mX_in, 
 	for (auto k = 0; k < K; k++) {
 		gamma[k].resize(p);
 		for (auto j = 0; j < p; j++) {
-			if (gamma_initial(k, j) == 1.) {
+			if (mGamma(k, j) == 1.) {
 				gamma[k][j] = true;
 			}
 			else {
@@ -604,7 +656,7 @@ List cva(NumericMatrix gamma_initial, NumericVector vy_in, NumericMatrix mX_in, 
 		Rcpp::Rcout << "sigma2[" << k << "] " << sigma2[k] << std::endl;
 		#endif
 	}
-	calculate_log_probabilities(gamma, sigma2, n, log_probs, log_prob);
+	calculate_log_probabilities(gamma, sigma2, n, log_probs, log_prob, modelprior, modelpriorvec);
 	trajectory.push_back(gamma);
 	trajectory_probs.push_back(log_probs.array().exp());
 
@@ -722,11 +774,15 @@ List cva(NumericMatrix gamma_initial, NumericVector vy_in, NumericMatrix mX_in, 
 				double log_p_0;
 				double log_p_1;
 				if (bUpdate) {
-					log_p_0 = log_prob(n, p, 1. - sigma2[k], p_gamma);
-					log_p_1 = log_prob(n, p, 1. - sigma2_prime, p_gamma_prime);
+					// log_p_0 = log_prob(n, p, 1. - sigma2[k], p_gamma);
+					// log_p_1 = log_prob(n, p, 1. - sigma2_prime, p_gamma_prime);
+					log_p_0 = calculate_log_prob(n, p, 1. - sigma2[k], p_gamma, gamma[k], log_prob, modelprior, modelpriorvec);
+					log_p_1 = calculate_log_prob(n, p, 1. - sigma2_prime, p_gamma_prime, gamma_prime, log_prob, modelprior, modelpriorvec);
 				} else {
-					log_p_0 = log_prob(n, p, 1. - sigma2_prime, p_gamma_prime);
-					log_p_1 = log_prob(n, p, 1. - sigma2[k], p_gamma);
+					// log_p_0 = log_prob(n, p, 1. - sigma2_prime, p_gamma_prime);
+					// log_p_1 = log_prob(n, p, 1. - sigma2[k], p_gamma);
+					log_p_0 = calculate_log_prob(n, p, 1. - sigma2_prime, p_gamma_prime, gamma_prime, log_prob, modelprior, modelpriorvec);
+					log_p_1 = calculate_log_prob(n, p, 1. - sigma2[k], p_gamma, gamma[k], log_prob, modelprior, modelpriorvec);
 				}
 				#ifdef DEBUG
 				Rcpp::Rcout << "log_p_0 " << log_p_0;
@@ -759,7 +815,7 @@ List cva(NumericMatrix gamma_initial, NumericVector vy_in, NumericMatrix mX_in, 
 			}
 		}
 
-		calculate_log_probabilities(gamma, sigma2, n, log_probs, log_prob);
+		calculate_log_probabilities(gamma, sigma2, n, log_probs, log_prob, modelprior, modelpriorvec);
 
 		// Calculate weights
 		calculate_weights(sigma2, log_probs, w);
