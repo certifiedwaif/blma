@@ -886,8 +886,19 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 		}
 	}
 
-	List result = List::create(Named("models") = bitstrings,
-															Named("trajectory") = trajectory_bitstrings,
-															Named("trajectory_probs") = trajectory_probabilities);
+	// TODO: Add vBF, vR2, posterior inclusion probabilities, vp
+
+	VectorXd vp_gamma(K);
+	for (auto k = 0; k < K; k++) {
+		vp_gamma(k) = gamma[k].count();
+	}
+	List result = List::create(Named("mGamma") = bitstrings,
+														 Named("vBF") = log_probs, // Is this right?
+														 Named("posterior_model_probabilities") = log_probs,
+														 Named("posterior_inclusion_probabilities") = mGamma.transpose() * log_probs,
+														 Named("vR2") = 1. - sigma2.array(),
+														 Named("vp") = vp_gamma,
+														 Named("trajectory") = trajectory_bitstrings,
+														 Named("trajectory_probs") = trajectory_probabilities);
 	return result;
 }
