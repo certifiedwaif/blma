@@ -53,6 +53,7 @@
 #' being included in the model.
 #' @param bUnique Whether to ensure uniqueness in the population of particles or not. Defaults to true.
 #' @param lambda The weighting factor for the entropy in f_lambda. Defaults to 1.
+#' @param cores The number of cores to use. Defaults to 1.
 #' @return A list containing the named element models, which is a K by p matrix of the models
 #'					selected by the algorithm, and the named element trajectory, which includes a list
 #'					of the populations of models for each iteration of the algorithm until it converged
@@ -105,8 +106,8 @@
 #' Ormerod, J. T., Stewart, M., Yu, W., Romanes, S. E., 2017. Bayesian hypothesis tests
 #' with diffuse priors: Can we have our cake and eat it too?
 #' @export
-cva <- function(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in = NULL, bUnique = TRUE, lambda = 1.) {
-    .Call('_blma_cva', PACKAGE = 'blma', vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in, bUnique, lambda)
+cva <- function(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in = NULL, bUnique = TRUE, lambda = 1., cores = 1L) {
+    .Call('_blma_cva', PACKAGE = 'blma', vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in, bUnique, lambda, cores)
 }
 
 #' Perform Bayesian Linear Model Averaging over all of the possible linear models where vy is the response

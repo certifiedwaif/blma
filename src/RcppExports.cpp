@@ -8,8 +8,8 @@
 using namespace Rcpp;
 
 // cva
-List cva(const NumericVector vy_in, const NumericMatrix mX_in, const NumericMatrix mGamma_in, const std::string prior, const std::string modelprior, const Nullable<NumericVector> modelpriorvec_in, const bool bUnique, const double lambda);
-RcppExport SEXP _blma_cva(SEXP vy_inSEXP, SEXP mX_inSEXP, SEXP mGamma_inSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvec_inSEXP, SEXP bUniqueSEXP, SEXP lambdaSEXP) {
+List cva(const NumericVector vy_in, const NumericMatrix mX_in, const NumericMatrix mGamma_in, const std::string prior, const std::string modelprior, const Nullable<NumericVector> modelpriorvec_in, const bool bUnique, const double lambda, const int cores);
+RcppExport SEXP _blma_cva(SEXP vy_inSEXP, SEXP mX_inSEXP, SEXP mGamma_inSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvec_inSEXP, SEXP bUniqueSEXP, SEXP lambdaSEXP, SEXP coresSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -21,7 +21,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Nullable<NumericVector> >::type modelpriorvec_in(modelpriorvec_inSEXP);
     Rcpp::traits::input_parameter< const bool >::type bUnique(bUniqueSEXP);
     Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
-    rcpp_result_gen = Rcpp::wrap(cva(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in, bUnique, lambda));
+    Rcpp::traits::input_parameter< const int >::type cores(coresSEXP);
+    rcpp_result_gen = Rcpp::wrap(cva(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in, bUnique, lambda, cores));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -72,7 +73,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_blma_cva", (DL_FUNC) &_blma_cva, 8},
+    {"_blma_cva", (DL_FUNC) &_blma_cva, 9},
     {"_blma_blma", (DL_FUNC) &_blma_blma, 6},
     {"_blma_blma_fixed", (DL_FUNC) &_blma_blma_fixed, 7},
     {"_blma_graycode", (DL_FUNC) &_blma_graycode, 2},

@@ -14,6 +14,9 @@
 #include <gsl/gsl_sf_hyperg.h>
 #include <gsl/gsl_errno.h>
 
+#ifdef _OPENMP
+	#include <omp.h>
+#endif
 
 #include "graycode.h"
 #include "correlation.h"
