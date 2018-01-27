@@ -312,7 +312,7 @@ double robust_bayarri2(const int n, const int p, double R2, int p_gamma)
 
 
 double calculate_log_prob(const uint n, const uint p, const double R2, const uint p_gamma,
-													const dbitset gamma,
+													const dbitset& gamma,
 													const std::function<double (const int n, const int p, double vR2, int vp_gamma)> log_prob,
 													const std::string modelprior, const VectorXd modelpriorvec)
 {
@@ -340,7 +340,7 @@ double calculate_log_prob(const uint n, const uint p, const double R2, const uin
 void calculate_log_probabilities(const vector< dbitset >& gamma, const VectorXd& sigma2, const int n,
 																	VectorXd& log_probs,
 																	const std::function<double (const int n, const int p, double vR2, int vp_gamma)> log_prob,
-																	const std::string modelprior, const VectorXd modelpriorvec)
+																	const std::string& modelprior, const VectorXd& modelpriorvec)
 {
 	auto K = gamma.size();
 	auto p = gamma[0].size();
@@ -488,6 +488,7 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //' being included in the model.
 //' @param bUnique Whether to ensure uniqueness in the population of particles or not. Defaults to true.
 //' @param lambda The weighting factor for the entropy in f_lambda. Defaults to 1.
+//' @param cores The number of cores to use. Defaults to 1.
 //' @return A list containing the named element models, which is a K by p matrix of the models
 //'					selected by the algorithm, and the named element trajectory, which includes a list
 //'					of the populations of models for each iteration of the algorithm until it converged
@@ -546,7 +547,8 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 				 const std::string prior,
 				 const std::string modelprior, const Nullable<NumericVector> modelpriorvec_in = R_NilValue,
 				 const bool bUnique = true,
-				 const double lambda = 1.)
+				 const double lambda = 1.,
+				 const int cores = 1)
 {
 	VectorXd vy(vy_in.length());   // = Rcpp::as<Eigen::Map<Eigen::VectorXd>>(vy_in);
 	for (auto i = 0; i < vy_in.length(); i++) vy[i] = vy_in[i];
@@ -636,6 +638,15 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 	#ifdef DEBUG
 	Rcpp::Rcout << "initial_gamma" << std::endl;
 	#endif
+
+	#ifdef _OPENMP
+		omp_lock_t lock;
+		omp_init_lock(&lock);
+
+		omp_set_num_threads(cores);
+	#endif
+
+	#pragma omp parallel for
 	for (auto k = 0; k < K; k++) {
 		gamma[k].resize(p);
 		for (auto j = 0; j < p; j++) {
@@ -650,12 +661,21 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 		Rcpp::Rcout << "gamma[" << k << "] " << gamma[k] << std::endl;
 		#endif
 		if (bUnique) {
+			// Get lock
+			#ifdef _OPENMP
+				omp_set_lock(&lock);
+			#endif
 			hash.insert({boost::hash_value(gamma[k]), true});
+			// Release lock
+			#ifdef _OPENMP
+				omp_unset_lock(&lock);
+			#endif
 		}
 	}
 
 	// Initialise mXTX_inv
 	// Initialise sigma2
+	#pragma omp parallel for
 	for (auto k = 0; k < K; k++) {
 		auto p_gamma = gamma[k].count();
 		if (p_gamma == 0) {
@@ -685,7 +705,7 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 		Rcpp::Rcout << "Iteration " << iteration << std::endl;
 		#endif
 
-		// #pragma omp parallel for
+		#pragma omp parallel for
 		for (auto k = 0; k < K; k++) {
 			#ifdef DEBUG
 			Rcpp::Rcout << "gamma[" << k << "] " << gamma[k] << std::endl;
@@ -702,11 +722,27 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 				// If we've seen this bitstring before, don't do the update
 				if (bUnique) {
 					auto h = boost::hash_value(gamma_prime);
+					// Get lock
+					#ifdef _OPENMP
+						omp_set_lock(&lock);
+					#endif
 					auto search = hash.find(h);
+					// Release lock
+					#ifdef _OPENMP
+						omp_unset_lock(&lock);
+					#endif
 					if (search != hash.end()) {
 						continue;
 					}	else {
+						// Get lock
+						#ifdef _OPENMP
+							omp_set_lock(&lock);
+						#endif
 						hash.insert({h, true});
+						// Release lock
+						#ifdef _OPENMP
+							omp_unset_lock(&lock);
+						#endif
 					}
 				}
 				#ifdef DEBUG
@@ -869,6 +905,10 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 		trajectory.push_back(gamma);
 		trajectory_probs.push_back(log_probs.array().exp());
 	}
+	#ifdef _OPENMP
+		omp_destroy_lock(&lock);
+	#endif
+
 	#ifdef DEBUG
 	Rcpp::Rcout << "Converged" << std::endl;
 	#endif
