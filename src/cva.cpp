@@ -492,9 +492,22 @@ void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
 //' @param bUnique Whether to ensure uniqueness in the population of particles or not. Defaults to true.
 //' @param lambda The weighting factor for the entropy in f_lambda. Defaults to 1.
 //' @param cores The number of cores to use. Defaults to 1.
-//' @return A list containing the named element models, which is a K by p matrix of the models
-//'					selected by the algorithm, and the named element trajectory, which includes a list
-//'					of the populations of models for each iteration of the algorithm until it converged
+//' @return The object returned is a list containing:
+//' \itemize{
+//'		\item{"mGamma"}{-- A K by p binary matrix containing the final population of models}
+//'
+//'		\item{"vBF"}{-- The null-based Bayes factor for each model in the population}
+//'
+//'		\item{"posterior_model_probabilities"}{-- The estimated posterior model parameters for each model in
+//'		the population.}
+//'
+//'		\item{"posterior_inclusion_probabilities"}{-- The estimated variable inclusion probabilities for each
+//'		model in the population.}
+//'
+//'		\item{"vR2"}{-- The fitted R-squared values for each model in the population.}
+//'
+//'		\item{"vp"}{-- The model size for each model in the population.}
+//'	}
 //' @examples
 //' mD <- MASS::UScrime
 //' notlog <- c(2,ncol(MASS::UScrime))
@@ -905,8 +918,8 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 			#endif
 		}
 		iteration++;
-		trajectory.push_back(gamma);
-		trajectory_probs.push_back(log_probs.array().exp());
+		// trajectory.push_back(gamma);
+		// trajectory_probs.push_back(log_probs.array().exp());
 	}
 	#ifdef _OPENMP
 		omp_destroy_lock(&lock);
@@ -918,16 +931,16 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 	NumericMatrix bitstrings(K, p);
 	gamma_to_NumericMatrix(gamma, bitstrings);
 
-	List trajectory_bitstrings;
-	NumericMatrix trajectory_probabilities(K, trajectory.size());
-	for (auto i = 0; i < trajectory.size(); i++) {
-		NumericMatrix bitstrings2(K, p);
-		gamma_to_NumericMatrix(trajectory[i], bitstrings2);
-		trajectory_bitstrings.push_back(bitstrings2);
-		for (auto k = 0; k < K; k++) {
-			trajectory_probabilities(k, i) = trajectory_probs[i](k);
-		}
-	}
+	// List trajectory_bitstrings;
+	// NumericMatrix trajectory_probabilities(K, trajectory.size());
+	// for (auto i = 0; i < trajectory.size(); i++) {
+	// 	NumericMatrix bitstrings2(K, p);
+	// 	gamma_to_NumericMatrix(trajectory[i], bitstrings2);
+	// 	trajectory_bitstrings.push_back(bitstrings2);
+	// 	for (auto k = 0; k < K; k++) {
+	// 		trajectory_probabilities(k, i) = trajectory_probs[i](k);
+	// 	}
+	// }
 
 	// TODO: Add vBF, vR2, posterior inclusion probabilities, vp
 
@@ -940,8 +953,8 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 														 Named("posterior_model_probabilities") = log_probs,
 														 Named("posterior_inclusion_probabilities") = mGamma.transpose() * log_probs,
 														 Named("vR2") = 1. - sigma2.array(),
-														 Named("vp") = vp_gamma,
-														 Named("trajectory") = trajectory_bitstrings,
-														 Named("trajectory_probs") = trajectory_probabilities);
+														 Named("vp") = vp_gamma);
+														 // Named("trajectory") = trajectory_bitstrings,
+														 // Named("trajectory_probs") = trajectory_probabilities);
 	return result;
 }
