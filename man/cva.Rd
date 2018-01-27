@@ -5,7 +5,7 @@
 \title{Run a Collapsed Variational Approximation to find the K best linear models}
 \usage{
 cva(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in = NULL,
-  bUnique = TRUE, lambda = 1)
+  bUnique = TRUE, lambda = 1, cores = 1L)
 }
 \arguments{
 \item{vy_in}{Vector of responses}
@@ -65,11 +65,26 @@ being included in the model.}
 \item{bUnique}{Whether to ensure uniqueness in the population of particles or not. Defaults to true.}
 
 \item{lambda}{The weighting factor for the entropy in f_lambda. Defaults to 1.}
+
+\item{cores}{The number of cores to use. Defaults to 1.}
 }
 \value{
-A list containing the named element models, which is a K by p matrix of the models
-				selected by the algorithm, and the named element trajectory, which includes a list
-				of the populations of models for each iteration of the algorithm until it converged
+The object returned is a list containing:
+\itemize{
+	\item{"mGamma"}{-- A K by p binary matrix containing the final population of models}
+
+	\item{"vBF"}{-- The null-based Bayes factor for each model in the population}
+
+	\item{"posterior_model_probabilities"}{-- The estimated posterior model parameters for each model in
+	the population.}
+
+	\item{"posterior_inclusion_probabilities"}{-- The estimated variable inclusion probabilities for each
+	model in the population.}
+
+	\item{"vR2"}{-- The fitted R-squared values for each model in the population.}
+
+	\item{"vp"}{-- The model size for each model in the population.}
+}
 }
 \description{
 Run a Collapsed Variational Approximation to find the K best linear models

@@ -5,7 +5,7 @@
 
 #include "correlation.h"
 #include "graycode.h"
-#include "cva.h"
+#include "priors.h"
 
 #include <sys/time.h>
 #include <unistd.h>
