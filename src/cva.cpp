@@ -311,8 +311,8 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 	vector< dbitset > gamma(K);
 	VectorXd log_probs(K);
 	VectorXd w(K);
-	vector< vector< dbitset > > trajectory;
-	vector< VectorXd > trajectory_probs;
+	// vector< vector< dbitset > > trajectory;
+	// vector< VectorXd > trajectory_probs;
 	vector< MatrixXd > mXTX_inv(K);
 	VectorXd sigma2(K);
 	std::unordered_map< std::size_t, bool > hash;
@@ -429,8 +429,8 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 		#endif
 	}
 	calculate_log_probabilities(gamma, sigma2, n, log_probs, log_prob, modelprior, modelpriorvec);
-	trajectory.push_back(gamma);
-	trajectory_probs.push_back(log_probs.array().exp());
+	// trajectory.push_back(gamma);
+	// trajectory_probs.push_back(log_probs.array().exp());
 
 	// Loop until convergence
 	auto converged = false;
@@ -562,13 +562,9 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 				double log_p_0;
 				double log_p_1;
 				if (bUpdate) {
-					// log_p_0 = log_prob(n, p, 1. - sigma2[k], p_gamma);
-					// log_p_1 = log_prob(n, p, 1. - sigma2_prime, p_gamma_prime);
 					log_p_0 = calculate_log_prob(n, p, 1. - sigma2[k], p_gamma, gamma[k], log_prob, modelprior, modelpriorvec);
 					log_p_1 = calculate_log_prob(n, p, 1. - sigma2_prime, p_gamma_prime, gamma_prime, log_prob, modelprior, modelpriorvec);
 				} else {
-					// log_p_0 = log_prob(n, p, 1. - sigma2_prime, p_gamma_prime);
-					// log_p_1 = log_prob(n, p, 1. - sigma2[k], p_gamma);
 					log_p_0 = calculate_log_prob(n, p, 1. - sigma2_prime, p_gamma_prime, gamma_prime, log_prob, modelprior, modelpriorvec);
 					log_p_1 = calculate_log_prob(n, p, 1. - sigma2[k], p_gamma, gamma[k], log_prob, modelprior, modelpriorvec);
 				}
@@ -578,11 +574,23 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 				#endif
 				if ((log_p_0 > log_p_1 && !bUpdate) || (log_p_1 > log_p_0 && bUpdate)) {
 					if (bUnique) {
+						#ifdef _OPENMP
+							omp_set_lock(&lock);
+						#endif
 						hash.erase(boost::hash_value(gamma[k]));
+						#ifdef _OPENMP
+							omp_unset_lock(&lock);
+						#endif
 					}
 					gamma[k][j] = bUpdate;
 					if (bUnique) {
+						#ifdef _OPENMP
+							omp_set_lock(&lock);
+						#endif
 						hash.insert({boost::hash_value(gamma[k]), true});
+						#ifdef _OPENMP
+							omp_unset_lock(&lock);
+						#endif
 					}
 					#ifdef DEBUG
 					if (bUpdate)
@@ -667,10 +675,14 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 	for (auto k = 0; k < K; k++) {
 		vp_gamma(k) = gamma[k].count();
 	}
+
+	auto M = log_probs.array().maxCoeff(); // Maximum log-likelihood
+	// Rcpp::Rcout << "M " << M << std::endl;
+	VectorXd vmodel_prob = (log_probs.array() - M).array().exp() / (log_probs.array() - M).array().exp().sum();
 	List result = List::create(Named("mGamma") = bitstrings,
-														 Named("vBF") = log_probs, // Is this right?
-														 Named("posterior_model_probabilities") = log_probs,
-														 Named("posterior_inclusion_probabilities") = mGamma.transpose() * log_probs,
+														 Named("vBF") = log_probs,
+														 Named("posterior_model_probabilities") = vmodel_prob,
+														 Named("posterior_inclusion_probabilities") = mGamma.transpose() * vmodel_prob,
 														 Named("vR2") = 1. - sigma2.array(),
 														 Named("vp") = vp_gamma);
 														 // Named("trajectory") = trajectory_bitstrings,
