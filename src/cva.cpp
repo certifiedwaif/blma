@@ -392,7 +392,8 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 	// vector< VectorXd > trajectory_probs;
 	vector< MatrixXd > mXTX_inv(K);
 	VectorXd sigma2(K);
-	std::unordered_map< std::size_t, bool > hash;
+	// std::unordered_map< std::size_t, bool > hash;
+	vector<dbitset> vm(K);
 	// const gsl_rng_type *T;
 	// gsl_rng *r;
 	const auto RHO = 0.1;
@@ -470,8 +471,10 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 		Rcpp::Rcout << "gamma[" << k << "] " << gamma[k] << std::endl;
 		#endif
 		if (bUnique) {
+			// #pragma omp ordered
+			// hash.insert({boost::hash_value(gamma[k]), true});
 			#pragma omp ordered
-			hash.insert({boost::hash_value(gamma[k]), true});
+			vm[k] = gamma[k];
 		}
 	}
 
@@ -518,6 +521,10 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 					continue;
 				dbitset gamma_prime = gamma[k];
 				gamma_prime[j] = !gamma_prime[j];
+				// #pragma omp ordered {
+					auto found = find(vm.begin(), vm.end(), gamma_prime);
+					if (found != vm.end()) continue;
+				// }
 				auto p_gamma = gamma[k].count();
 				auto p_gamma_prime = gamma_prime.count();
 				if ((p_gamma_prime == 0) || (p_gamma_prime >= n - 1))
@@ -525,17 +532,17 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 				bool bUpdate = !gamma[k][j];
 
 				// If we've seen this bitstring before, don't do the update
-				if (bUnique) {
-					auto h = boost::hash_value(gamma_prime);
-					// #pragma omp ordered
-					auto search = hash.find(h);
-					if (search != hash.end()) {
-						continue;
-					}	else {
-						#pragma omp ordered
-						hash.insert({h, true});
-					}
-				}
+				// if (bUnique) {
+				// 	auto h = boost::hash_value(gamma_prime);
+				// 	// #pragma omp ordered
+				// 	auto search = hash.find(h);
+				// 	if (search != hash.end()) {
+				// 		continue;
+				// 	}	else {
+				// 		#pragma omp ordered
+				// 		hash.insert({h, true});
+				// 	}
+				// }
 				#ifdef DEBUG
 				Rcpp::Rcout << "Updating " << j << std::endl;
 				#endif
@@ -561,13 +568,15 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 				#endif
 				if (log_p_1 > log_p_0 && bUpdate) {
 					if (bUnique) {
-						#pragma omp ordered
-						hash.erase(boost::hash_value(gamma[k]));
+						// #pragma omp ordered
+						// hash.erase(boost::hash_value(gamma[k]));
 					}
 					gamma[k][j] = bUpdate;
 					if (bUnique) {
+						// #pragma omp ordered
+						// hash.insert({boost::hash_value(gamma[k]), true});
 						#pragma omp ordered
-						hash.insert({boost::hash_value(gamma[k]), true});
+						vm[k] = gamma[k];
 					}
 					#ifdef DEBUG
 					Rcpp::Rcout << "Keep update" << std::endl;
@@ -587,6 +596,10 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 					continue;
 				dbitset gamma_prime = gamma[k];
 				gamma_prime[j] = !gamma_prime[j];
+				// #pragma omp ordered {
+					auto found = find(vm.begin(), vm.end(), gamma_prime);
+					if (found != vm.end()) continue;
+				// }
 				auto p_gamma = gamma[k].count();
 				auto p_gamma_prime = gamma_prime.count();
 				if ((p_gamma_prime == 0) || (p_gamma_prime >= n - 1))
@@ -594,17 +607,17 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 				bool bUpdate = !gamma[k][j];
 
 				// If we've seen this bitstring before, don't do the update
-				if (bUnique) {
-					auto h = boost::hash_value(gamma_prime);
-					// #pragma omp ordered
-					auto search = hash.find(h);
-					if (search != hash.end()) {
-						continue;
-					}	else {
-						#pragma omp ordered
-						hash.insert({h, true});
-					}
-				}
+				// if (bUnique) {
+				// 	auto h = boost::hash_value(gamma_prime);
+				// 	// #pragma omp ordered
+				// 	auto search = hash.find(h);
+				// 	if (search != hash.end()) {
+				// 		continue;
+				// 	}	else {
+				// 		#pragma omp ordered
+				// 		hash.insert({h, true});
+				// 	}
+				// }
 				#ifdef DEBUG
 				Rcpp::Rcout << "Downdating " << j << std::endl;
 				#endif
@@ -630,13 +643,15 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 				#endif
 				if (log_p_0 > log_p_1 && !bUpdate) {
 					if (bUnique) {
-						#pragma omp ordered
-						hash.erase(boost::hash_value(gamma[k]));
+						// #pragma omp ordered
+						// hash.erase(boost::hash_value(gamma[k]));
 					}
 					gamma[k][j] = bUpdate;
 					if (bUnique) {
+						// #pragma omp ordered
+						// hash.insert({boost::hash_value(gamma[k]), true});
 						#pragma omp ordered
-						hash.insert({boost::hash_value(gamma[k]), true});
+						vm[k] = gamma[k];
 					}
 					#ifdef DEBUG
 					Rcpp::Rcout << "Keep downdate" << std::endl;
