@@ -146,13 +146,13 @@ double calculate_w_dot_prob(const VectorXd& w, const VectorXd& log_probs)
 }
 
 
-void gamma_to_NumericMatrix(const vector< dbitset >& gamma, NumericMatrix& nm)
+void gamma_to_MatrixXd(const vector< dbitset >& gamma, MatrixXd& m)
 {
 	auto K = gamma.size();
 	auto p = gamma[0].size();
 	for (auto k = 0; k < K; k++) {
 		for (auto j = 0; j < p; j++) {
-			nm(k, j) = gamma[k][j] ? 1. : 0.;
+			m(k, j) = gamma[k][j] ? 1. : 0.;
 		}
 	}
 }
@@ -707,8 +707,8 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 	#ifdef DEBUG
 	Rcpp::Rcout << "Converged" << std::endl;
 	#endif
-	NumericMatrix bitstrings(K, p);
-	gamma_to_NumericMatrix(gamma, bitstrings);
+	MatrixXd mGamma_prime(K, p);
+	gamma_to_MatrixXd(gamma, mGamma_prime);
 
 	// List trajectory_bitstrings;
 	// NumericMatrix trajectory_probabilities(K, trajectory.size());
@@ -731,10 +731,11 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 	auto M = log_probs.array().maxCoeff(); // Maximum log-likelihood
 	// Rcpp::Rcout << "M " << M << std::endl;
 	VectorXd vmodel_prob = (log_probs.array() - M).array().exp() / (log_probs.array() - M).array().exp().sum();
-	List result = List::create(Named("mGamma") = bitstrings,
+	VectorXd vinclusion_prob = mGamma_prime.transpose() * vmodel_prob;
+	List result = List::create(Named("mGamma") = mGamma_prime,
 														 Named("vBF") = log_probs,
 														 Named("posterior_model_probabilities") = vmodel_prob,
-														 Named("posterior_inclusion_probabilities") = mGamma.transpose() * vmodel_prob,
+														 Named("posterior_inclusion_probabilities") = vinclusion_prob,
 														 Named("vR2") = 1. - sigma2.array(),
 														 Named("vp") = vp_gamma);
 														 // Named("trajectory") = trajectory_bitstrings,
