@@ -292,6 +292,8 @@ double calculate_sigma2_prime(const uint n, const uint p_gamma_prime,
 //' \itemize{
 //'		\item{"mGamma"}{-- A K by p binary matrix containing the final population of models}
 //'
+//'		\item{"vgamma.hat"}{-- The most probable model found by cva}
+//'
 //'		\item{"vBF"}{-- The null-based Bayes factor for each model in the population}
 //'
 //'		\item{"posterior_model_probabilities"}{-- The estimated posterior model parameters for each model in
@@ -732,7 +734,13 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 	// Rcpp::Rcout << "M " << M << std::endl;
 	VectorXd vmodel_prob = (log_probs.array() - M).array().exp() / (log_probs.array() - M).array().exp().sum();
 	VectorXd vinclusion_prob = mGamma_prime.transpose() * vmodel_prob;
+
+	uint max_idx;
+	auto max_prob = vmodel_prob.maxCoeff(&max_idx);
+	VectorXd vgamma_hat = mGamma.row(max_idx);
+
 	List result = List::create(Named("mGamma") = mGamma_prime,
+														 Named("vgamma.hat") = vgamma_hat,
 														 Named("vBF") = log_probs,
 														 Named("posterior_model_probabilities") = vmodel_prob,
 														 Named("posterior_inclusion_probabilities") = vinclusion_prob,
