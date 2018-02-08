@@ -371,6 +371,12 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 	for (auto i = 0; i < mX_in.nrow(); i++)
 		for (auto j = 0; j < mX_in.ncol(); j++)
 			mX(i, j) = mX_in(i, j);
+	const auto n = mX.rows();
+	const auto p = mX.cols();
+	vy = sqrt(n) * (vy.array() - vy.mean()) / vy.norm();
+	for (auto j = 0; j < p; j++) {
+		mX.col(j) = sqrt(n) * (mX.col(j).array() - mX.col(j).mean()) / mX.col(j).norm();
+	}
 	NumericVector modelpriorvec_r(0);
 	if (!modelpriorvec_in.isNull()) {
 		modelpriorvec_r = modelpriorvec_in.get();
@@ -382,8 +388,6 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 	for (auto i = 0; i < mGamma_in.nrow(); i++)
 		for (auto j = 0; j < mGamma_in.ncol(); j++)
 			mGamma(i, j) = mGamma_in(i, j);
-	const auto n = mX.rows();
-	const auto p = mX.cols();
 	const MatrixXd mXTX = mX.transpose() * mX;
 	const MatrixXd mXTy = mX.transpose() * vy;
 	const uint K = mGamma.rows();
