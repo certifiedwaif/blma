@@ -68,6 +68,7 @@ void calculate_log_probabilities(const vector< dbitset >& gamma, const VectorXd&
 	auto p = gamma[0].size();
 	auto a = 1.;
 
+	#pragma omp parallel for
 	for (auto k = 0; k < K; k++) {
 		auto p_gamma = gamma[k].count();
 		auto b = p;
@@ -97,6 +98,7 @@ void calculate_log_probabilities(const vector< dbitset >& gamma, const VectorXd&
 void calculate_weights(const VectorXd& sigma2, const VectorXd& log_probs, VectorXd& w)
 {
 	const auto K = log_probs.size();
+	#pragma omp parallel for
 	for (auto k = 0; k < K; k++) {
 		// Need to use log-sum-exp trick here
 		// Have to skip 0 probabilities somehow.
@@ -116,6 +118,7 @@ double calculate_entropy(const VectorXd& w)
 {
 	const auto K = w.size();
 	auto H = 0.;
+	#pragma omp parallel for
 	for (auto k = 0; k < K; k++) {
 		// Don't add 0 weights
 		if (w[k] == 0.) {
@@ -132,6 +135,7 @@ double calculate_w_dot_prob(const VectorXd& w, const VectorXd& log_probs)
 {
 	const auto K = w.size();
 	auto w_dot_prob = 0.;
+	#pragma omp parallel for
 	for (auto k = 0; k < K; k++) {
 		if (w[k] == 0.) {
 			continue;
@@ -150,6 +154,7 @@ void gamma_to_MatrixXd(const vector< dbitset >& gamma, MatrixXd& m)
 {
 	auto K = gamma.size();
 	auto p = gamma[0].size();
+	#pragma omp parallel for
 	for (auto k = 0; k < K; k++) {
 		for (auto j = 0; j < p; j++) {
 			m(k, j) = gamma[k][j] ? 1. : 0.;
@@ -364,6 +369,12 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 				 const double lambda = 1.,
 				 const int cores = 1)
 {
+	#ifdef _OPENMP
+		Eigen::initParallel();
+		omp_set_num_threads(cores);
+		Eigen::setNbThreads(cores);
+	#endif
+
 	VectorXd vy(vy_in.length());   // = Rcpp::as<Eigen::Map<Eigen::VectorXd>>(vy_in);
 	for (auto i = 0; i < vy_in.length(); i++) vy[i] = vy_in[i];
 																 // = Rcpp::as<Eigen::Map<Eigen::MatrixXd>>(mX_in);
@@ -458,11 +469,7 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 	Rcpp::Rcout << "initial_gamma" << std::endl;
 	#endif
 
-	#ifdef _OPENMP
-		omp_set_num_threads(cores);
-	#endif
-
-	#pragma omp parallel for ordered
+	// #pragma omp for
 	for (auto k = 0; k < K; k++) {
 		gamma[k].resize(p);
 		for (auto j = 0; j < p; j++) {
@@ -479,7 +486,7 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 		if (bUnique) {
 			// #pragma omp ordered
 			// hash.insert({boost::hash_value(gamma[k]), true});
-			#pragma omp ordered
+			#pragma omp barrier
 			vm[k] = gamma[k];
 		}
 	}
@@ -516,158 +523,174 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 		Rcpp::Rcout << "Iteration " << iteration << std::endl;
 		#endif
 
-		#pragma omp parallel for ordered
-		for (auto k = 0; k < K; k++) {
-			#ifdef DEBUG
-			Rcpp::Rcout << "gamma[" << k << "] " << gamma[k] << std::endl;
-			#endif
-			// Try to update the 0s
-			for (auto j = 0; j < p; j++) {
-				if (gamma[k][j])
-					continue;
-				dbitset gamma_prime = gamma[k];
-				gamma_prime[j] = !gamma_prime[j];
-				// #pragma omp ordered {
-					auto found = find(vm.begin(), vm.end(), gamma_prime);
+		// #pragma omp parallel for ordered
+		#pragma omp parallel
+		{
+			#pragma omp for // ordered
+			for (auto k = 0; k < K; k++) {
+				#ifdef DEBUG
+				Rcpp::Rcout << "gamma[" << k << "] " << gamma[k] << std::endl;
+				#endif
+				// Try to update the 0s
+				for (auto j = 0; j < p; j++) {
+					if (gamma[k][j])
+						continue;
+					dbitset gamma_prime = gamma[k];
+					gamma_prime[j] = !gamma_prime[j];
+					// #pragma omp ordered {
+					vector<dbitset>::iterator found;
+					#pragma omp critical (vm)
+					{
+						found = find(vm.begin(), vm.end(), gamma_prime);
+
+					}
 					if (found != vm.end()) continue;
-				// }
-				auto p_gamma = gamma[k].count();
-				auto p_gamma_prime = gamma_prime.count();
-				if ((p_gamma_prime == 0) || (p_gamma_prime >= n - 1))
-					continue;
-				bool bUpdate = !gamma[k][j];
+					// }
+					auto p_gamma = gamma[k].count();
+					auto p_gamma_prime = gamma_prime.count();
+					if ((p_gamma_prime == 0) || (p_gamma_prime >= n - 1))
+						continue;
+					bool bUpdate = !gamma[k][j];
 
-				// If we've seen this bitstring before, don't do the update
-				// if (bUnique) {
-				// 	auto h = boost::hash_value(gamma_prime);
-				// 	// #pragma omp ordered
-				// 	auto search = hash.find(h);
-				// 	if (search != hash.end()) {
-				// 		continue;
-				// 	}	else {
-				// 		#pragma omp ordered
-				// 		hash.insert({h, true});
-				// 	}
-				// }
-				#ifdef DEBUG
-				Rcpp::Rcout << "Updating " << j << std::endl;
-				#endif
-
-				// Update or downdate mXTX_inv
-				MatrixXd mXTX_inv_prime(p_gamma_prime, p_gamma_prime);
-				calculate_mXTX_inv_prime(gamma[k], gamma_prime, j, mXTX, mXTX_inv[k], mXTX_inv_prime, bUpdate);
-
-				// Calculate sigma2_prime
-				double sigma2_prime = calculate_sigma2_prime(n, p_gamma_prime, mX, gamma_prime, vy, mXTX_inv_prime);
-
-				#ifdef DEBUG
-				Rcpp::Rcout << "sigma2[k] " << sigma2[k] << std::endl;
-				Rcpp::Rcout << "sigma2_prime " << sigma2_prime << std::endl;
-				#endif
-				double log_p_0;
-				double log_p_1;
-				log_p_0 = calculate_log_prob(n, p, 1. - sigma2[k], p_gamma, gamma[k], log_prob, modelprior, modelpriorvec);
-				log_p_1 = calculate_log_prob(n, p, 1. - sigma2_prime, p_gamma_prime, gamma_prime, log_prob, modelprior, modelpriorvec);
-				#ifdef DEBUG
-				Rcpp::Rcout << "log_p_0 " << log_p_0;
-				Rcpp::Rcout << " log_p_1 " << log_p_1 << std::endl;
-				#endif
-				if (log_p_1 > log_p_0 && bUpdate) {
-					if (bUnique) {
-						// #pragma omp ordered
-						// hash.erase(boost::hash_value(gamma[k]));
-					}
-					gamma[k][j] = bUpdate;
-					if (bUnique) {
-						// #pragma omp ordered
-						// hash.insert({boost::hash_value(gamma[k]), true});
-						#pragma omp ordered
-						vm[k] = gamma[k];
-					}
+					// If we've seen this bitstring before, don't do the update
+					// if (bUnique) {
+					// 	auto h = boost::hash_value(gamma_prime);
+					// 	// #pragma omp ordered
+					// 	auto search = hash.find(h);
+					// 	if (search != hash.end()) {
+					// 		continue;
+					// 	}	else {
+					// 		#pragma omp ordered
+					// 		hash.insert({h, true});
+					// 	}
+					// }
 					#ifdef DEBUG
-					Rcpp::Rcout << "Keep update" << std::endl;
+					Rcpp::Rcout << "Updating " << j << std::endl;
 					#endif
-					sigma2[k] = sigma2_prime;
-					mXTX_inv[k] = mXTX_inv_prime;
-				} else {
+
+					// Update or downdate mXTX_inv
+					MatrixXd mXTX_inv_prime(p_gamma_prime, p_gamma_prime);
+					calculate_mXTX_inv_prime(gamma[k], gamma_prime, j, mXTX, mXTX_inv[k], mXTX_inv_prime, bUpdate);
+
+					// Calculate sigma2_prime
+					double sigma2_prime = calculate_sigma2_prime(n, p_gamma_prime, mX, gamma_prime, vy, mXTX_inv_prime);
+
 					#ifdef DEBUG
-					Rcpp::Rcout << "Don't keep update" << std::endl;
+					Rcpp::Rcout << "sigma2[k] " << sigma2[k] << std::endl;
+					Rcpp::Rcout << "sigma2_prime " << sigma2_prime << std::endl;
 					#endif
+					double log_p_0;
+					double log_p_1;
+					log_p_0 = calculate_log_prob(n, p, 1. - sigma2[k], p_gamma, gamma[k], log_prob, modelprior, modelpriorvec);
+					log_p_1 = calculate_log_prob(n, p, 1. - sigma2_prime, p_gamma_prime, gamma_prime, log_prob, modelprior, modelpriorvec);
+					#ifdef DEBUG
+					Rcpp::Rcout << "log_p_0 " << log_p_0;
+					Rcpp::Rcout << " log_p_1 " << log_p_1 << std::endl;
+					#endif
+					if (log_p_1 > log_p_0 && bUpdate) {
+						if (bUnique) {
+							// #pragma omp ordered
+							// hash.erase(boost::hash_value(gamma[k]));
+						}
+						gamma[k][j] = bUpdate;
+						if (bUnique) {
+							// #pragma omp ordered
+							// hash.insert({boost::hash_value(gamma[k]), true});
+							#pragma omp critical (vm)
+							{
+								vm[k] = gamma[k];
+							}
+						}
+						#ifdef DEBUG
+						Rcpp::Rcout << "Keep update" << std::endl;
+						#endif
+						sigma2[k] = sigma2_prime;
+						mXTX_inv[k] = mXTX_inv_prime;
+					} else {
+						#ifdef DEBUG
+						Rcpp::Rcout << "Don't keep update" << std::endl;
+						#endif
+					}
 				}
-			}
 
-			// Try to downdate the 1s
-			for (auto j = 0; j < p; j++) {
-				if (!gamma[k][j])
-					continue;
-				dbitset gamma_prime = gamma[k];
-				gamma_prime[j] = !gamma_prime[j];
-				// #pragma omp ordered {
-					auto found = find(vm.begin(), vm.end(), gamma_prime);
+				// Try to downdate the 1s
+				for (auto j = 0; j < p; j++) {
+					if (!gamma[k][j])
+						continue;
+					dbitset gamma_prime = gamma[k];
+					gamma_prime[j] = !gamma_prime[j];
+					// #pragma omp ordered {
+					vector<dbitset>:: iterator found;
+					#pragma omp critical(vm)
+					{
+						found = find(vm.begin(), vm.end(), gamma_prime);
+					}
 					if (found != vm.end()) continue;
-				// }
-				auto p_gamma = gamma[k].count();
-				auto p_gamma_prime = gamma_prime.count();
-				if ((p_gamma_prime == 0) || (p_gamma_prime >= n - 1))
-					continue;
-				bool bUpdate = !gamma[k][j];
+					auto p_gamma = gamma[k].count();
+					auto p_gamma_prime = gamma_prime.count();
+					if ((p_gamma_prime == 0) || (p_gamma_prime >= n - 1))
+						continue;
+					bool bUpdate = !gamma[k][j];
 
-				// If we've seen this bitstring before, don't do the update
-				// if (bUnique) {
-				// 	auto h = boost::hash_value(gamma_prime);
-				// 	// #pragma omp ordered
-				// 	auto search = hash.find(h);
-				// 	if (search != hash.end()) {
-				// 		continue;
-				// 	}	else {
-				// 		#pragma omp ordered
-				// 		hash.insert({h, true});
-				// 	}
-				// }
-				#ifdef DEBUG
-				Rcpp::Rcout << "Downdating " << j << std::endl;
-				#endif
-
-				// Downdate mXTX_inv
-				MatrixXd mXTX_inv_prime(p_gamma_prime, p_gamma_prime);
-				calculate_mXTX_inv_prime(gamma[k], gamma_prime, j, mXTX, mXTX_inv[k], mXTX_inv_prime, bUpdate);
-
-				// Calculate sigma2_prime
-				double sigma2_prime = calculate_sigma2_prime(n, p_gamma_prime, mX, gamma_prime, vy, mXTX_inv_prime);
-
-				#ifdef DEBUG
-				Rcpp::Rcout << "sigma2[k] " << sigma2[k] << std::endl;
-				Rcpp::Rcout << "sigma2_prime " << sigma2_prime << std::endl;
-				#endif
-				double log_p_0;
-				double log_p_1;
-				log_p_0 = calculate_log_prob(n, p, 1. - sigma2_prime, p_gamma_prime, gamma_prime, log_prob, modelprior, modelpriorvec);
-				log_p_1 = calculate_log_prob(n, p, 1. - sigma2[k], p_gamma, gamma[k], log_prob, modelprior, modelpriorvec);
-				#ifdef DEBUG
-				Rcpp::Rcout << "log_p_0 " << log_p_0;
-				Rcpp::Rcout << " log_p_1 " << log_p_1 << std::endl;
-				#endif
-				if (log_p_0 > log_p_1 && !bUpdate) {
-					if (bUnique) {
-						// #pragma omp ordered
-						// hash.erase(boost::hash_value(gamma[k]));
-					}
-					gamma[k][j] = bUpdate;
-					if (bUnique) {
-						// #pragma omp ordered
-						// hash.insert({boost::hash_value(gamma[k]), true});
-						#pragma omp ordered
-						vm[k] = gamma[k];
-					}
+					// If we've seen this bitstring before, don't do the update
+					// if (bUnique) {
+					// 	auto h = boost::hash_value(gamma_prime);
+					// 	// #pragma omp ordered
+					// 	auto search = hash.find(h);
+					// 	if (search != hash.end()) {
+					// 		continue;
+					// 	}	else {
+					// 		#pragma omp ordered
+					// 		hash.insert({h, true});
+					// 	}
+					// }
 					#ifdef DEBUG
-					Rcpp::Rcout << "Keep downdate" << std::endl;
+					Rcpp::Rcout << "Downdating " << j << std::endl;
 					#endif
-					sigma2[k] = sigma2_prime;
-					mXTX_inv[k] = mXTX_inv_prime;
-				} else {
+
+					// Downdate mXTX_inv
+					MatrixXd mXTX_inv_prime(p_gamma_prime, p_gamma_prime);
+					calculate_mXTX_inv_prime(gamma[k], gamma_prime, j, mXTX, mXTX_inv[k], mXTX_inv_prime, bUpdate);
+
+					// Calculate sigma2_prime
+					double sigma2_prime = calculate_sigma2_prime(n, p_gamma_prime, mX, gamma_prime, vy, mXTX_inv_prime);
+
 					#ifdef DEBUG
-					Rcpp::Rcout << "Don't keep downdate" << std::endl;
+					Rcpp::Rcout << "sigma2[k] " << sigma2[k] << std::endl;
+					Rcpp::Rcout << "sigma2_prime " << sigma2_prime << std::endl;
 					#endif
+					double log_p_0;
+					double log_p_1;
+					log_p_0 = calculate_log_prob(n, p, 1. - sigma2_prime, p_gamma_prime, gamma_prime, log_prob, modelprior, modelpriorvec);
+					log_p_1 = calculate_log_prob(n, p, 1. - sigma2[k], p_gamma, gamma[k], log_prob, modelprior, modelpriorvec);
+					#ifdef DEBUG
+					Rcpp::Rcout << "log_p_0 " << log_p_0;
+					Rcpp::Rcout << " log_p_1 " << log_p_1 << std::endl;
+					#endif
+					if (log_p_0 > log_p_1 && !bUpdate) {
+						if (bUnique) {
+							// #pragma omp ordered
+							// hash.erase(boost::hash_value(gamma[k]));
+						}
+						gamma[k][j] = bUpdate;
+						if (bUnique) {
+							// #pragma omp ordered
+							// hash.insert({boost::hash_value(gamma[k]), true});
+							#pragma omp critical(vm)
+							{
+								vm[k] = gamma[k];
+							}
+						}
+						#ifdef DEBUG
+						Rcpp::Rcout << "Keep downdate" << std::endl;
+						#endif
+						sigma2[k] = sigma2_prime;
+						mXTX_inv[k] = mXTX_inv_prime;
+					} else {
+						#ifdef DEBUG
+						Rcpp::Rcout << "Don't keep downdate" << std::endl;
+						#endif
+					}
 				}
 			}
 		}
