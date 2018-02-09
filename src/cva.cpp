@@ -469,7 +469,6 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 	Rcpp::Rcout << "initial_gamma" << std::endl;
 	#endif
 
-	// #pragma omp for
 	for (auto k = 0; k < K; k++) {
 		gamma[k].resize(p);
 		for (auto j = 0; j < p; j++) {
@@ -484,9 +483,6 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 		Rcpp::Rcout << "gamma[" << k << "] " << gamma[k] << std::endl;
 		#endif
 		if (bUnique) {
-			// #pragma omp ordered
-			// hash.insert({boost::hash_value(gamma[k]), true});
-			#pragma omp barrier
 			vm[k] = gamma[k];
 		}
 	}
@@ -523,7 +519,9 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 		Rcpp::Rcout << "Iteration " << iteration << std::endl;
 		#endif
 
-		#pragma omp parallel for
+		#pragma omp parallel for\
+			shared(vy, mX, modelpriorvec, mGamma, gamma, log_prob, log_probs, w, mXTX_inv, sigma2, vm)\
+			default(none)
 		for (auto k = 0; k < K; k++) {
 			#ifdef DEBUG
 			Rcpp::Rcout << "gamma[" << k << "] " << gamma[k] << std::endl;
