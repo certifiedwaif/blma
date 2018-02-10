@@ -345,10 +345,12 @@ bool check_model_prior_parameters(const std::string modelprior, const VectorXd& 
 }
 
 
+template <typename Derived1, typename Derived2, typename Derived3, typename Derived4>
 void calculate_probabilities(const std::string prior, const std::string modelprior, const VectorXd& modelpriorvec,
-														 const int n, const int p, const VectorXd& vR2_all,
-														 const VectorXi& vpgamma_all, const Graycode& graycode,
-														 VectorXd& vlogp_all, VectorXd& vinclusion_prob)
+														 const int n, const int p, const Eigen::MatrixBase<Derived1>& vR2_all,
+														 const Eigen::MatrixBase<Derived2>& vpgamma_all, const Graycode& graycode,
+														 Eigen::MatrixBase<Derived3>& vlogp_all,
+														 Eigen::MatrixBase<Derived4>& vinclusion_prob)
 {
 	std::function<double (const int n, const int p, double vR2, int vp_gamma)> log_prob;
 	if (prior == "maruyama") {
@@ -417,8 +419,14 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
 	std::string modelprior, VectorXd modelpriorvec,
 	const uint fixed, const uint intercept_col, const uint max_iterations, const bool bNatural_Order = false,
 	const bool bIntercept = false,
-	const bool bCentre = true)
+	const bool bCentre = true, uint cores = 1L)
 {
+	#ifdef _OPENMP
+		Eigen::initParallel();
+		omp_set_num_threads(cores);
+		Eigen::setNbThreads(cores);
+	#endif
+
 	const uint n = mX.rows();									 // The number of observations
 	const uint p = mX.cols();									 // The number of covariates
 	VectorXd vR2_all(max_iterations);					 // Vector of correlations for all models
@@ -622,7 +630,8 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
 List blma_cpp(VectorXd vy, MatrixXd mX, std::string prior, std::string modelprior,
 							VectorXd modelpriorvec,
 							const uint intercept_col,
-							const bool bNatural_Order, const bool bIntercept, const bool bCentre)
+							const bool bNatural_Order, const bool bIntercept, const bool bCentre,
+							const uint cores)
 {
 	const uint p = mX.cols();
 	const uint fixed = 0;
@@ -631,7 +640,7 @@ List blma_cpp(VectorXd vy, MatrixXd mX, std::string prior, std::string modelprio
 	Graycode graycode(p);
 	return all_correlations_main(graycode, vy, mX, prior, modelprior, modelpriorvec,
 																fixed, intercept_col, max_iterations, bNatural_Order,
-																bIntercept, bCentre);
+																bIntercept, bCentre, cores);
 }
 
 
@@ -640,7 +649,7 @@ List blma_cpp(VectorXd vy, MatrixXd mX, std::string prior, std::string modelprio
 List blma_fixed_cpp(VectorXd vy, MatrixXd mX, MatrixXd mZ, std::string prior,
 										std::string modelprior, VectorXd modelpriorvec,
 										const uint intercept_col, const bool bNatural_Order, const bool bIntercept,
-										const bool bCentre)
+										const bool bCentre, const uint cores)
 {
 	const uint n = mX.rows();
 	const uint p1 = mX.cols();
@@ -654,7 +663,7 @@ List blma_fixed_cpp(VectorXd vy, MatrixXd mX, MatrixXd mZ, std::string prior,
 	Graycode graycode(p1, p2);
 	return all_correlations_main(graycode, vy, mC, prior, modelprior, modelpriorvec,
 																p1, intercept_col, max_iterations, bNatural_Order,
-																bIntercept, bCentre);
+																bIntercept, bCentre), cores;
 }
 
 

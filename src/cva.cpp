@@ -379,7 +379,7 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 				 const std::string modelprior, const Nullable<NumericVector> modelpriorvec_in = R_NilValue,
 				 const bool bUnique = true,
 				 const double lambda = 1.,
-				 const int cores = 1)
+				 const int cores = 1L)
 {
 	#ifdef _OPENMP
 		Eigen::initParallel();
@@ -532,7 +532,7 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 		#endif
 
 		#pragma omp parallel for\
-			shared(vy, mX, modelprior, modelpriorvec, mGamma, gamma, log_prob, log_probs, w, mXTX_inv, sigma2, vm)\
+			shared(vy, mX, modelpriorvec, mGamma, gamma, log_prob, log_probs, w, mXTX_inv, sigma2, vm)\
 			default(none)
 		for (auto k = 0; k < K; k++) {
 			#ifdef DEBUG

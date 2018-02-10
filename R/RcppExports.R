@@ -58,6 +58,8 @@
 #' \itemize{
 #'		\item{"mGamma"}{-- A K by p binary matrix containing the final population of models}
 #'
+#'		\item{"vgamma.hat"}{-- The most probable model found by cva}
+#'
 #'		\item{"vBF"}{-- The null-based Bayes factor for each model in the population}
 #'
 #'		\item{"posterior_model_probabilities"}{-- The estimated posterior model parameters for each model in

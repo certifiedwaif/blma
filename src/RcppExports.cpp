@@ -27,7 +27,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // blma
-List blma(NumericVector vy, NumericMatrix mX, std::string prior, std::string modelprior, Nullable<NumericVector> modelpriorvec, int cores);
+List blma(NumericVector vy, NumericMatrix mX, std::string prior, std::string modelprior, Nullable<NumericVector> modelpriorvec, const uint cores);
 RcppExport SEXP _blma_blma(SEXP vySEXP, SEXP mXSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvecSEXP, SEXP coresSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -37,13 +37,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< std::string >::type prior(priorSEXP);
     Rcpp::traits::input_parameter< std::string >::type modelprior(modelpriorSEXP);
     Rcpp::traits::input_parameter< Nullable<NumericVector> >::type modelpriorvec(modelpriorvecSEXP);
-    Rcpp::traits::input_parameter< int >::type cores(coresSEXP);
+    Rcpp::traits::input_parameter< const uint >::type cores(coresSEXP);
     rcpp_result_gen = Rcpp::wrap(blma(vy, mX, prior, modelprior, modelpriorvec, cores));
     return rcpp_result_gen;
 END_RCPP
 }
 // blma_fixed
-List blma_fixed(NumericVector vy, NumericMatrix mX, NumericMatrix mZ, std::string prior, std::string modelprior, Nullable<NumericVector> modelpriorvec, int cores);
+List blma_fixed(NumericVector vy, NumericMatrix mX, NumericMatrix mZ, std::string prior, std::string modelprior, Nullable<NumericVector> modelpriorvec, const uint cores);
 RcppExport SEXP _blma_blma_fixed(SEXP vySEXP, SEXP mXSEXP, SEXP mZSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvecSEXP, SEXP coresSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -54,7 +54,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< std::string >::type prior(priorSEXP);
     Rcpp::traits::input_parameter< std::string >::type modelprior(modelpriorSEXP);
     Rcpp::traits::input_parameter< Nullable<NumericVector> >::type modelpriorvec(modelpriorvecSEXP);
-    Rcpp::traits::input_parameter< int >::type cores(coresSEXP);
+    Rcpp::traits::input_parameter< const uint >::type cores(coresSEXP);
     rcpp_result_gen = Rcpp::wrap(blma_fixed(vy, mX, mZ, prior, modelprior, modelpriorvec, cores));
     return rcpp_result_gen;
 END_RCPP

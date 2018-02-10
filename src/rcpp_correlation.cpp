@@ -120,7 +120,7 @@ using namespace std;
 // [[Rcpp::export]]
 List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 					std::string modelprior = "uniform", Nullable<NumericVector> modelpriorvec = R_NilValue,
-					int cores = 1) {
+					const uint cores = 1) {
 	Map<VectorXd> vy_m = as< Map<VectorXd> >(vy);
 	Map<MatrixXd> mX_m = as< Map<MatrixXd> >(mX);
 	NumericVector modelpriorvec_r(0);
@@ -132,11 +132,8 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 		modelpriorvec_r = modelpriorvec.get();
 	}
 	Map<VectorXd> modelpriorvec_m = as< Map<VectorXd> >(modelpriorvec_r);
-	#if defined(_OPENMP)
-		omp_set_num_threads(cores);
-	#endif;
 	List result = blma_cpp(vy_m, mX_m, prior, modelprior, modelpriorvec_m, intercept_col - 1, bNatural_Order,
-													bIntercept, bCentre);
+													bIntercept, bCentre, cores);
 	return result;
 }
 
@@ -249,7 +246,7 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 // [[Rcpp::export]]
 List blma_fixed(NumericVector vy, NumericMatrix mX, NumericMatrix mZ, std::string prior,
 								std::string modelprior = "uniform", Nullable<NumericVector> modelpriorvec = R_NilValue,
-								int cores = 1) {
+								const uint cores = 1) {
 	Map<VectorXd> vy_m = as< Map<VectorXd> >(vy);
 	Map<MatrixXd> mX_m = as< Map<MatrixXd> >(mX);
 	Map<MatrixXd> mZ_m = as< Map<MatrixXd> >(mZ);
@@ -262,11 +259,8 @@ List blma_fixed(NumericVector vy, NumericMatrix mX, NumericMatrix mZ, std::strin
 		modelpriorvec_r = modelpriorvec.get();
 	}
 	Map<VectorXd> modelpriorvec_m = as< Map<VectorXd> >(modelpriorvec_r);
-	#if defined(_OPENMP)
-		omp_set_num_threads(cores);
-	#endif;
 	List result = blma_fixed_cpp(vy_m, mX_m, mZ_m, prior, modelprior, modelpriorvec_m, intercept_col - 1,
-																bNatural_Order, bIntercept, bCentre);
+																bNatural_Order, bIntercept, bCentre, cores);
 	return result;
 }
 
