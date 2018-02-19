@@ -532,7 +532,7 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 		#endif
 
 		#pragma omp parallel for\
-			shared(vy, mX, modelprior, modelpriorvec, mGamma, gamma, log_prob, log_probs, w, mXTX_inv, sigma2, vm)\
+			shared(vy, mX, modelpriorvec, mGamma, gamma, log_prob, log_probs, w, mXTX_inv, sigma2, vm)\
 			default(none)
 		for (auto k = 0; k < K; k++) {
 			#ifdef DEBUG
@@ -745,7 +745,7 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 
 	uint max_idx;
 	auto max_prob = vmodel_prob.maxCoeff(&max_idx);
-	VectorXd vgamma_hat = mGamma.row(max_idx);
+	VectorXd vgamma_hat = mGamma_prime.row(max_idx);
 
 	List result = List::create(Named("mGamma") = mGamma_prime,
 														 Named("vgamma.hat") = vgamma_hat,
