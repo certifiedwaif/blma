@@ -5,6 +5,8 @@ sudo: false
 cache: packages
 
 install:
-    - sudo apt-get install libgsl0-dev r-cran-rcppgsl r-cran-rcppeigen
+    - sudo apt-get install libgsl0-dev
     - Rscript -e 'install.packages("BH", dependencies = TRUE)'
-    - Rscript -e 'install.packages("MASS", dependencies = TRUE)'    
+    - Rscript -e 'install.packages("MASS", dependencies = TRUE)'
+    - Rscript -e 'install.packages("RcppEigen", dependencies = TRUE)'
+    - Rscript -e 'install.packages("RcppGSL", dependencies = TRUE)'
