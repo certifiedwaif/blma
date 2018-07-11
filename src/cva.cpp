@@ -17,7 +17,7 @@
 #include "graycode.h"
 #include "correlation.h"
 #include "priors.h"
-
+#include "cva.h"
 // #define DEBUG
 
 using namespace std;
@@ -35,7 +35,6 @@ namespace boost
 
 void set_log_prob(const string prior, log_prob_fn& log_prob)
 {
-  std::function<double (const int n, const int p, double vR2, int vp_gamma)> log_prob;
   if (prior == "maruyama") {
     log_prob = maruyama;
   } else if (prior == "BIC") {
@@ -407,10 +406,10 @@ double calculate_sigma2_prime(const uint n, const uint p_gamma_prime,
 List cva(const NumericVector vy_in, const NumericMatrix mX_in,
          const NumericMatrix mGamma_in,
          const std::string prior,
-         const std::string modelprior, const Nullable<NumericVector> modelpriorvec_in = R_NilValue,
-         const bool bUnique = true,
-         const double lambda = 1.,
-         const int cores = 1L)
+         const std::string modelprior, const Nullable<NumericVector> modelpriorvec_in,
+         const bool bUnique,
+         const double lambda,
+         const int cores)
 {
   #ifdef _OPENMP
     Eigen::initParallel();

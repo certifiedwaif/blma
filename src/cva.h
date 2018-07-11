@@ -20,7 +20,7 @@
 using namespace std;
 using namespace Rcpp;
 
-typedef log_prob_fn std::function<double (const int N, const int p, double vR2, int vp_gamma)>;
+typedef std::function<double (const int N, const int p, double vR2, int vp_gamma)>  log_prob_fn;
 
 void set_log_prob(const string prior, std::function<double (const int n, const int p, double vR2, int vp_gamma)>& log_prob);
 double calculate_log_prob(const uint n, const uint p, const double R2, const uint p_gamma,
