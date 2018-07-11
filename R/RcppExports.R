@@ -121,7 +121,7 @@
 #' Ormerod, J. T., Stewart, M., Yu, W., Romanes, S. E., 2017. Bayesian hypothesis tests
 #' with diffuse priors: Can we have our cake and eat it too?
 #' @export
-cva <- function(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in, bUnique, lambda, cores) {
+cva <- function(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in = NULL, bUnique = TRUE, lambda = 1., cores = 1L) {
     .Call('_blma_cva', PACKAGE = 'blma', vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in, bUnique, lambda, cores)
 }
 

@@ -406,10 +406,10 @@ double calculate_sigma2_prime(const uint n, const uint p_gamma_prime,
 List cva(const NumericVector vy_in, const NumericMatrix mX_in,
          const NumericMatrix mGamma_in,
          const std::string prior,
-         const std::string modelprior, const Nullable<NumericVector> modelpriorvec_in,
-         const bool bUnique,
-         const double lambda,
-         const int cores)
+         const std::string modelprior,  const Nullable<NumericVector> modelpriorvec_in = R_NilValue,
+         const bool bUnique = true,
+         const double lambda = 1.,
+         const int cores = 1L)
 {
   #ifdef _OPENMP
     Eigen::initParallel();
