@@ -25,6 +25,15 @@ using namespace std;
 using namespace Rcpp;
 
 
+template <typename Derived1>
+void gamma_to_row(const dbitset& gamma, Eigen::MatrixBase<Derived1>& row)
+{
+  auto p = gamma.size();
+  for (auto i = 0; i < p; i++) {
+    row(0, i) = gamma[i] ? 1. : 0.;
+  }
+}
+
 //' mcmcmc
 //'
 //' @param n     Number of MCMCMC samples
@@ -176,7 +185,7 @@ List mcmcmc(const int iterations,
   MatrixXd mGamma(iterations, mX_in.ncol());
   const MatrixXd mXTX = mX.transpose() * mX;
   const MatrixXd mXTy = mX.transpose() * vy;
-  vector< dbitset > gamma(iterations);
+  dbitset gamma(p); // The current model
   VectorXd log_probs(iterations);
   MatrixXd mXTX_inv;
   double sigma2;
@@ -184,18 +193,16 @@ List mcmcmc(const int iterations,
   log_prob_fn log_prob;
   set_log_prob(prior, log_prob);
 
-  if (mGamma.rows() != iterations || mGamma.cols() != p) {
-    stringstream ss;
-    ss << "initial_gamma is " << to_string(mGamma.rows()) << " by " << to_string(mGamma.cols()) << ", expected " << K << " by " << p;
-    stop(ss.str());
+  // Initialise gamma
+  for (auto i = 0; i < p; i++) {
+    if (R::runif(0., 1.) < 0.5) {
+      gamma[i] = false;
+    } else {
+      gamma[i] = true;
+    }
   }
 
-  #ifdef DEBUG
-  Rcpp::Rcout << "initial_gamma" << std::endl;
-  #endif
-
-  // Initialise mXTX_inv
-  // Initialise sigma2
+  // Initialise mXTX_inv and sigma2
   auto p_gamma = gamma.count();
   if (p_gamma == 0) {
     stringstream ss;
@@ -213,23 +220,23 @@ List mcmcmc(const int iterations,
   #endif
   calculate_log_probabilities(gamma, sigma2, n, log_probs, log_prob, modelprior, modelpriorvec);
 
-  // Loop until convergence
+  // Generate sample gammas
   auto iteration = 1;
   #ifdef DEBUG
   Rcpp::Rcout << "Iteration " << iteration << std::endl;
   #endif
 
-  for (auto i = 0; i < iterations; i++) {
+  for (auto i = 0; i < iterations - 1; i++) {
     // Try to alter model covariates
     for (auto j = 0; j < p; j++) {
-      dbitset gamma_prime = gamma;
+      dbitset gamma_prime = gamma; // The next model we will be considering
       gamma_prime[j] = !gamma_prime[j];
 
       auto p_gamma = gamma.count();
       auto p_gamma_prime = gamma_prime.count();
       if ((p_gamma_prime == 0) || (p_gamma_prime >= n - 1))
         continue;
-      bool bUpdate = !gamma[j];
+      bool bUpdate = !gamma_current[j];
 
       #ifdef DEBUG
       Rcpp::Rcout << bUpdate ? "Updating" : "Downdating" << j << std::endl;
@@ -255,21 +262,39 @@ List mcmcmc(const int iterations,
       Rcpp::Rcout << " log_p_gamma_prime " << log_p_gamma_prime;
       Rcpp::Rcout << " difference " << log_p_gamma_prime - log_p_gamma << std::endl;
       #endif
-      double r = exp(log_p_gamma_prime - log_p_gamma);
-      if (R::runif(0., 1.) < std::min(1., r)) {
-        gamma[j] = bUpdate;
+      double log_p_0, log_p_1;
+      if (bUpdate) {
+        log_p_0 = log_p_gamma;
+        log_p_1 = log_p_gamma_prime;
+      } else {
+        log_p_0 = log_p_gamma;
+        log_p_1 = log_p_gamma_prime;
+      }
+      double r = exp(log_p_1);
+      #ifdef DEBUG
+        // Do the probabilities sum to 1?
+      #endif
+      if (R::runif(0., 1.) < r) {
+        gamma[j] = true;
         #ifdef DEBUG
         Rcpp::Rcout << "Keep update" << std::endl;
         #endif
-        sigma2 = sigma2_prime;
-        mXTX_inv = mXTX_inv_prime;
+        if (bUpdate) {
+          sigma2 = sigma2_prime;
+          mXTX_inv = mXTX_inv_prime;
+        }
       } else {
+        gamma[j] = false;
         #ifdef DEBUG
         Rcpp::Rcout << "Don't keep update" << std::endl;
         #endif
+        if (!bUpdate) {
+          sigma2 = sigma2_prime;
+          mXTX_inv = mXTX_inv_prime;
+        }
       }
-      mGamma[i] = gamma;
     }
+    gamma_to_row(gamma, mGamma.row(i + 1));
   }
   calculate_log_probabilities(gamma, sigma2, n, log_probs, log_prob, modelprior, modelpriorvec);
   
