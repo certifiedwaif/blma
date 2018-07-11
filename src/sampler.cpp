@@ -163,7 +163,7 @@ List sampler(const int iterations,
         log_p_0 = log_p_gamma;
         log_p_1 = log_p_gamma_prime;
       }
-      double r = exp(log_p_1);
+      double r = 1. / (1. + exp(log_p_0 - log_p_1));
       #ifdef DEBUG
         // Do the probabilities sum to 1?
       #endif
