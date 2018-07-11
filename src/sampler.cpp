@@ -246,8 +246,8 @@ List mcmcmc(const int iterations,
       Rcpp::Rcout << "sigma2 " << sigma2 << std::endl;
       Rcpp::Rcout << "sigma2_prime " << sigma2_prime << std::endl;
       #endif
-      double log_p_0;
-      double log_p_1;
+      double log_p_gamma;
+      double log_p_gamma_prime;
       log_p_gamma = calculate_log_prob(n, p, 1. - sigma2, p_gamma, gamma, log_prob, modelprior, modelpriorvec);
       log_p_gamma_prime = calculate_log_prob(n, p, 1. - sigma2_prime, p_gamma_prime, gamma_prime, log_prob, modelprior, modelpriorvec);
       #ifdef DEBUG
