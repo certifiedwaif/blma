@@ -21,18 +21,18 @@ using std::string;
 
 MatrixXd parseCSVfile_double(string infilename);
 List blma_fixed_cpp(VectorXd vy, MatrixXd mX, MatrixXd mZ, std::string prior, std::string modelprior, VectorXd modelpriorvec,
-										const uint intercept_col, const bool bNatural_Order = false, const bool bIntercept = false,
-										const bool bCentre = true, const uint cores = 1L);
+                    const uint intercept_col, const bool bNatural_Order = false, const bool bIntercept = false,
+                    const bool bCentre = true, const uint cores = 1L);
 List blma_cpp(VectorXd vy, MatrixXd mX, std::string prior, std::string modelprior, VectorXd modelpriorvec,
-							const uint intercept_col, const bool bNatural_Order = false, const bool bIntercept = false,
-							const bool bCentre = true, const uint cores = 1L);
+              const uint intercept_col, const bool bNatural_Order = false, const bool bIntercept = false,
+              const bool bCentre = true, const uint cores = 1L);
 template <typename Derived1, typename Derived2>
 Eigen::MatrixBase<Derived2>& get_cols(const Eigen::MatrixBase<Derived1>& m1, const dbitset& gamma, Eigen::MatrixBase<Derived2>& m2);
 template <typename Derived1, typename Derived2>
 Eigen::MatrixBase<Derived2>& get_rows(const Eigen::MatrixBase<Derived1>& m1, const dbitset& gamma, Eigen::MatrixBase<Derived2>& m2);
 template <typename Derived1, typename Derived2>
 Eigen::MatrixBase<Derived2>& rank_one_update(const dbitset& gamma, const uint col_abs, const uint min_idx,
-	const uint fixed,
+  const uint fixed,
 const Eigen::MatrixBase<Derived1>& mXTX, const Eigen::MatrixBase<Derived1>& mA, Eigen::MatrixBase<Derived2>& mA_prime, bool& bLow);
 template <typename Derived1, typename Derived2>
 Eigen::MatrixBase<Derived2>& rank_one_downdate(const uint col_abs, const uint min_idx, const uint fixed,

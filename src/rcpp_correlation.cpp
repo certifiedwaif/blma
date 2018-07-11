@@ -21,36 +21,36 @@ using namespace std;
 //' @param mX Covariate matrix
 //' @param prior -- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices
 //' available include:
-//' 	\itemize{
-//' 		\item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior 
-//' 		of Ormerod et al. (2017).}
-//' 		
-//' 		\item{"ZE"}{-- special case of the prior structure described by Maruyama and George (2011).}
-//' 		
-//' 		\item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
+//'   \itemize{
+//'     \item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior 
+//'     of Ormerod et al. (2017).}
+//'     
+//'     \item{"ZE"}{-- special case of the prior structure described by Maruyama and George (2011).}
+//'     
+//'     \item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
 //'     \eqn{a=3} evaluated directly using Equation (10) of Greenaway and Ormerod (2018) where the Gaussian
-//'			hypergeometric function is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only
+//'     hypergeometric function is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only
 //''    meant to be used for comparative purposes.}
-//' 		
-//' 		\item{"liang_g2"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
-//' 		 \eqn{a=3} evaluated directly using Equation (11)  of Greenaway and Ormerod (2018).}
-//' 		
-//' 		\item{"liang_g_n_appell"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior
-//'			 hyperparameter \eqn{a=3} evaluated using the {appell R} package.}
-//' 		
-//' 		\item{"liang_g_approx"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
+//'     
+//'     \item{"liang_g2"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
+//'      \eqn{a=3} evaluated directly using Equation (11)  of Greenaway and Ormerod (2018).}
+//'     
+//'     \item{"liang_g_n_appell"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior
+//'      hyperparameter \eqn{a=3} evaluated using the {appell R} package.}
+//'     
+//'     \item{"liang_g_approx"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
 //'      \eqn{a=3} using the approximation Equation (15)  of Greenaway and Ormerod (2018) for model with more
-//' 		  than two covariates and numerical quadrature (see below) for models with one or two covariates.}
-//' 		
-//' 		\item{"liang_g_n_quad"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
-//'			 \eqn{a=3} evaluated using a composite trapezoid rule.}
-//' 		
-//' 		\item{"robust_bayarri1"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
-//'			parameter choices evaluated directly using Equation (18)  of Greenaway and Ormerod (2018) with the 
+//'       than two covariates and numerical quadrature (see below) for models with one or two covariates.}
+//'     
+//'     \item{"liang_g_n_quad"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
+//'      \eqn{a=3} evaluated using a composite trapezoid rule.}
+//'     
+//'     \item{"robust_bayarri1"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
+//'     parameter choices evaluated directly using Equation (18)  of Greenaway and Ormerod (2018) with the 
 //'     {gsl} library.}
-//' 		
-//' 		\item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
-//'			parameter choices evaluated directly using Equation (19) of Greenaway and Ormerod (2018).}
+//'     
+//'     \item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
+//'     parameter choices evaluated directly using Equation (19) of Greenaway and Ormerod (2018).}
 //' }
 //' @param modelprior The model prior to use. The choices of model prior are "uniform", "beta-binomial" or
 //' "bernoulli". The choice of model prior dictates the meaning of the parameter modelpriorvec.
@@ -119,22 +119,22 @@ using namespace std;
 //' @export
 // [[Rcpp::export]]
 List blma(NumericVector vy, NumericMatrix mX, std::string prior,
-					std::string modelprior = "uniform", Nullable<NumericVector> modelpriorvec = R_NilValue,
-					const uint cores = 1) {
-	Map<VectorXd> vy_m = as< Map<VectorXd> >(vy);
-	Map<MatrixXd> mX_m = as< Map<MatrixXd> >(mX);
-	NumericVector modelpriorvec_r(0);
-	const int intercept_col = 1;
-	const bool bNatural_Order = false;
-	const bool bIntercept = false;
-	const bool bCentre = false;
-	if (modelpriorvec.isNotNull()) {
-		modelpriorvec_r = modelpriorvec.get();
-	}
-	Map<VectorXd> modelpriorvec_m = as< Map<VectorXd> >(modelpriorvec_r);
-	List result = blma_cpp(vy_m, mX_m, prior, modelprior, modelpriorvec_m, intercept_col - 1, bNatural_Order,
-													bIntercept, bCentre, cores);
-	return result;
+          std::string modelprior = "uniform", Nullable<NumericVector> modelpriorvec = R_NilValue,
+          const uint cores = 1) {
+  Map<VectorXd> vy_m = as< Map<VectorXd> >(vy);
+  Map<MatrixXd> mX_m = as< Map<MatrixXd> >(mX);
+  NumericVector modelpriorvec_r(0);
+  const int intercept_col = 1;
+  const bool bNatural_Order = false;
+  const bool bIntercept = false;
+  const bool bCentre = false;
+  if (modelpriorvec.isNotNull()) {
+    modelpriorvec_r = modelpriorvec.get();
+  }
+  Map<VectorXd> modelpriorvec_m = as< Map<VectorXd> >(modelpriorvec_r);
+  List result = blma_cpp(vy_m, mX_m, prior, modelprior, modelpriorvec_m, intercept_col - 1, bNatural_Order,
+                          bIntercept, bCentre, cores);
+  return result;
 }
 
 //' Perform Bayesian Linear Model Averaging over all of the possible linear models where vy is the response,
@@ -145,36 +145,36 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 //' @param mZ The matrix of varying covariates, which may or may not be included in each model
 //' @param prior -- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices
 //' available include:
-//' 	\itemize{
-//' 		\item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior 
-//' 		of Ormerod et al. (2017).}
-//' 		
-//' 		\item{"ZE"}{-- special case of the prior structure described by Maruyama and George (2011).}
-//' 		
-//' 		\item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
+//'   \itemize{
+//'     \item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior 
+//'     of Ormerod et al. (2017).}
+//'     
+//'     \item{"ZE"}{-- special case of the prior structure described by Maruyama and George (2011).}
+//'     
+//'     \item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
 //'     \eqn{a=3} evaluated directly using Equation (10) of Greenaway and Ormerod (2018) where the Gaussian
-//'			hypergeometric function is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only
+//'     hypergeometric function is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only
 //''    meant to be used for comparative purposes.}
-//' 		
-//' 		\item{"liang_g2"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
-//' 		 \eqn{a=3} evaluated directly using Equation (11)  of Greenaway and Ormerod (2018).}
-//' 		
-//' 		\item{"liang_g_n_appell"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior
-//'			 hyperparameter \eqn{a=3} evaluated using the {appell R} package.}
-//' 		
-//' 		\item{"liang_g_approx"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
+//'     
+//'     \item{"liang_g2"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
+//'      \eqn{a=3} evaluated directly using Equation (11)  of Greenaway and Ormerod (2018).}
+//'     
+//'     \item{"liang_g_n_appell"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior
+//'      hyperparameter \eqn{a=3} evaluated using the {appell R} package.}
+//'     
+//'     \item{"liang_g_approx"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
 //'      \eqn{a=3} using the approximation Equation (15)  of Greenaway and Ormerod (2018) for model with more
-//' 		  than two covariates and numerical quadrature (see below) for models with one or two covariates.}
-//' 		
-//' 		\item{"liang_g_n_quad"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
-//'			 \eqn{a=3} evaluated using a composite trapezoid rule.}
-//' 		
-//' 		\item{"robust_bayarri1"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
-//'			parameter choices evaluated directly using Equation (18)  of Greenaway and Ormerod (2018) with the 
+//'       than two covariates and numerical quadrature (see below) for models with one or two covariates.}
+//'     
+//'     \item{"liang_g_n_quad"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
+//'      \eqn{a=3} evaluated using a composite trapezoid rule.}
+//'     
+//'     \item{"robust_bayarri1"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
+//'     parameter choices evaluated directly using Equation (18)  of Greenaway and Ormerod (2018) with the 
 //'     {gsl} library.}
-//' 		
-//' 		\item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
-//'			parameter choices evaluated directly using Equation (19) of Greenaway and Ormerod (2018).}
+//'     
+//'     \item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
+//'     parameter choices evaluated directly using Equation (19) of Greenaway and Ormerod (2018).}
 //' }
 //' @param modelprior The model prior to use. The choices of model prior are "uniform", "beta-binomial" or
 //' "bernoulli". The choice of model prior dictates the meaning of the parameter modelpriorvec.
@@ -245,23 +245,23 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 //' @export
 // [[Rcpp::export]]
 List blma_fixed(NumericVector vy, NumericMatrix mX, NumericMatrix mZ, std::string prior,
-								std::string modelprior = "uniform", Nullable<NumericVector> modelpriorvec = R_NilValue,
-								const uint cores = 1) {
-	Map<VectorXd> vy_m = as< Map<VectorXd> >(vy);
-	Map<MatrixXd> mX_m = as< Map<MatrixXd> >(mX);
-	Map<MatrixXd> mZ_m = as< Map<MatrixXd> >(mZ);
-	const int intercept_col = 1;
-	const bool bNatural_Order = false;
-	const bool bIntercept = false;
-	const bool bCentre = false;
-	NumericVector modelpriorvec_r(0);
-	if (modelpriorvec.isNotNull()) {
-		modelpriorvec_r = modelpriorvec.get();
-	}
-	Map<VectorXd> modelpriorvec_m = as< Map<VectorXd> >(modelpriorvec_r);
-	List result = blma_fixed_cpp(vy_m, mX_m, mZ_m, prior, modelprior, modelpriorvec_m, intercept_col - 1,
-																bNatural_Order, bIntercept, bCentre, cores);
-	return result;
+                std::string modelprior = "uniform", Nullable<NumericVector> modelpriorvec = R_NilValue,
+                const uint cores = 1) {
+  Map<VectorXd> vy_m = as< Map<VectorXd> >(vy);
+  Map<MatrixXd> mX_m = as< Map<MatrixXd> >(mX);
+  Map<MatrixXd> mZ_m = as< Map<MatrixXd> >(mZ);
+  const int intercept_col = 1;
+  const bool bNatural_Order = false;
+  const bool bIntercept = false;
+  const bool bCentre = false;
+  NumericVector modelpriorvec_r(0);
+  if (modelpriorvec.isNotNull()) {
+    modelpriorvec_r = modelpriorvec.get();
+  }
+  Map<VectorXd> modelpriorvec_m = as< Map<VectorXd> >(modelpriorvec_r);
+  List result = blma_fixed_cpp(vy_m, mX_m, mZ_m, prior, modelprior, modelpriorvec_m, intercept_col - 1,
+                                bNatural_Order, bIntercept, bCentre, cores);
+  return result;
 }
 
 //' Return the graycode matrix
@@ -274,7 +274,7 @@ List blma_fixed(NumericVector vy, NumericMatrix mX, NumericMatrix mZ, std::strin
 //' @export
 // [[Rcpp::export]]
 IntegerMatrix graycode(unsigned int varying, unsigned int fixed = 0) {
-	Graycode gray(fixed, varying);
-	MatrixXi result = gray.to_MatrixXi();
-	return wrap(result);
+  Graycode gray(fixed, varying);
+  MatrixXi result = gray.to_MatrixXi();
+  return wrap(result);
 }
