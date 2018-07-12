@@ -1,7 +1,9 @@
 #include <Rcpp.h>
 // Enable C++11 via this plugin (Rcpp 0.10.3 or later)
 // [[Rcpp::plugins(cpp11)]]
+// [[Rcpp::plugins(openmp)]]
 // [[Rcpp::depends(RcppEigen)]]
+// [[Rcpp::depends(RcppGSL)]]
 #include <RcppEigen.h>
 #include <vector>
 #include <cmath>
@@ -95,6 +97,7 @@ List sampler(const int iterations,
       gamma[i] = true;
     }
   }
+  mGamma.row(0) = gamma_to_row(gamma);
 
   // Initialise mXTX_inv and sigma2
   auto p_gamma = gamma.count();
@@ -114,7 +117,6 @@ List sampler(const int iterations,
   #endif
 
   // Generate sample gammas
-  auto iteration = 1;
   #ifdef DEBUG
   Rcpp::Rcout << "Iteration " << iteration << std::endl;
   #endif
@@ -132,15 +134,25 @@ List sampler(const int iterations,
       bool bUpdate = !gamma[j];
 
       #ifdef DEBUG
-      Rcpp::Rcout << bUpdate ? "Updating" : "Downdating" << j << std::endl;
+      if (bUpdate) {
+        Rcpp::Rcout << "Updating " << j << std::endl;
+      } else {
+        Rcpp::Rcout << "Downdating " << j << std::endl;
+      }
       #endif
 
       // Update or downdate mXTX_inv
       MatrixXd mXTX_inv_prime(p_gamma_prime, p_gamma_prime);
       calculate_mXTX_inv_prime(gamma, gamma_prime, j, mXTX, mXTX_inv, mXTX_inv_prime, bUpdate);
+      // MatrixXd mX_gamma_prime(n, p_gamma_prime);
+      // get_cols(mX, gamma_prime, mX_gamma_prime);
+      // MatrixXd mX_gamma_prime_Ty(p_gamma_prime, 1);
+      // get_rows(mXTy, gamma_prime, mX_gamma_prime_Ty);
+      // mXTX_inv_prime = (mX_gamma_prime.transpose() * mX_gamma_prime).inverse();
 
       // Calculate sigma2_prime
       double sigma2_prime = calculate_sigma2_prime(n, p_gamma_prime, mX, gamma_prime, vy, mXTX_inv_prime);
+      // double sigma2_prime = 1. - (mX_gamma_prime_Ty.transpose() * mXTX_inv_prime * mX_gamma_prime_Ty).value() / n;
 
       #ifdef DEBUG
       Rcpp::Rcout << "sigma2 " << sigma2 << std::endl;
@@ -160,12 +172,13 @@ List sampler(const int iterations,
         log_p_0 = log_p_gamma;
         log_p_1 = log_p_gamma_prime;
       } else {
-        log_p_0 = log_p_gamma;
-        log_p_1 = log_p_gamma_prime;
+        log_p_0 = log_p_gamma_prime;
+        log_p_1 = log_p_gamma;
       }
       double r = 1. / (1. + exp(log_p_0 - log_p_1));
       #ifdef DEBUG
         // Do the probabilities sum to 1?
+        Rcpp::Rcout << "r " << r << std::endl;
       #endif
       if (R::runif(0., 1.) < r) {
         gamma[j] = true;
