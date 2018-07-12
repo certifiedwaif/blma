@@ -58,6 +58,13 @@ List sampler(const int iterations,
             const Nullable<NumericVector> modelpriorvec_in = R_NilValue,
             const int cores = 1L)
 {
+  // Try using the parallelisation in Eigen. This is an inherently serial algorithm,
+  // and I don't think OpenMP is going to help us here.
+  #ifdef _OPENMP
+    Eigen::initParallel();
+    Eigen::setNbThreads(cores);
+  #endif
+
   VectorXd vy(vy_in.length());   // = Rcpp::as<Eigen::Map<Eigen::VectorXd>>(vy_in);
   for (auto i = 0; i < vy_in.length(); i++) vy[i] = vy_in[i];
                                  // = Rcpp::as<Eigen::Map<Eigen::MatrixXd>>(mX_in);
