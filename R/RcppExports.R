@@ -122,7 +122,7 @@
 #' with diffuse priors: Can we have our cake and eat it too?
 #' @export
 cva <- function(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in = NULL, bUnique = TRUE, lambda = 1., cores = 1L) {
-    .Call('_blma_cva', PACKAGE = 'blma', vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in, bUnique, lambda, cores)
+    .Call('blma_cva', PACKAGE = 'blma', vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in, bUnique, lambda, cores)
 }
 
 #' Perform Bayesian Linear Model Averaging over all of the possible linear models where vy is the response
@@ -232,7 +232,7 @@ cva <- function(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in = N
 #' with diffuse priors: Can we have our cake and eat it too?
 #' @export
 blma <- function(vy, mX, prior, modelprior = "uniform", modelpriorvec = NULL, cores = 1L) {
-    .Call('_blma_blma', PACKAGE = 'blma', vy, mX, prior, modelprior, modelpriorvec, cores)
+    .Call('blma_blma', PACKAGE = 'blma', vy, mX, prior, modelprior, modelpriorvec, cores)
 }
 
 #' Perform Bayesian Linear Model Averaging over all of the possible linear models where vy is the response,
@@ -342,7 +342,7 @@ blma <- function(vy, mX, prior, modelprior = "uniform", modelpriorvec = NULL, co
 #' with diffuse priors: Can we have our cake and eat it too?
 #' @export
 blma_fixed <- function(vy, mX, mZ, prior, modelprior = "uniform", modelpriorvec = NULL, cores = 1L) {
-    .Call('_blma_blma_fixed', PACKAGE = 'blma', vy, mX, mZ, prior, modelprior, modelpriorvec, cores)
+    .Call('blma_blma_fixed', PACKAGE = 'blma', vy, mX, mZ, prior, modelprior, modelpriorvec, cores)
 }
 
 #' Return the graycode matrix
@@ -354,7 +354,7 @@ blma_fixed <- function(vy, mX, mZ, prior, modelprior = "uniform", modelpriorvec 
 #' set of covariates is included or not.
 #' @export
 graycode <- function(varying, fixed = 0L) {
-    .Call('_blma_graycode', PACKAGE = 'blma', varying, fixed)
+    .Call('blma_graycode', PACKAGE = 'blma', varying, fixed)
 }
 
 #' sampler
@@ -369,6 +369,6 @@ graycode <- function(varying, fixed = 0L) {
 #' @return The object returned is a list containing:
 #' @export
 sampler <- function(iterations, vy_in, mX_in, prior, modelprior, modelpriorvec_in = NULL, cores = 1L) {
-    .Call('_blma_sampler', PACKAGE = 'blma', iterations, vy_in, mX_in, prior, modelprior, modelpriorvec_in, cores)
+    .Call('blma_sampler', PACKAGE = 'blma', iterations, vy_in, mX_in, prior, modelprior, modelpriorvec_in, cores)
 }
 

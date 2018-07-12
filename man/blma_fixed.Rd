@@ -17,36 +17,36 @@ blma_fixed(vy, mX, mZ, prior, modelprior = "uniform", modelpriorvec = NULL,
 
 \item{prior}{-- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices
 available include:
-    \itemize{
-        \item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior 
-        of Ormerod et al. (2017).}
-        
-        \item{"ZE"}{-- special case of the prior structure described by Maruyama and George (2011).}
-        
-        \item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
+  \itemize{
+    \item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior 
+    of Ormerod et al. (2017).}
+    
+    \item{"ZE"}{-- special case of the prior structure described by Maruyama and George (2011).}
+    
+    \item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
     \eqn{a=3} evaluated directly using Equation (10) of Greenaway and Ormerod (2018) where the Gaussian
-        hypergeometric function is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only
+    hypergeometric function is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only
 '    meant to be used for comparative purposes.}
-        
-        \item{"liang_g2"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
-         \eqn{a=3} evaluated directly using Equation (11)  of Greenaway and Ormerod (2018).}
-        
-        \item{"liang_g_n_appell"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior
-         hyperparameter \eqn{a=3} evaluated using the {appell R} package.}
-        
-        \item{"liang_g_approx"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
+    
+    \item{"liang_g2"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
+     \eqn{a=3} evaluated directly using Equation (11)  of Greenaway and Ormerod (2018).}
+    
+    \item{"liang_g_n_appell"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior
+     hyperparameter \eqn{a=3} evaluated using the {appell R} package.}
+    
+    \item{"liang_g_approx"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
      \eqn{a=3} using the approximation Equation (15)  of Greenaway and Ormerod (2018) for model with more
-          than two covariates and numerical quadrature (see below) for models with one or two covariates.}
-        
-        \item{"liang_g_n_quad"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
-         \eqn{a=3} evaluated using a composite trapezoid rule.}
-        
-        \item{"robust_bayarri1"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
-        parameter choices evaluated directly using Equation (18)  of Greenaway and Ormerod (2018) with the 
+      than two covariates and numerical quadrature (see below) for models with one or two covariates.}
+    
+    \item{"liang_g_n_quad"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
+     \eqn{a=3} evaluated using a composite trapezoid rule.}
+    
+    \item{"robust_bayarri1"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
+    parameter choices evaluated directly using Equation (18)  of Greenaway and Ormerod (2018) with the 
     {gsl} library.}
-        
-        \item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
-        parameter choices evaluated directly using Equation (19) of Greenaway and Ormerod (2018).}
+    
+    \item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
+    parameter choices evaluated directly using Equation (19) of Greenaway and Ormerod (2018).}
 }}
 
 \item{modelprior}{The model prior to use. The choices of model prior are "uniform", "beta-binomial" or
