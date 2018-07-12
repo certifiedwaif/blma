@@ -2,6 +2,9 @@
 #include <Rcpp.h>
 
 // [[Rcpp::plugins(cpp11)]]
+// [[Rcpp::plugins(openmp)]]
+// [[Rcpp::depends(RcppEigen)]]
+// [[Rcpp::depends(RcppGSL)]]
 
 #include "correlation.h"
 #include "graycode.h"
