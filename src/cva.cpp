@@ -1,7 +1,9 @@
 #include <Rcpp.h>
 // Enable C++11 via this plugin (Rcpp 0.10.3 or later)
 // [[Rcpp::plugins(cpp11)]]
+// [[Rcpp::plugins(openmp)]]
 // [[Rcpp::depends(RcppEigen)]]
+// [[Rcpp::depends(RcppGSL)]]
 #include <RcppEigen.h>
 #include <vector>
 #include <cmath>
