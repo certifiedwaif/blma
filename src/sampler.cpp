@@ -74,10 +74,16 @@ List sampler(const int iterations,
       mX(i, j) = mX_in(i, j);
   const auto n = mX.rows();
   const auto p = mX.cols();
-  vy = sqrt(n) * (vy.array() - vy.mean()) / vy.norm();
-  for (auto j = 0; j < p; j++) {
-    mX.col(j) = sqrt(n) * (mX.col(j).array() - mX.col(j).mean()) / mX.col(j).norm();
+  // Normalise vy and mX
+  auto mu_vy = vy.mean();
+  auto sigma2_mu_vy = (n - 1) * var(vy) / n;
+  vy = (vy.array() - mu_vy) / sqrt(sigma2_mu_vy);
+  for (auto i = 0; i < p; i++) {
+    auto mu_mX = mX.col(i).mean();
+    auto sigma2_mX = (n - 1) * var(mX.col(i)) / n;
+    mX.col(i) = (mX.col(i).array() - mu_mX) / sqrt(sigma2_mX);
   }
+
   NumericVector modelpriorvec_r(0);
   if (!modelpriorvec_in.isNull()) {
     modelpriorvec_r = modelpriorvec_in.get();
@@ -124,20 +130,24 @@ List sampler(const int iterations,
   #endif
 
   // Generate sample gammas
-  #ifdef DEBUG
-  Rcpp::Rcout << "Iteration " << iteration << std::endl;
-  #endif
 
   for (auto i = 0; i < iterations - 1; i++) {
+    Rcpp::checkUserInterrupt();
+    #ifdef DEBUG
+        Rcpp::Rcout << "Iteration " << i << std::endl;
+    #endif
     // Try to alter model covariates
     for (auto j = 0; j < p; j++) {
       dbitset gamma_prime = gamma; // The next model we will be considering
-      gamma_prime[j] = !gamma_prime[j];
+      gamma_prime[j] = !gamma[j];
+      #ifdef DEBUG
+        Rcpp::Rcout << "gamma " << gamma << " gamma_prime " << gamma_prime << std::endl;
+      #endif
 
       auto p_gamma = gamma.count();
       auto p_gamma_prime = gamma_prime.count();
-      if ((p_gamma_prime == 0) || (p_gamma_prime >= n - 1))
-        continue;
+      // if ((p_gamma_prime == 0) || (p_gamma_prime >= n - 1))
+      //   continue;
       bool bUpdate = !gamma[j];
 
       #ifdef DEBUG
@@ -150,16 +160,16 @@ List sampler(const int iterations,
 
       // Update or downdate mXTX_inv
       MatrixXd mXTX_inv_prime(p_gamma_prime, p_gamma_prime);
-      calculate_mXTX_inv_prime(gamma, gamma_prime, j, mXTX, mXTX_inv, mXTX_inv_prime, bUpdate);
-      // MatrixXd mX_gamma_prime(n, p_gamma_prime);
-      // get_cols(mX, gamma_prime, mX_gamma_prime);
-      // MatrixXd mX_gamma_prime_Ty(p_gamma_prime, 1);
-      // get_rows(mXTy, gamma_prime, mX_gamma_prime_Ty);
-      // mXTX_inv_prime = (mX_gamma_prime.transpose() * mX_gamma_prime).inverse();
+      // calculate_mXTX_inv_prime(gamma, gamma_prime, j, mXTX, mXTX_inv, mXTX_inv_prime, bUpdate);
+      MatrixXd mX_gamma_prime(n, p_gamma_prime);
+      get_cols(mX, gamma_prime, mX_gamma_prime);
+      MatrixXd mX_gamma_prime_Ty(p_gamma_prime, 1);
+      get_rows(mXTy, gamma_prime, mX_gamma_prime_Ty);
+      mXTX_inv_prime = (mX_gamma_prime.transpose() * mX_gamma_prime).inverse();
 
       // Calculate sigma2_prime
-      double sigma2_prime = calculate_sigma2_prime(n, p_gamma_prime, mX, gamma_prime, vy, mXTX_inv_prime);
-      // double sigma2_prime = 1. - (mX_gamma_prime_Ty.transpose() * mXTX_inv_prime * mX_gamma_prime_Ty).value() / n;
+      // double sigma2_prime = calculate_sigma2_prime(n, p_gamma_prime, mX, gamma_prime, vy, mXTX_inv_prime);
+      double sigma2_prime = 1. - (mX_gamma_prime_Ty.transpose() * mXTX_inv_prime * mX_gamma_prime_Ty).value() / n;
 
       #ifdef DEBUG
       Rcpp::Rcout << "sigma2 " << sigma2 << std::endl;
@@ -183,11 +193,13 @@ List sampler(const int iterations,
         log_p_1 = log_p_gamma;
       }
       double r = 1. / (1. + exp(log_p_0 - log_p_1));
+      // double r = exp(log_p_1) / (exp(log_p_0) + exp(log_p_1));
+      auto prob = R::runif(0., 1.);
       #ifdef DEBUG
         // Do the probabilities sum to 1?
-        Rcpp::Rcout << "r " << r << std::endl;
+        Rcpp::Rcout << "prob " << prob << " r " << r << std::endl;
       #endif
-      if (R::runif(0., 1.) < r) {
+      if (prob < r) {
         gamma[j] = true;
         #ifdef DEBUG
         Rcpp::Rcout << "Keep update" << std::endl;

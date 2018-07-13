@@ -37,4 +37,5 @@ const Eigen::MatrixBase<Derived1>& mXTX, const Eigen::MatrixBase<Derived1>& mA, 
 template <typename Derived1, typename Derived2>
 Eigen::MatrixBase<Derived2>& rank_one_downdate(const uint col_abs, const uint min_idx, const uint fixed,
 const Eigen::MatrixBase<Derived1>& mA, Eigen::MatrixBase<Derived2>& mA_prime);
-void centre(VectorXd& v);
+double var(const VectorXd& v);
+double sd(const VectorXd& v);

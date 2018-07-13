@@ -104,22 +104,16 @@ const dbitset& cols_bs, Eigen::MatrixBase<Derived2>& m2)
 }
 
 
-double sd(const VectorXd& x)
+double var(const VectorXd& v)
 {
-  const auto n = x.size();
-  return (x.array() - x.mean()).square().sum() / (n - 1);
+  const auto n = v.size();
+  return (v.array() - v.mean()).array().square().sum() / (n - 1);
 }
 
 
-void centre(VectorXd& v)
+double sd(const VectorXd& v)
 {
-  const auto n = v.size();
-  auto v_norm = v.norm();
-
-  if (v_norm > 0.0) {
-    VectorXd centred_v = v.array() - v.mean();
-    v = centred_v * sqrt(n) / v_norm;
-  }
+	return (sqrt(var(v)));
 }
 
 
@@ -465,19 +459,15 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
   }
 
   if (bCentre) {
-    // Centre vy
-    // centre(vy);
-
-    // Centre non-intercept columns of mX
-    for (uint i = 0; i < mX.cols(); i++) {
-      // Skip intercept column if there is one.
-      if (bIntercept && i == intercept_col)
-        continue;
-
-      VectorXd vcol = mX.col(i);
-      centre(vcol);
-      mX.col(i) = vcol;
-    }
+  	// Normalise vy and mX
+  	auto mu_vy = vy.mean();
+  	auto sigma2_mu_vy = (n - 1) * var(vy) / n;
+  	vy = (vy.array() - mu_vy) / sqrt(sigma2_mu_vy);
+  	for (auto i = 0; i < p; i++) {
+    	auto mu_mX = mX.col(i).mean();
+    	auto sigma2_mX = (n - 1) * var(mX.col(i)) / n;
+    	mX.col(i) = (mX.col(i).array() - mu_mX) / sqrt(sigma2_mX);
+  	}
   }
 
   vpgamma_all(0) = 0;
@@ -490,6 +480,7 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
       shared(mX, vR2_all, vpgamma_all, graycode)\
       default(none)
   for (uint idx = 1; idx < max_iterations; idx++) {
+    Rcpp::checkUserInterrupt();
     #ifdef DEBUG
     Rcpp::Rcout << endl << "Iteration " << idx << endl;
     #endif

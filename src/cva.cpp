@@ -428,9 +428,14 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
       mX(i, j) = mX_in(i, j);
   const auto n = mX.rows();
   const auto p = mX.cols();
-  vy = sqrt(n) * (vy.array() - vy.mean()) / vy.norm();
-  for (auto j = 0; j < p; j++) {
-    mX.col(j) = sqrt(n) * (mX.col(j).array() - mX.col(j).mean()) / mX.col(j).norm();
+  // Normalise vy and mX
+  auto mu_vy = vy.mean();
+  auto sigma2_mu_vy = (n - 1) * var(vy) / n;
+  vy = (vy.array() - mu_vy) / sqrt(sigma2_mu_vy);
+  for (auto i = 0; i < p; i++) {
+    auto mu_mX = mX.col(i).mean();
+    auto sigma2_mX = (n - 1) * var(mX.col(i)) / n;
+    mX.col(i) = (mX.col(i).array() - mu_mX) / sqrt(sigma2_mX);
   }
   NumericVector modelpriorvec_r(0);
   if (!modelpriorvec_in.isNull()) {
@@ -560,6 +565,7 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
   auto converged = false;
   auto iteration = 1;
   while (!converged) {
+    Rcpp::checkUserInterrupt();
     #ifdef DEBUG
     Rcpp::Rcout << "Iteration " << iteration << std::endl;
     #endif
