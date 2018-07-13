@@ -39,3 +39,4 @@ Eigen::MatrixBase<Derived2>& rank_one_downdate(const uint col_abs, const uint mi
 const Eigen::MatrixBase<Derived1>& mA, Eigen::MatrixBase<Derived2>& mA_prime);
 double var(const VectorXd& v);
 double sd(const VectorXd& v);
+void normalise(VectorXd& vy, MatrixXd& mX);

@@ -117,6 +117,22 @@ double sd(const VectorXd& v)
 }
 
 
+void normalise(VectorXd& vy, MatrixXd& mX)
+{
+  const auto n = vy.size();
+  const auto p = mX.cols();
+  
+  // Normalise vy and mX
+  auto mu_vy = vy.mean();
+  auto sigma2_mu_vy = (n - 1) * var(vy) / n;
+  vy = (vy.array() - mu_vy) / sqrt(sigma2_mu_vy);
+  for (auto i = 0; i < p; i++) {
+    auto mu_mX = mX.col(i).mean();
+    auto sigma2_mX = (n - 1) * var(mX.col(i)) / n;
+    mX.col(i) = (mX.col(i).array() - mu_mX) / sqrt(sigma2_mX);
+  }
+}
+
 void show_matrix_difference(ostream& os, const MatrixXd& m1, const MatrixXd& m2, const double epsilon = 1e-8)
 {
   // Check that m1 and m2 have the same dimensions.
@@ -459,15 +475,7 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
   }
 
   if (bCentre) {
-  	// Normalise vy and mX
-  	auto mu_vy = vy.mean();
-  	auto sigma2_mu_vy = (n - 1) * var(vy) / n;
-  	vy = (vy.array() - mu_vy) / sqrt(sigma2_mu_vy);
-  	for (auto i = 0; i < p; i++) {
-    	auto mu_mX = mX.col(i).mean();
-    	auto sigma2_mX = (n - 1) * var(mX.col(i)) / n;
-    	mX.col(i) = (mX.col(i).array() - mu_mX) / sqrt(sigma2_mX);
-  	}
+  	normalise(vy, mX);
   }
 
   vpgamma_all(0) = 0;

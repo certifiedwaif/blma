@@ -75,14 +75,7 @@ List sampler(const int iterations,
   const auto n = mX.rows();
   const auto p = mX.cols();
   // Normalise vy and mX
-  auto mu_vy = vy.mean();
-  auto sigma2_mu_vy = (n - 1) * var(vy) / n;
-  vy = (vy.array() - mu_vy) / sqrt(sigma2_mu_vy);
-  for (auto i = 0; i < p; i++) {
-    auto mu_mX = mX.col(i).mean();
-    auto sigma2_mX = (n - 1) * var(mX.col(i)) / n;
-    mX.col(i) = (mX.col(i).array() - mu_mX) / sqrt(sigma2_mX);
-  }
+  normalise(vy, mX);
 
   NumericVector modelpriorvec_r(0);
   if (!modelpriorvec_in.isNull()) {

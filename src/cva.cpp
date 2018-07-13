@@ -429,14 +429,7 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
   const auto n = mX.rows();
   const auto p = mX.cols();
   // Normalise vy and mX
-  auto mu_vy = vy.mean();
-  auto sigma2_mu_vy = (n - 1) * var(vy) / n;
-  vy = (vy.array() - mu_vy) / sqrt(sigma2_mu_vy);
-  for (auto i = 0; i < p; i++) {
-    auto mu_mX = mX.col(i).mean();
-    auto sigma2_mX = (n - 1) * var(mX.col(i)) / n;
-    mX.col(i) = (mX.col(i).array() - mu_mX) / sqrt(sigma2_mX);
-  }
+  normalise(vy, mX);
   NumericVector modelpriorvec_r(0);
   if (!modelpriorvec_in.isNull()) {
     modelpriorvec_r = modelpriorvec_in.get();
@@ -468,31 +461,6 @@ List cva(const NumericVector vy_in, const NumericMatrix mX_in,
 
   log_prob_fn log_prob;
   set_log_prob(prior, log_prob);
-  if (prior == "maruyama") {
-    log_prob = maruyama;
-  } else if (prior == "BIC") {
-    log_prob = BIC;
-  } else if (prior == "ZE") {
-    log_prob = ZE;
-  } else if (prior == "liang_g1") {
-    log_prob = liang_g1;
-  } else if (prior == "liang_g2") {
-    log_prob = liang_g2;
-  } else if (prior == "liang_g_n_appell") {
-    log_prob = liang_g_n_appell;
-  } else if (prior == "liang_g_n_approx") {
-    log_prob = liang_g_n_approx;
-  } else if (prior == "liang_g_n_quad") {
-    log_prob = liang_g_n_quad;
-  } else if (prior == "robust_bayarri1") {
-    log_prob = robust_bayarri1;
-  } else if (prior == "robust_bayarri2") {
-    log_prob = robust_bayarri2;
-  } else {
-    stringstream ss;
-    ss << "Prior " << prior << " unknown";
-    Rcpp::stop(ss.str());
-  }
   // Initialise population of K particles randomly
   // Rcpp::Rcout << "Generated" << std::endl;
   // for (auto k = 0; k < K; k++) {
