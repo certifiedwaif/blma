@@ -121,17 +121,30 @@ void normalise(VectorXd& vy, MatrixXd& mX)
 {
   const auto n = vy.size();
   const auto p = mX.cols();
-  
+  VectorXd mu_mX(p);
+  VectorXd sigma2_mX(p);
+  #ifdef DEBUG
+  Rcpp::Rcout << "vy " << vy.head(10) << std::endl;
+  Rcpp::Rcout << "mX " << mX.topRows(10) << std::endl;
+  #endif
+
   // Normalise vy and mX
   auto mu_vy = vy.mean();
-  auto sigma2_mu_vy = (n - 1) * var(vy) / n;
-  vy = (vy.array() - mu_vy) / sqrt(sigma2_mu_vy);
+  auto sigma2_vy = (n - 1) * var(vy) / n;
+  vy = (vy.array() - mu_vy) / sqrt(sigma2_vy);
   for (auto i = 0; i < p; i++) {
-    auto mu_mX = mX.col(i).mean();
-    auto sigma2_mX = (n - 1) * var(mX.col(i)) / n;
-    mX.col(i) = (mX.col(i).array() - mu_mX) / sqrt(sigma2_mX);
+    mu_mX(i) = mX.col(i).mean();
+    sigma2_mX(i) = (n - 1) * var(mX.col(i)) / n;
+    mX.col(i) = (mX.col(i).array() - mu_mX(i)) / sqrt(sigma2_mX(i));
   }
+  #ifdef DEBUG
+  Rcpp::Rcout << "vy " << vy.head(10) << std::endl;
+  Rcpp::Rcout << "mX " << mX.topRows(10) << std::endl;
+  Rcpp::Rcout << "mu_vy " << mu_vy << " sigma2_mu_vy " << sigma2_mu_vy << std::endl;
+  Rcpp::Rcout << "mu_mX " << mu_mX << " sigma2_mX " << sigma2_mX << std::endl;
+  #endif
 }
+
 
 void show_matrix_difference(ostream& os, const MatrixXd& m1, const MatrixXd& m2, const double epsilon = 1e-8)
 {
@@ -366,31 +379,7 @@ void calculate_probabilities(const std::string prior, const std::string modelpri
                              Eigen::MatrixBase<Derived4>& vinclusion_prob)
 {
   std::function<double (const int n, const int p, double vR2, int vp_gamma)> log_prob;
-  if (prior == "maruyama") {
-    log_prob = maruyama;
-  } else if (prior == "BIC") {
-    log_prob = BIC;
-  } else if (prior == "ZE") {
-    log_prob = ZE;
-  } else if (prior == "liang_g1") {
-    log_prob = liang_g1;
-  } else if (prior == "liang_g2") {
-    log_prob = liang_g2;
-  } else if (prior == "liang_g_n_appell") {
-    log_prob = liang_g_n_appell;
-  } else if (prior == "liang_g_n_approx") {
-    log_prob = liang_g_n_approx;
-  } else if (prior == "liang_g_n_quad") {
-    log_prob = liang_g_n_quad;
-  } else if (prior == "robust_bayarri1") {
-    log_prob = robust_bayarri1;
-  } else if (prior == "robust_bayarri2") {
-    log_prob = robust_bayarri2;
-  } else {
-    stringstream ss;
-    ss << "Prior " << prior << " unknown";
-    Rcpp::stop(ss.str());
-  }
+  set_log_prob(prior, log_prob);
 
   auto nmodels = vR2_all.size();
   #pragma omp parallel for
