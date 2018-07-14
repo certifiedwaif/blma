@@ -22,33 +22,33 @@ using namespace std;
 //' @param prior -- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices
 //' available include:
 //'   \itemize{
-//'     \item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior 
+//'     \item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior
 //'     of Ormerod et al. (2017).}
-//'     
+//'
 //'     \item{"ZE"}{-- special case of the prior structure described by Maruyama and George (2011).}
-//'     
+//'
 //'     \item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
 //'     \eqn{a=3} evaluated directly using Equation (10) of Greenaway and Ormerod (2018) where the Gaussian
 //'     hypergeometric function is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only
 //''    meant to be used for comparative purposes.}
-//'     
+//'
 //'     \item{"liang_g2"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
 //'      \eqn{a=3} evaluated directly using Equation (11)  of Greenaway and Ormerod (2018).}
-//'     
+//'
 //'     \item{"liang_g_n_appell"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior
 //'      hyperparameter \eqn{a=3} evaluated using the {appell R} package.}
-//'     
+//'
 //'     \item{"liang_g_approx"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
 //'      \eqn{a=3} using the approximation Equation (15)  of Greenaway and Ormerod (2018) for model with more
 //'       than two covariates and numerical quadrature (see below) for models with one or two covariates.}
-//'     
+//'
 //'     \item{"liang_g_n_quad"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
 //'      \eqn{a=3} evaluated using a composite trapezoid rule.}
-//'     
+//'
 //'     \item{"robust_bayarri1"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
-//'     parameter choices evaluated directly using Equation (18)  of Greenaway and Ormerod (2018) with the 
+//'     parameter choices evaluated directly using Equation (18)  of Greenaway and Ormerod (2018) with the
 //'     {gsl} library.}
-//'     
+//'
 //'     \item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
 //'     parameter choices evaluated directly using Equation (19) of Greenaway and Ormerod (2018).}
 //' }
@@ -120,7 +120,7 @@ using namespace std;
 // [[Rcpp::export]]
 List blma(NumericVector vy, NumericMatrix mX, std::string prior,
           std::string modelprior = "uniform", Nullable<NumericVector> modelpriorvec = R_NilValue,
-          const uint cores = 1) {
+          const unsigned int cores = 1) {
   Map<VectorXd> vy_m = as< Map<VectorXd> >(vy);
   Map<MatrixXd> mX_m = as< Map<MatrixXd> >(mX);
   NumericVector modelpriorvec_r(0);
@@ -139,40 +139,40 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 
 //' Perform Bayesian Linear Model Averaging over all of the possible linear models where vy is the response,
 //' covariates that may be included are in mZ and covariates which are always included are in mX.
-//' 
+//'
 //' @param vy The vector of responses
 //' @param mX The matrix of fixed covariates which will be included in every model
 //' @param mZ The matrix of varying covariates, which may or may not be included in each model
 //' @param prior -- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices
 //' available include:
 //'   \itemize{
-//'     \item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior 
+//'     \item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior
 //'     of Ormerod et al. (2017).}
-//'     
+//'
 //'     \item{"ZE"}{-- special case of the prior structure described by Maruyama and George (2011).}
-//'     
+//'
 //'     \item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
 //'     \eqn{a=3} evaluated directly using Equation (10) of Greenaway and Ormerod (2018) where the Gaussian
 //'     hypergeometric function is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only
 //''    meant to be used for comparative purposes.}
-//'     
+//'
 //'     \item{"liang_g2"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
 //'      \eqn{a=3} evaluated directly using Equation (11)  of Greenaway and Ormerod (2018).}
-//'     
+//'
 //'     \item{"liang_g_n_appell"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior
 //'      hyperparameter \eqn{a=3} evaluated using the {appell R} package.}
-//'     
+//'
 //'     \item{"liang_g_approx"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
 //'      \eqn{a=3} using the approximation Equation (15)  of Greenaway and Ormerod (2018) for model with more
 //'       than two covariates and numerical quadrature (see below) for models with one or two covariates.}
-//'     
+//'
 //'     \item{"liang_g_n_quad"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
 //'      \eqn{a=3} evaluated using a composite trapezoid rule.}
-//'     
+//'
 //'     \item{"robust_bayarri1"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
-//'     parameter choices evaluated directly using Equation (18)  of Greenaway and Ormerod (2018) with the 
+//'     parameter choices evaluated directly using Equation (18)  of Greenaway and Ormerod (2018) with the
 //'     {gsl} library.}
-//'     
+//'
 //'     \item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
 //'     parameter choices evaluated directly using Equation (19) of Greenaway and Ormerod (2018).}
 //' }
@@ -246,7 +246,7 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 // [[Rcpp::export]]
 List blma_fixed(NumericVector vy, NumericMatrix mX, NumericMatrix mZ, std::string prior,
                 std::string modelprior = "uniform", Nullable<NumericVector> modelpriorvec = R_NilValue,
-                const uint cores = 1) {
+                const unsigned int cores = 1) {
   Map<VectorXd> vy_m = as< Map<VectorXd> >(vy);
   Map<MatrixXd> mX_m = as< Map<MatrixXd> >(mX);
   Map<MatrixXd> mZ_m = as< Map<MatrixXd> >(mZ);
