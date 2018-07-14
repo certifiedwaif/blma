@@ -1,4 +1,4 @@
-// cva.h
+// pva.h
 #include <Rcpp.h>
 // Enable C++11 via this plugin (Rcpp 0.10.3 or later)
 // [[Rcpp::plugins(cpp11)]]
@@ -20,9 +20,6 @@
 using namespace std;
 using namespace Rcpp;
 
-typedef std::function<double (const int N, const int p, double vR2, int vp_gamma)>  log_prob_fn;
-
-void set_log_prob(const string prior, std::function<double (const int n, const int p, double vR2, int vp_gamma)>& log_prob);
 double calculate_log_prob(const uint n, const uint p, const double R2, const uint p_gamma,
                           const dbitset& gamma,
                           const std::function<double (const int n, const int p, double vR2, int vp_gamma)> log_prob,
@@ -53,7 +50,7 @@ double calculate_sigma2_prime(const uint n, const uint p_gamma_prime,
                               const Eigen::MatrixBase<Derived1>& mX, const dbitset& gamma_prime,
                               const Eigen::MatrixBase<Derived2>& vy,
                               const Eigen::MatrixBase<Derived3>& mXTX_inv_prime);
-List cva(const NumericVector vy_in, const NumericMatrix mX_in,
+List pva(const NumericVector vy_in, const NumericMatrix mX_in,
          const NumericMatrix mGamma_in,
          const std::string prior,
          const std::string modelprior, const Nullable<NumericVector> modelpriorvec_in,

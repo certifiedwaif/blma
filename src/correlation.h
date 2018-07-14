@@ -4,6 +4,7 @@
 #include <Rcpp.h>
 #include <RcppEigen.h>
 #include "graycode.h"
+#include "prior.h"
 typedef unsigned int uint;
 // [[Rcpp::depends(RcppEigen)]]
 // [[Rcpp::depends(BH)]]
