@@ -19,7 +19,7 @@
 #include "graycode.h"
 #include "correlation.h"
 #include "priors.h"
-#include "cva.h"
+#include "pva.h"
 // #define DEBUG
 
 using namespace std;
