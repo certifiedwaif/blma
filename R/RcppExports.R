@@ -58,7 +58,7 @@
 #' \itemize{
 #'   \item{"mGamma"}{-- A K by p binary matrix containing the final population of models}
 #'
-#'   \item{"vgamma.hat"}{-- The most probable model found by cva}
+#'   \item{"vgamma.hat"}{-- The most probable model found by pva}
 #'
 #'   \item{"vlogp"}{-- The null-based Bayes factor for each model in the population}
 #'
@@ -104,7 +104,7 @@
 #' K <- 100
 #' p <- ncol(X.f)
 #' initial_gamma <- matrix(rbinom(K * p, 1, .5), K, p)
-#' cva_result <- cva(y.t, X.f, initial_gamma, prior = "BIC", modelprior = "uniform",
+#' pva_result <- pva(y.t, X.f, initial_gamma, prior = "BIC", modelprior = "uniform",
 #'                   modelpriorvec_in=NULL)
 #' @references
 #' Bayarri, M. J., Berger, J. O., Forte, A., Garcia-Donato, G., 2012. Criteria for Bayesian
@@ -121,8 +121,8 @@
 #' Ormerod, J. T., Stewart, M., Yu, W., Romanes, S. E., 2017. Bayesian hypothesis tests
 #' with diffuse priors: Can we have our cake and eat it too?
 #' @export
-cva <- function(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in = NULL, bUnique = TRUE, lambda = 1., cores = 1L) {
-    .Call('blma_cva', PACKAGE = 'blma', vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in, bUnique, lambda, cores)
+pva <- function(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in = NULL, bUnique = TRUE, lambda = 1., cores = 1L) {
+    .Call('blma_pva', PACKAGE = 'blma', vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in, bUnique, lambda, cores)
 }
 
 #' Perform Bayesian Linear Model Averaging over all of the possible linear models where vy is the response

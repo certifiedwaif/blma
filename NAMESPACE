@@ -2,8 +2,8 @@
 
 export(blma)
 export(blma_fixed)
-export(cva)
 export(graycode)
+export(pva)
 export(sampler)
 importFrom(Rcpp,evalCpp)
 useDynLib(blma)
