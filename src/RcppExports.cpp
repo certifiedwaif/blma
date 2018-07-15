@@ -7,6 +7,8 @@
 
 using namespace Rcpp;
 
+typedef unsigned int uint;
+
 // pva
 List pva(const NumericVector vy_in, const NumericMatrix mX_in, const NumericMatrix mGamma_in, const std::string prior, const std::string modelprior, const Nullable<NumericVector> modelpriorvec_in, const bool bUnique, const double lambda, const int cores);
 RcppExport SEXP blma_pva(SEXP vy_inSEXP, SEXP mX_inSEXP, SEXP mGamma_inSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvec_inSEXP, SEXP bUniqueSEXP, SEXP lambdaSEXP, SEXP coresSEXP) {

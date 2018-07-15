@@ -445,6 +445,7 @@ graycode <- function(varying, fixed = 0L) {
 #' p <- ncol(X.f)
 #' sampler_result <- sampler(10000, y.t, X.f, prior = "BIC", modelprior = "uniform",
 #'                           modelpriorvec_in=NULL)
+#'
 #' @references
 #' Bayarri, M. J., Berger, J. O., Forte, A., Garcia-Donato, G., 2012. Criteria for Bayesian
 #' model choice with application to variable selection. Annals of Statistics 40 (3), 1550-
