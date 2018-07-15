@@ -1,7 +1,7 @@
 #include <Rcpp.h>
 #if defined(_OPENMP)
   #include <omp.h>
-#endif;
+#endif
 
 #include "graycode.h"
 #include "correlation.h"

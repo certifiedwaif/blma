@@ -297,3 +297,36 @@ double robust_bayarri2(const int n, const int p, double R2, int p_gamma)
   #endif
   return log_vp_gprior7;
 }
+
+
+void set_log_prob(const string prior, log_prob_fn& log_prob)
+{
+  if (prior == "maruyama") {
+    log_prob = maruyama;
+  } else if (prior == "BIC") {
+    log_prob = BIC;
+  } else if (prior == "ZE") {
+    log_prob = ZE;
+  } else if (prior == "liang_g1") {
+    log_prob = liang_g1;
+  } else if (prior == "liang_g2") {
+    log_prob = liang_g2;
+  } else if (prior == "liang_g_n_appell") {
+    log_prob = liang_g_n_appell;
+  } else if (prior == "liang_g_n_approx") {
+    log_prob = liang_g_n_approx;
+  } else if (prior == "liang_g_n_quad") {
+    log_prob = liang_g_n_quad;
+  } else if (prior == "robust_bayarri1") {
+    log_prob = robust_bayarri1;
+  } else if (prior == "robust_bayarri2") {
+    log_prob = robust_bayarri2;
+  } else {
+    stringstream ss;
+    ss << "Prior " << prior << " unknown";
+    Rcpp::stop(ss.str());
+  }
+}
+
+
+

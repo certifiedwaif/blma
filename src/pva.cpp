@@ -19,7 +19,7 @@
 #include "graycode.h"
 #include "correlation.h"
 #include "priors.h"
-#include "cva.h"
+#include "pva.h"
 // #define DEBUG
 
 using namespace std;
@@ -31,36 +31,6 @@ namespace boost
   template <typename B, typename A>
   std::size_t hash_value(const boost::dynamic_bitset<B, A>& bs) {
     return boost::hash_value(bs.m_bits);
-  }
-}
-
-
-void set_log_prob(const string prior, log_prob_fn& log_prob)
-{
-  if (prior == "maruyama") {
-    log_prob = maruyama;
-  } else if (prior == "BIC") {
-    log_prob = BIC;
-  } else if (prior == "ZE") {
-    log_prob = ZE;
-  } else if (prior == "liang_g1") {
-    log_prob = liang_g1;
-  } else if (prior == "liang_g2") {
-    log_prob = liang_g2;
-  } else if (prior == "liang_g_n_appell") {
-    log_prob = liang_g_n_appell;
-  } else if (prior == "liang_g_n_approx") {
-    log_prob = liang_g_n_approx;
-  } else if (prior == "liang_g_n_quad") {
-    log_prob = liang_g_n_quad;
-  } else if (prior == "robust_bayarri1") {
-    log_prob = robust_bayarri1;
-  } else if (prior == "robust_bayarri2") {
-    log_prob = robust_bayarri2;
-  } else {
-    stringstream ss;
-    ss << "Prior " << prior << " unknown";
-    Rcpp::stop(ss.str());
   }
 }
 
@@ -341,7 +311,7 @@ double calculate_sigma2_prime(const uint n, const uint p_gamma_prime,
 //' \itemize{
 //'   \item{"mGamma"}{-- A K by p binary matrix containing the final population of models}
 //'
-//'   \item{"vgamma.hat"}{-- The most probable model found by cva}
+//'   \item{"vgamma.hat"}{-- The most probable model found by pva}
 //'
 //'   \item{"vlogp"}{-- The null-based Bayes factor for each model in the population}
 //'
@@ -387,7 +357,7 @@ double calculate_sigma2_prime(const uint n, const uint p_gamma_prime,
 //' K <- 100
 //' p <- ncol(X.f)
 //' initial_gamma <- matrix(rbinom(K * p, 1, .5), K, p)
-//' cva_result <- cva(y.t, X.f, initial_gamma, prior = "BIC", modelprior = "uniform",
+//' pva_result <- pva(y.t, X.f, initial_gamma, prior = "BIC", modelprior = "uniform",
 //'                   modelpriorvec_in=NULL)
 //' @references
 //' Bayarri, M. J., Berger, J. O., Forte, A., Garcia-Donato, G., 2012. Criteria for Bayesian
@@ -405,7 +375,7 @@ double calculate_sigma2_prime(const uint n, const uint p_gamma_prime,
 //' with diffuse priors: Can we have our cake and eat it too?
 //' @export
 // [[Rcpp::export]]
-List cva(const NumericVector vy_in, const NumericMatrix mX_in,
+List pva(const NumericVector vy_in, const NumericMatrix mX_in,
          const NumericMatrix mGamma_in,
          const std::string prior,
          const std::string modelprior,  const Nullable<NumericVector> modelpriorvec_in = R_NilValue,
