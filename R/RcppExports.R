@@ -443,8 +443,7 @@ graycode <- function(varying, fixed = 0L) {
 #' colnames(X.f) <- varnames
 #' K <- 100
 #' p <- ncol(X.f)
-#' initial_gamma <- matrix(rbinom(K * p, 1, .5), K, p)
-#' sampler_result <- sampler(10000, y.t, X.f, initial_gamma, prior = "BIC", modelprior = "uniform",
+#' sampler_result <- sampler(10000, y.t, X.f, prior = "BIC", modelprior = "uniform",
 #'                           modelpriorvec_in=NULL)
 #' @references
 #' Bayarri, M. J., Berger, J. O., Forte, A., Garcia-Donato, G., 2012. Criteria for Bayesian

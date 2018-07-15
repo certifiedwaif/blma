@@ -104,8 +104,7 @@ X.f <- data.matrix(cbind(mD[1:15]))
 colnames(X.f) <- varnames
 K <- 100
 p <- ncol(X.f)
-initial_gamma <- matrix(rbinom(K * p, 1, .5), K, p)
-sampler_result <- sampler(10000, y.t, X.f, initial_gamma, prior = "BIC", modelprior = "uniform",
+sampler_result <- sampler(10000, y.t, X.f, prior = "BIC", modelprior = "uniform",
                           modelpriorvec_in=NULL)
 }
 \references{
