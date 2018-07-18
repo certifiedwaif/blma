@@ -32,6 +32,9 @@ Eigen::MatrixBase<Derived2>& get_cols(const Eigen::MatrixBase<Derived1>& m1, con
 template <typename Derived1, typename Derived2>
 Eigen::MatrixBase<Derived2>& get_rows(const Eigen::MatrixBase<Derived1>& m1, const dbitset& gamma, Eigen::MatrixBase<Derived2>& m2);
 template <typename Derived1, typename Derived2>
+Eigen::MatrixBase<Derived2>& get_rows_and_cols(const Eigen::MatrixBase<Derived1>& m1, const dbitset& rows_bs,
+const dbitset& cols_bs, Eigen::MatrixBase<Derived2>& m2);
+template <typename Derived1, typename Derived2>
 Eigen::MatrixBase<Derived2>& rank_one_update(const dbitset& gamma, const uint col_abs, const uint min_idx,
   const uint fixed,
 const Eigen::MatrixBase<Derived1>& mXTX, const Eigen::MatrixBase<Derived1>& mA, Eigen::MatrixBase<Derived2>& mA_prime, bool& bLow);

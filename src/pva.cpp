@@ -278,7 +278,7 @@ double calculate_sigma2_prime(const uint n, const uint p_gamma_prime,
 //'     \item{"liang_g_n_appell"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior
 //'      hyperparameter \eqn{a=3} evaluated using the {appell R} package.}
 //'
-//'     \item{"liang_g_approx"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
+//'     \item{"liang_g_n_approx"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
 //'      \eqn{a=3} using the approximation Equation (15)  of Greenaway and Ormerod (2018) for model with more
 //'       than two covariates and numerical quadrature (see below) for models with one or two covariates.}
 //'
@@ -509,7 +509,7 @@ List pva(const NumericVector vy_in, const NumericMatrix mX_in,
     #endif
 
     #pragma omp parallel for\
-      shared(vy, mX, modelprior, modelpriorvec, mGamma, gamma, log_prob, log_probs, w, mXTX_inv, sigma2, vm)\
+      shared(vy, mX, modelpriorvec, mGamma, gamma, log_prob, log_probs, w, mXTX_inv, sigma2, vm)\
       default(none)
     for (auto k = 0; k < K; k++) {
       #ifdef DEBUG

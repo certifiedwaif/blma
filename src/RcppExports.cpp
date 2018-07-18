@@ -71,6 +71,40 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// sampler_new_new
+List sampler_new_new(const int iterations, const NumericVector vy_in, const NumericMatrix mX_in, const std::string prior, const std::string modelprior, const Nullable<NumericVector> modelpriorvec_in, const int cores);
+RcppExport SEXP _blma_sampler_new_new(SEXP iterationsSEXP, SEXP vy_inSEXP, SEXP mX_inSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvec_inSEXP, SEXP coresSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const int >::type iterations(iterationsSEXP);
+    Rcpp::traits::input_parameter< const NumericVector >::type vy_in(vy_inSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix >::type mX_in(mX_inSEXP);
+    Rcpp::traits::input_parameter< const std::string >::type prior(priorSEXP);
+    Rcpp::traits::input_parameter< const std::string >::type modelprior(modelpriorSEXP);
+    Rcpp::traits::input_parameter< const Nullable<NumericVector> >::type modelpriorvec_in(modelpriorvec_inSEXP);
+    Rcpp::traits::input_parameter< const int >::type cores(coresSEXP);
+    rcpp_result_gen = Rcpp::wrap(sampler_new_new(iterations, vy_in, mX_in, prior, modelprior, modelpriorvec_in, cores));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sampler_new
+List sampler_new(const int iterations, const NumericVector vy_in, const NumericMatrix mX_in, const std::string prior, const std::string modelprior, const Nullable<NumericVector> modelpriorvec_in, const int cores);
+RcppExport SEXP _blma_sampler_new(SEXP iterationsSEXP, SEXP vy_inSEXP, SEXP mX_inSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvec_inSEXP, SEXP coresSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const int >::type iterations(iterationsSEXP);
+    Rcpp::traits::input_parameter< const NumericVector >::type vy_in(vy_inSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix >::type mX_in(mX_inSEXP);
+    Rcpp::traits::input_parameter< const std::string >::type prior(priorSEXP);
+    Rcpp::traits::input_parameter< const std::string >::type modelprior(modelpriorSEXP);
+    Rcpp::traits::input_parameter< const Nullable<NumericVector> >::type modelpriorvec_in(modelpriorvec_inSEXP);
+    Rcpp::traits::input_parameter< const int >::type cores(coresSEXP);
+    rcpp_result_gen = Rcpp::wrap(sampler_new(iterations, vy_in, mX_in, prior, modelprior, modelpriorvec_in, cores));
+    return rcpp_result_gen;
+END_RCPP
+}
 // sampler
 List sampler(const int iterations, const NumericVector vy_in, const NumericMatrix mX_in, const std::string prior, const std::string modelprior, const Nullable<NumericVector> modelpriorvec_in, const int cores);
 RcppExport SEXP _blma_sampler(SEXP iterationsSEXP, SEXP vy_inSEXP, SEXP mX_inSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvec_inSEXP, SEXP coresSEXP) {
@@ -94,6 +128,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_blma_blma", (DL_FUNC) &_blma_blma, 6},
     {"_blma_blma_fixed", (DL_FUNC) &_blma_blma_fixed, 7},
     {"_blma_graycode", (DL_FUNC) &_blma_graycode, 2},
+    {"_blma_sampler_new_new", (DL_FUNC) &_blma_sampler_new_new, 7},
+    {"_blma_sampler_new", (DL_FUNC) &_blma_sampler_new, 7},
     {"_blma_sampler", (DL_FUNC) &_blma_sampler, 7},
     {NULL, NULL, 0}
 };

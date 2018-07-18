@@ -166,41 +166,65 @@ List sampler_new_new(const int iterations,
   VectorXd modelpriorvec(modelpriorvec_r.length());
   for (auto i = 0; i < modelpriorvec_r.length(); i++)
     modelpriorvec(i) = modelpriorvec_r(i);
-  MatrixXd mGamma(iterations, mX_in.ncol());
-  mGamma.row(0) = gamma_to_row(gamma_curr);
 
   MatrixXd mXTX = mX.transpose() * mX;
-  Matrix mXTy = mX.transpose() * vy;
+  MatrixXd mXTy = mX.transpose() * vy;
   int q;
   double R2;
   MatrixXd mGamma(iterations, p);
   dbitset gamma(p);
+  mGamma.row(0) = gamma_to_row(gamma);
   double log_BF_curr;
+  MatrixXd mA;
+  MatrixXd vb;
+  log_prob_fn log_prob;
+  set_log_prob(prior, log_prob);
 
   for (auto i = 0; i < iterations - 1; i++) {
     q = gamma.count();
     if (q == 0) {
       R2 = 0.;
     } else {
+      mA.resize(q, q);
       mA = get_rows_and_cols(mXTX, gamma, gamma, mA);
+      vb.resize(q, 1);
       vb = get_rows(mXTy, gamma, vb);
       R2 = (vb.transpose() * mA.inverse() * vb / n).value();
     }
+#ifdef DEBUG
+    Rcpp::Rcout << "R2 " << R2 << std::endl;
+#endif
     log_BF_curr = calculate_log_prob(n, p, R2, q, gamma, log_prob, modelprior, modelpriorvec);
-  
+    // log_BF_curr = BIC(n, p, R2, q);
+#ifdef DEBUG
+    Rcpp::Rcout << "log_BF_curr " << log_BF_curr << std::endl;
+#endif
+
     for (auto j = 0; j < p; j++) {
       dbitset gamma_prop = gamma;
       gamma_prop[j] = !gamma[j];
-  
+#ifdef DEBUG
+      Rcpp::Rcout << "gamma " << gamma << " gamma_prop " << gamma_prop << std::endl;
+#endif
+
       q = gamma_prop.count();
       if (q == 0) {
         R2 = 0.;
       } else {
+        mA.resize(q, q);
         mA = get_rows_and_cols(mXTX, gamma_prop, gamma_prop, mA);
+        vb.resize(q, 1);
         vb = get_rows(mXTy, gamma_prop, vb);
         R2 = (vb.transpose() * mA.inverse() * vb / n).value();
       }
+#ifdef DEBUG
+      Rcpp::Rcout << "R2 " << R2 << std::endl;
+#endif
       auto log_BF_prop = calculate_log_prob(n, p, R2, q, gamma_prop, log_prob, modelprior, modelpriorvec);
+      // auto log_BF_prop = BIC(n, p, R2, q);
+#ifdef DEBUG
+      Rcpp::Rcout << "log_BF_prop " << log_BF_prop << std::endl;
+#endif
 
       auto r = 1. / (1. + exp(log_BF_prop - log_BF_curr));
 
@@ -210,7 +234,7 @@ List sampler_new_new(const int iterations,
       }
     }
 
-    mGamma.row(i + 1) = gamma_to_row(gamma);
+    mGamma.row(i) = gamma_to_row(gamma);
   }
 
   return List::create(Named("mGamma") = mGamma);
