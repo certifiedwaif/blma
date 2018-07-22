@@ -17,7 +17,7 @@ using namespace std;
 //' @importFrom Rcpp evalCpp
 //' @useDynLib blma
 //'
-//' @usage blma(y.t, X.f, "maruyama")
+//' @usage blma(vy, mX, prior = "maruyama", modelprior = "uniform", modelpriorvec = NULL)
 //' @param vy Vector of responses
 //' @param mX Covariate matrix
 //' @param prior -- the choice of mixture $g$-prior used to perform Bayesian model

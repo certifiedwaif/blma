@@ -28,7 +28,8 @@ using namespace std;
 using namespace Rcpp;
 
 //' sampler
-//' @usage sampler_new(10000, y.t, X.f, prior = "BIC", modelprior = "uniform", modelpriorvec_in=NULL)
+//' @usage sampler_new(iterations, vy, mX, prior = "BIC", modelprior = "uniform",
+//' modelpriorvec_in=NULL)
 //' @param iterations The number of iterations to run the MCMC sampler for
 //' @param vy_in Vector of responses
 //' @param mX_in The matrix of covariates which may or may not be included in each model

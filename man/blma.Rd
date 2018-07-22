@@ -5,7 +5,7 @@
 \title{Perform Bayesian Linear Model Averaging over all of the possible linear models where 
 vy is the response and the covariates are in mX.}
 \usage{
-blma(y.t, X.f, "maruyama")
+blma(vy, mX, prior = "maruyama", modelprior = "uniform", modelpriorvec = NULL)
 }
 \arguments{
 \item{vy}{Vector of responses}

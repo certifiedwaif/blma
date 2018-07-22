@@ -4,7 +4,8 @@
 \alias{sampler_new}
 \title{sampler}
 \usage{
-sampler_new(10000, y.t, X.f, prior = "BIC", modelprior = "uniform", modelpriorvec_in=NULL)
+sampler_new(iterations, vy, mX, prior = "BIC", modelprior = "uniform",
+modelpriorvec_in=NULL)
 }
 \arguments{
 \item{iterations}{The number of iterations to run the MCMC sampler for}
