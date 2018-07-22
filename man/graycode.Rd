@@ -9,12 +9,13 @@ graycode(varying, fixed)
 \arguments{
 \item{varying}{The number of covariates varying in the graycode matrix}
 
-\item{fixed}{The number of fixed covariates in the graycode matrix. These covariates will always be included}
+\item{fixed}{The number of fixed covariates in the graycode matrix. These
+covariates will always be included}
 }
 \value{
-The graycode matrix. The number of fixed columns will be included in the lower indexed columns
-as 1s, while the higher indexed columns will varying depending on whether each covariate in the varying
-set of covariates is included or not.
+The graycode matrix. The number of fixed columns will be included in the //' lower indexed columns as 1s, while the higher indexed columns will varying
+depending on whether each covariate in the varying set of covariates is included 
+or not.
 }
 \description{
 Return the graycode matrix

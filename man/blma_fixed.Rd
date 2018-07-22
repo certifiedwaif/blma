@@ -2,8 +2,8 @@
 % Please edit documentation in R/RcppExports.R
 \name{blma_fixed}
 \alias{blma_fixed}
-\title{Perform Bayesian Linear Model Averaging over all of the possible linear models where vy is the response,
-covariates that may be included are in mZ and covariates which are always included are in mX.}
+\title{Perform Bayesian Linear Model Averaging over all of the possible linear models where //' vy is the response, covariates that may be included are in mZ and covariates which
+are always included are in mX.}
 \usage{
 blma_fixed(y.t, X.f, Z.f, "maruyama")
 }
@@ -12,54 +12,62 @@ blma_fixed(y.t, X.f, Z.f, "maruyama")
 
 \item{mX}{The matrix of fixed covariates which will be included in every model}
 
-\item{mZ}{The matrix of varying covariates, which may or may not be included in each model}
+\item{mZ}{The matrix of varying covariates, which may or may not be included in each 
+model}
 
-\item{prior}{-- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices
-available include:
+\item{prior}{-- the choice of mixture $g$-prior used to perform Bayesian model
+averaging. The choices available include:
   \itemize{
-    \item{"BIC"}{-- the Bayesian information criterion obtained by using the cake prior
-    of Ormerod et al. (2017).}
+    \item{"BIC"}{-- the Bayesian information criterion obtained by using the cake
+    prior of Ormerod et al. (2017).}
 
-    \item{"ZE"}{-- special case of the prior structure described by Maruyama and George (2011).}
+    \item{"ZE"}{-- special case of the prior structure described by Maruyama and
+George (2011).}
 
-    \item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
-    \eqn{a=3} evaluated directly using Equation (10) of Greenaway and Ormerod (2018) where the Gaussian
-    hypergeometric function is evaluated using the {gsl} library. Note: this option can lead to numerical problems and is only
-'    meant to be used for comparative purposes.}
+    \item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior 
+hyperparameter \eqn{a=3} evaluated directly using Equation (10) of Greenaway and 
+Ormerod (2018) where the Gaussian hypergeometric function is evaluated using the 
+{gsl} library. Note: this option can lead to numerical problems and is only
+    meant to be used for comparative purposes.}
 
-    \item{"liang_g2"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior hyperparameter
-     \eqn{a=3} evaluated directly using Equation (11)  of Greenaway and Ormerod (2018).}
+    \item{"liang_g2"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior 
+hyperparameter \eqn{a=3} evaluated directly using Equation (11) of Greenaway and 
+Ormerod (2018).}
 
-    \item{"liang_g_n_appell"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior
-     hyperparameter \eqn{a=3} evaluated using the {appell R} package.}
+    \item{"liang_g_n_appell"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008)
+with prior hyperparameter \eqn{a=3} evaluated using the {appell R} package.}
 
-    \item{"liang_g_approx"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
-     \eqn{a=3} using the approximation Equation (15)  of Greenaway and Ormerod (2018) for model with more
-      than two covariates and numerical quadrature (see below) for models with one or two covariates.}
+    \item{"liang_g_approx"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008)
+with prior hyperparameter eqn{a=3} using the approximation Equation (15)  of
+Greenaway and Ormerod (2018) for model with more than two covariates and
+numerical quadrature (see below) for models with one or two covariates.}
 
-    \item{"liang_g_n_quad"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008) with prior hyperparameter
-     \eqn{a=3} evaluated using a composite trapezoid rule.}
+    \item{"liang_g_n_quad"}{-- the mixture \eqn{g/n}-prior of Liang et al. (2008)
+with prior hyperparameter eqn{a=3} evaluated using a composite trapezoid rule.}
 
-    \item{"robust_bayarri1"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
-    parameter choices evaluated directly using Equation (18)  of Greenaway and Ormerod (2018) with the
-    {gsl} library.}
+    \item{"robust_bayarri1"}{-- the robust prior of Bayarri et al. (2012) using
+default prior hyper choices evaluated directly using Equation (18)  of
+    Greenaway and Ormerod (2018) with the {gsl} library.}
 
-    \item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012) using default prior hyper
-    parameter choices evaluated directly using Equation (19) of Greenaway and Ormerod (2018).}
+    \item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012) using 
+default prior hyper choices evaluated directly using Equation (19) of
+Greenaway Ormerod (2018).}
 }}
 
-\item{modelprior}{The model prior to use. The choices of model prior are "uniform", "beta-binomial" or
-"bernoulli". The choice of model prior dictates the meaning of the parameter modelpriorvec.}
+\item{modelprior}{The model prior to use. The choices of model prior are "uniform",
+"beta-binomial" or "bernoulli". The choice of model prior dictates the meaning of the
+parameter modelpriorvec.}
 
-\item{modelpriorvec}{If modelprior is "uniform", then the modelpriorvec is ignored and can be null.
+\item{modelpriorvec}{If modelprior is "uniform", then the modelpriorvec is ignored
+and can be null.
 
-If the modelprior is "beta-binomial" then modelpriorvec should be length 2 with the first element containing
-the alpha hyperparameter for the beta prior and the second element containing the beta hyperparameter for
-the beta prior.
+If modelprior is "beta-binomial" then modelpriorvec should be length 2 with the first
+element containing alpha hyperparameter for the beta prior and the second element
+containing the beta hyperparameter for beta prior.
 
-If modelprior is "bernoulli", then modelpriorvec must be of the same length as the number
-of columns in mX. Each element i of modelpriorvec contains the prior probability of the the ith covariate
-being included in the model.}
+If modelprior is "bernoulli", then modelpriorvec must be of the same length as the
+number columns in mX. Each element i of modelpriorvec contains the prior probability 
+of the the ith covariate being included in the model.}
 
 \item{cores}{The number of cores to use. Defaults to 1}
 }
@@ -69,12 +77,13 @@ A list containing
 \item{vR2}{the vector of correlations for each model}
 \item{vp_gamma}{the vector of number of covariates for each model}
 \item{vlogp}{the vector of logs of the likelihoods of each model}
-\item{vinclusion_prob}{the vector of inclusion probabilities for each of the covariates}
+\item{vinclusion_prob}{the vector of inclusion probabilities for each of the
+      covariates}
 }
 }
 \description{
-Perform Bayesian Linear Model Averaging over all of the possible linear models where vy is the response,
-covariates that may be included are in mZ and covariates which are always included are in mX.
+Perform Bayesian Linear Model Averaging over all of the possible linear models where //' vy is the response, covariates that may be included are in mZ and covariates which
+are always included are in mX.
 }
 \examples{
 mD <- MASS::UScrime
@@ -102,23 +111,23 @@ varnames <- c(
   "log(prison)",
   "log(time)")
 
-y.t <- mD$y
-X.f <- data.matrix(cbind(mD[, 1:10]))
-colnames(X.f) <- varnames[1:10]
-Z.f <- data.matrix(cbind(mD[, 11:15]))
-blma_result <- blma_fixed(y.t, X.f, Z.f, "maruyama")
+vy <- mD$y
+mX <- data.matrix(cbind(mD[, 1:10]))
+colnames(mX) <- varnames[1:10]
+mZ <- data.matrix(cbind(mD[, 11:15]))
+blma_result <- blma_fixed(vy, mX, mZ, "maruyama")
 }
 \references{
-Bayarri, M. J., Berger, J. O., Forte, A., Garcia-Donato, G., 2012. Criteria for Bayesian
-model choice with application to variable selection. Annals of Statistics 40 (3), 1550-
-1577.
+Bayarri, M. J., Berger, J. O., Forte, A., Garcia-Donato, G., 2012. Criteria for
+Bayesian model choice with application to variable selection. Annals of Statistics
+40 (3), 1550-1577.
 
-Greenaway, M. J., J. T. Ormerod (2018) Numerical aspects of Bayesian linear models averaging using mixture
-g-priors.
+Greenaway, M. J., J. T. Ormerod (2018) Numerical aspects of Bayesian linear models
+averaging using mixture g-priors.
 
-Liang, F., Paulo, R., Molina, G., Clyde, M. a., Berger, J. O., 2008. Mixtures of g priors for
-Bayesian variable selection. Journal of the American Statistical Association 103 (481),
-410-423.
+Liang, F., Paulo, R., Molina, G., Clyde, M. a., Berger, J. O., 2008. Mixtures of g
+priors for Bayesian variable selection. Journal of the American Statistical
+Association 103 (481), 410-423.
 
 Ormerod, J. T., Stewart, M., Yu, W., Romanes, S. E., 2017. Bayesian hypothesis tests
 with diffuse priors: Can we have our cake and eat it too?
