@@ -2,10 +2,9 @@
 % Please edit documentation in R/RcppExports.R
 \name{sampler_new_new}
 \alias{sampler_new_new}
-\title{sampler}
+\title{sampler_new_new}
 \usage{
-sampler_new_new(iterations, vy_in, mX_in, prior, modelprior,
-  modelpriorvec_in = NULL, cores = 1L)
+sampler_new_new(10000, y.t, X.f, prior = "BIC", modelprior = "uniform", modelpriorvec_in=NULL)
 }
 \arguments{
 \item{iterations}{The number of iterations to run the MCMC sampler for}
@@ -71,7 +70,7 @@ The object returned is a list containing:
 }
 }
 \description{
-sampler
+sampler_new_new
 }
 \examples{
 mD <- MASS::UScrime

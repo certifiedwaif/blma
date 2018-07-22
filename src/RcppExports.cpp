@@ -9,7 +9,7 @@ using namespace Rcpp;
 
 // pva
 List pva(const NumericVector vy_in, const NumericMatrix mX_in, const NumericMatrix mGamma_in, const std::string prior, const std::string modelprior, const Nullable<NumericVector> modelpriorvec_in, const bool bUnique, const double lambda, const int cores);
-RcppExport SEXP _blma_pva(SEXP vy_inSEXP, SEXP mX_inSEXP, SEXP mGamma_inSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvec_inSEXP, SEXP bUniqueSEXP, SEXP lambdaSEXP, SEXP coresSEXP) {
+RcppExport SEXP blma_pva(SEXP vy_inSEXP, SEXP mX_inSEXP, SEXP mGamma_inSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvec_inSEXP, SEXP bUniqueSEXP, SEXP lambdaSEXP, SEXP coresSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -28,7 +28,7 @@ END_RCPP
 }
 // blma
 List blma(NumericVector vy, NumericMatrix mX, std::string prior, std::string modelprior, Nullable<NumericVector> modelpriorvec, const unsigned int cores);
-RcppExport SEXP _blma_blma(SEXP vySEXP, SEXP mXSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvecSEXP, SEXP coresSEXP) {
+RcppExport SEXP blma_blma(SEXP vySEXP, SEXP mXSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvecSEXP, SEXP coresSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -44,7 +44,7 @@ END_RCPP
 }
 // blma_fixed
 List blma_fixed(NumericVector vy, NumericMatrix mX, NumericMatrix mZ, std::string prior, std::string modelprior, Nullable<NumericVector> modelpriorvec, const unsigned int cores);
-RcppExport SEXP _blma_blma_fixed(SEXP vySEXP, SEXP mXSEXP, SEXP mZSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvecSEXP, SEXP coresSEXP) {
+RcppExport SEXP blma_blma_fixed(SEXP vySEXP, SEXP mXSEXP, SEXP mZSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvecSEXP, SEXP coresSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -61,7 +61,7 @@ END_RCPP
 }
 // graycode
 IntegerMatrix graycode(unsigned int varying, unsigned int fixed);
-RcppExport SEXP _blma_graycode(SEXP varyingSEXP, SEXP fixedSEXP) {
+RcppExport SEXP blma_graycode(SEXP varyingSEXP, SEXP fixedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -73,7 +73,7 @@ END_RCPP
 }
 // sampler_new_new
 List sampler_new_new(const int iterations, const NumericVector vy_in, const NumericMatrix mX_in, const std::string prior, const std::string modelprior, const Nullable<NumericVector> modelpriorvec_in, const int cores);
-RcppExport SEXP _blma_sampler_new_new(SEXP iterationsSEXP, SEXP vy_inSEXP, SEXP mX_inSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvec_inSEXP, SEXP coresSEXP) {
+RcppExport SEXP blma_sampler_new_new(SEXP iterationsSEXP, SEXP vy_inSEXP, SEXP mX_inSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvec_inSEXP, SEXP coresSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -90,7 +90,7 @@ END_RCPP
 }
 // sampler_new
 List sampler_new(const int iterations, const NumericVector vy_in, const NumericMatrix mX_in, const std::string prior, const std::string modelprior, const Nullable<NumericVector> modelpriorvec_in, const int cores);
-RcppExport SEXP _blma_sampler_new(SEXP iterationsSEXP, SEXP vy_inSEXP, SEXP mX_inSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvec_inSEXP, SEXP coresSEXP) {
+RcppExport SEXP blma_sampler_new(SEXP iterationsSEXP, SEXP vy_inSEXP, SEXP mX_inSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvec_inSEXP, SEXP coresSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -107,7 +107,7 @@ END_RCPP
 }
 // sampler
 List sampler(const int iterations, const NumericVector vy_in, const NumericMatrix mX_in, const std::string prior, const std::string modelprior, const Nullable<NumericVector> modelpriorvec_in, const int cores);
-RcppExport SEXP _blma_sampler(SEXP iterationsSEXP, SEXP vy_inSEXP, SEXP mX_inSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvec_inSEXP, SEXP coresSEXP) {
+RcppExport SEXP blma_sampler(SEXP iterationsSEXP, SEXP vy_inSEXP, SEXP mX_inSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvec_inSEXP, SEXP coresSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -121,20 +121,4 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(sampler(iterations, vy_in, mX_in, prior, modelprior, modelpriorvec_in, cores));
     return rcpp_result_gen;
 END_RCPP
-}
-
-static const R_CallMethodDef CallEntries[] = {
-    {"_blma_pva", (DL_FUNC) &_blma_pva, 9},
-    {"_blma_blma", (DL_FUNC) &_blma_blma, 6},
-    {"_blma_blma_fixed", (DL_FUNC) &_blma_blma_fixed, 7},
-    {"_blma_graycode", (DL_FUNC) &_blma_graycode, 2},
-    {"_blma_sampler_new_new", (DL_FUNC) &_blma_sampler_new_new, 7},
-    {"_blma_sampler_new", (DL_FUNC) &_blma_sampler_new, 7},
-    {"_blma_sampler", (DL_FUNC) &_blma_sampler, 7},
-    {NULL, NULL, 0}
-};
-
-RcppExport void R_init_blma(DllInfo *dll) {
-    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
-    R_useDynamicSymbols(dll, FALSE);
 }

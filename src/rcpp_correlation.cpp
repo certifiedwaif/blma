@@ -17,6 +17,7 @@ using namespace std;
 //' @importFrom Rcpp evalCpp
 //' @useDynLib blma
 //'
+//' @usage blma(y.t, X.f, "maruyama")
 //' @param vy Vector of responses
 //' @param mX Covariate matrix
 //' @param prior -- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices
@@ -140,6 +141,7 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 //' Perform Bayesian Linear Model Averaging over all of the possible linear models where vy is the response,
 //' covariates that may be included are in mZ and covariates which are always included are in mX.
 //'
+//' @usage blma_fixed(y.t, X.f, Z.f, "maruyama")
 //' @param vy The vector of responses
 //' @param mX The matrix of fixed covariates which will be included in every model
 //' @param mZ The matrix of varying covariates, which may or may not be included in each model
@@ -266,6 +268,7 @@ List blma_fixed(NumericVector vy, NumericMatrix mX, NumericMatrix mZ, std::strin
 
 //' Return the graycode matrix
 //'
+//' @usage graycode(varying, fixed)
 //' @param varying The number of covariates varying in the graycode matrix
 //' @param fixed The number of fixed covariates in the graycode matrix. These covariates will always be included
 //' @return The graycode matrix. The number of fixed columns will be included in the lower indexed columns

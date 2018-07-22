@@ -122,7 +122,7 @@
 #' with diffuse priors: Can we have our cake and eat it too?
 #' @export
 pva <- function(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in = NULL, bUnique = TRUE, lambda = 1., cores = 1L) {
-    .Call('_blma_pva', PACKAGE = 'blma', vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in, bUnique, lambda, cores)
+    .Call('blma_pva', PACKAGE = 'blma', vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in, bUnique, lambda, cores)
 }
 
 #' Perform Bayesian Linear Model Averaging over all of the possible linear models where vy is the response
@@ -131,6 +131,7 @@ pva <- function(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in = N
 #' @importFrom Rcpp evalCpp
 #' @useDynLib blma
 #'
+#' @usage blma(y.t, X.f, "maruyama")
 #' @param vy Vector of responses
 #' @param mX Covariate matrix
 #' @param prior -- the choice of mixture $g$-prior used to perform Bayesian model averaging. The choices
@@ -232,12 +233,13 @@ pva <- function(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in = N
 #' with diffuse priors: Can we have our cake and eat it too?
 #' @export
 blma <- function(vy, mX, prior, modelprior = "uniform", modelpriorvec = NULL, cores = 1L) {
-    .Call('_blma_blma', PACKAGE = 'blma', vy, mX, prior, modelprior, modelpriorvec, cores)
+    .Call('blma_blma', PACKAGE = 'blma', vy, mX, prior, modelprior, modelpriorvec, cores)
 }
 
 #' Perform Bayesian Linear Model Averaging over all of the possible linear models where vy is the response,
 #' covariates that may be included are in mZ and covariates which are always included are in mX.
 #'
+#' @usage blma_fixed(y.t, X.f, Z.f, "maruyama")
 #' @param vy The vector of responses
 #' @param mX The matrix of fixed covariates which will be included in every model
 #' @param mZ The matrix of varying covariates, which may or may not be included in each model
@@ -342,11 +344,12 @@ blma <- function(vy, mX, prior, modelprior = "uniform", modelpriorvec = NULL, co
 #' with diffuse priors: Can we have our cake and eat it too?
 #' @export
 blma_fixed <- function(vy, mX, mZ, prior, modelprior = "uniform", modelpriorvec = NULL, cores = 1L) {
-    .Call('_blma_blma_fixed', PACKAGE = 'blma', vy, mX, mZ, prior, modelprior, modelpriorvec, cores)
+    .Call('blma_blma_fixed', PACKAGE = 'blma', vy, mX, mZ, prior, modelprior, modelpriorvec, cores)
 }
 
 #' Return the graycode matrix
 #'
+#' @usage graycode(varying, fixed)
 #' @param varying The number of covariates varying in the graycode matrix
 #' @param fixed The number of fixed covariates in the graycode matrix. These covariates will always be included
 #' @return The graycode matrix. The number of fixed columns will be included in the lower indexed columns
@@ -354,11 +357,12 @@ blma_fixed <- function(vy, mX, mZ, prior, modelprior = "uniform", modelpriorvec 
 #' set of covariates is included or not.
 #' @export
 graycode <- function(varying, fixed = 0L) {
-    .Call('_blma_graycode', PACKAGE = 'blma', varying, fixed)
+    .Call('blma_graycode', PACKAGE = 'blma', varying, fixed)
 }
 
-#' sampler
+#' sampler_new_new
 #'
+#' @usage sampler_new_new(10000, y.t, X.f, prior = "BIC", modelprior = "uniform", modelpriorvec_in=NULL)
 #' @param iterations The number of iterations to run the MCMC sampler for
 #' @param vy_in Vector of responses
 #' @param mX_in The matrix of covariates which may or may not be included in each model
@@ -462,11 +466,11 @@ graycode <- function(varying, fixed = 0L) {
 #' with diffuse priors: Can we have our cake and eat it too?
 #' @export
 sampler_new_new <- function(iterations, vy_in, mX_in, prior, modelprior, modelpriorvec_in = NULL, cores = 1L) {
-    .Call('_blma_sampler_new_new', PACKAGE = 'blma', iterations, vy_in, mX_in, prior, modelprior, modelpriorvec_in, cores)
+    .Call('blma_sampler_new_new', PACKAGE = 'blma', iterations, vy_in, mX_in, prior, modelprior, modelpriorvec_in, cores)
 }
 
 #' sampler
-#'
+#' @usage sampler_new(10000, y.t, X.f, prior = "BIC", modelprior = "uniform", modelpriorvec_in=NULL)
 #' @param iterations The number of iterations to run the MCMC sampler for
 #' @param vy_in Vector of responses
 #' @param mX_in The matrix of covariates which may or may not be included in each model
@@ -570,11 +574,12 @@ sampler_new_new <- function(iterations, vy_in, mX_in, prior, modelprior, modelpr
 #' with diffuse priors: Can we have our cake and eat it too?
 #' @export
 sampler_new <- function(iterations, vy_in, mX_in, prior, modelprior, modelpriorvec_in = NULL, cores = 1L) {
-    .Call('_blma_sampler_new', PACKAGE = 'blma', iterations, vy_in, mX_in, prior, modelprior, modelpriorvec_in, cores)
+    .Call('blma_sampler_new', PACKAGE = 'blma', iterations, vy_in, mX_in, prior, modelprior, modelpriorvec_in, cores)
 }
 
 #' sampler
 #'
+#' @usage sampler(10000, y.t, X.f, prior = "BIC", modelprior = "uniform", modelpriorvec_in=NULL)
 #' @param iterations The number of iterations to run the MCMC sampler for
 #' @param vy_in Vector of responses
 #' @param mX_in The matrix of covariates which may or may not be included in each model
@@ -678,6 +683,6 @@ sampler_new <- function(iterations, vy_in, mX_in, prior, modelprior, modelpriorv
 #' with diffuse priors: Can we have our cake and eat it too?
 #' @export
 sampler <- function(iterations, vy_in, mX_in, prior, modelprior, modelpriorvec_in = NULL, cores = 1L) {
-    .Call('_blma_sampler', PACKAGE = 'blma', iterations, vy_in, mX_in, prior, modelprior, modelpriorvec_in, cores)
+    .Call('blma_sampler', PACKAGE = 'blma', iterations, vy_in, mX_in, prior, modelprior, modelpriorvec_in, cores)
 }
 
