@@ -40,6 +40,8 @@ VectorXd gamma_to_row(const dbitset& gamma)
 
 //' sampler
 //'
+//' @usage sampler(iterations, vy, mX, prior = "BIC", modelprior = "uniform",
+//' modelpriorvec_in=NULL)
 //' @param iterations The number of iterations to run the MCMC sampler for
 //' @param vy_in Vector of responses
 //' @param mX_in The matrix of covariates which may or may not be included in each model

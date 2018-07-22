@@ -1,5 +1,7 @@
 // correlation.hpp
 
+#pragma once
+
 #include <string>
 #include <Rcpp.h>
 #include <RcppEigen.h>
@@ -11,8 +13,6 @@ typedef unsigned int uint;
 
 // "If you want work with matrices, you should use C++ with Eigen or Armadillo. It's pretty fast." - Hadley Wickham,
 // completely unprompted.
-
-#pragma once
 
 using namespace Rcpp;
 using Eigen::VectorXd;
