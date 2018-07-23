@@ -122,7 +122,7 @@ using namespace Rcpp;
 //' K <- 100
 //' p <- ncol(mX)
 //' sampler_result <- sampler_new_new(10000, vy, mX, prior = "BIC",
-//'				      modelprior = "uniform",
+//'					  modelprior = "uniform",
 //'                                   modelpriorvec_in=NULL)
 //'
 //' @references
@@ -185,6 +185,8 @@ List sampler_new_new(const int iterations,
   mGamma.row(0) = gamma_to_row(gamma);
   double log_BF_curr;
   MatrixXd mA;
+  MatrixXd mA_inv;
+  MatrixXd mA_inv_prop;
   MatrixXd vb;
   log_prob_fn log_prob;
   set_log_prob(prior, log_prob);
@@ -198,7 +200,8 @@ List sampler_new_new(const int iterations,
       mA = get_rows_and_cols(mXTX, gamma, gamma, mA);
       vb.resize(q, 1);
       vb = get_rows(mXTy, gamma, vb);
-      R2 = (vb.transpose() * mA.inverse() * vb / n).value();
+	  mA_inv = mA.inverse();
+      R2 = (vb.transpose() * mA_inv * vb / n).value();
     }
 #ifdef DEBUG
     Rcpp::Rcout << "R2 " << R2 << std::endl;
@@ -220,11 +223,12 @@ List sampler_new_new(const int iterations,
       if (q == 0) {
         R2 = 0.;
       } else {
-        mA.resize(q, q);
-        mA = get_rows_and_cols(mXTX, gamma_prop, gamma_prop, mA);
+        mA_inv_prop.resize(q, q);
+		bool bUpdate = gamma_prop.count() > gamma.count();
+        calculate_mXTX_inv_prime(gamma, gamma_prop, j, mXTX, mA_inv, mA_inv_prop, bUpdate);
         vb.resize(q, 1);
         vb = get_rows(mXTy, gamma_prop, vb);
-        R2 = (vb.transpose() * mA.inverse() * vb / n).value();
+        R2 = (vb.transpose() * mA_inv_prop * vb / n).value();
       }
 #ifdef DEBUG
       Rcpp::Rcout << "R2 " << R2 << std::endl;
@@ -240,6 +244,7 @@ List sampler_new_new(const int iterations,
       if (r < R::runif(0., 1.)) {
         gamma = gamma_prop;
         log_BF_curr = log_BF_prop;
+		mA_inv = mA_inv_prop;
       }
     }
 
