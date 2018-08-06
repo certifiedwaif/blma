@@ -214,7 +214,8 @@ data_set <- function(name)
 }
 ```
 
-Next we run the sampler with 100000 iterations, using the BIC and liang_g1 priors.
+Next we run the sampler with 100000 iterations, using a range of priors, model priors
+and data sets.
 
 ```{r Run the sampler}
 if (file.exists("parameters_tbl.RData")) {
@@ -276,7 +277,8 @@ tibble(error=parameters_tbl$error[!is.na(parameters_tbl$error) & !is.nan(paramet
 
 We examine the mean and sd of the gamma vectors returned by the sampler for each run. Note
 that the sampler consistently chooses sparser models when using the BIC prior than when
-using Liang's g prior.
+using Liang's g prior. Comparing this against the exact results, we see that they are quite 
+close.
 
 ```{r Tables and Matrices}
 prepare_tbl <- function(mGamma, caption)
@@ -288,7 +290,8 @@ prepare_tbl <- function(mGamma, caption)
   bind_cols(c("Mean", "SD") %>% as_tibble, results_tbl)
 }
 
-ggplot_matrix <- function(p) {
+ggplot_matrix <- function(p)
+{
   p %>% melt %>% rename(iteration=Var1, covariate=Var2) %>% ggplot(aes(x=covariate, y=iteration)) + geom_tile(aes(fill=value)) +     
     scale_fill_gradient2(low = "white", high = "black", mid = "gray", 
                          midpoint = 0.5, limit = c(0,1), space = "Lab", 
@@ -298,16 +301,4 @@ ggplot_matrix <- function(p) {
     size = 12, hjust = 1))+
  coord_fixed() + scale_y_reverse()
 }
-
-mGamma_BIC %>% prepare_tbl %>% knitr::kable(caption="BIC")
-mGamma_BIC %>% head(200) %>% ggplot_matrix
-p_BIC <- apply(mGamma_BIC, 1, sum)
-```
-Comparing this against the exact results, we see that they are quite close.
-```{r Exact results}
-results_tbl <- parameters_tbl %>%
-                  mutate(sampler_vip_mean=list(apply(sampler_result[[1]]$mGamma, 2, mean)),
-                         exact_vip_mean=list(blma_result[[1]]$vinclusion_prob),
-                         error=sum(sampler_vip_mean[[1]] - exact_vip_mean[[1]]))
-results_tbl %>% View
 ```
