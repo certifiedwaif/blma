@@ -272,7 +272,8 @@ parameters_tbl <- parameters_tbl %>%
                              sampler_vip=map(sampler_mGamma, ~apply(.x, 2, mean)),
                              blma_vip=map(blma_result, "vinclusion_prob"),
                              error=map2_dbl(sampler_vip, blma_vip, ~sum((.x - .y)^2)))
-tibble(error=parameters_tbl$error[!is.na(parameters_tbl$error) & !is.nan(parameters_tbl$error) & parameters_tbl$error < 10]) %>% ggplot(aes(error)) + geom_histogram()
+#tibble(error=parameters_tbl$error[!is.na(parameters_tbl$error) & !is.nan(parameters_tbl$error) & parameters_tbl$error < 10]) %>% ggplot(aes(error)) + geom_histogram()
+parameters_tbl %>% select(error) %>% filter(!is.na(error) & !is.nan(error) & error < 10) %>% ggplot(aes(error)) + geom_histogram()
 ```
 
 We examine the mean and sd of the gamma vectors returned by the sampler for each run. Note
