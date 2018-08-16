@@ -21,7 +21,7 @@
 #include "priors.h"
 #include "pva.h"
 
-#define DEBUG
+// #define DEBUG
 
 using namespace std;
 using namespace Rcpp;
