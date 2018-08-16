@@ -117,7 +117,7 @@ double sd(const VectorXd& v)
 }
 
 
-void normalise(VectorXd& vy, MatrixXd& mX)
+Normed normalise(VectorXd& vy, MatrixXd& mX)
 {
   const auto n = vy.size();
   const auto p = mX.cols();
@@ -127,15 +127,16 @@ void normalise(VectorXd& vy, MatrixXd& mX)
   Rcpp::Rcout << "vy " << vy.head(10) << std::endl;
   Rcpp::Rcout << "mX " << mX.topRows(10) << std::endl;
   #endif
+  Normed normed;
 
   // Normalise vy and mX
   auto mu_vy = vy.mean();
   auto sigma2_vy = (n - 1) * var(vy) / n;
-  vy = (vy.array() - mu_vy) / sqrt(sigma2_vy);
+  normed.vy = (vy.array() - mu_vy) / sqrt(sigma2_vy);
   for (auto i = 0; i < p; i++) {
     mu_mX(i) = mX.col(i).mean();
     sigma2_mX(i) = (n - 1) * var(mX.col(i)) / n;
-    mX.col(i) = (mX.col(i).array() - mu_mX(i)) / sqrt(sigma2_mX(i));
+    normed.mX.col(i) = (mX.col(i).array() - mu_mX(i)) / sqrt(sigma2_mX(i));
   }
   #ifdef DEBUG
   Rcpp::Rcout << "vy " << vy.head(10) << std::endl;
@@ -143,6 +144,7 @@ void normalise(VectorXd& vy, MatrixXd& mX)
   Rcpp::Rcout << "mu_vy " << mu_vy << " sigma2_mu_vy " << sigma2_mu_vy << std::endl;
   Rcpp::Rcout << "mu_mX " << mu_mX << " sigma2_mX " << sigma2_mX << std::endl;
   #endif
+  return normed;
 }
 
 
@@ -424,9 +426,9 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
   const bool bCentre = true, uint cores = 1L)
 {
   #ifdef _OPENMP
-    Eigen::initParallel();
-    omp_set_num_threads(cores);
-    Eigen::setNbThreads(cores);
+    // Eigen::initParallel();
+    // omp_set_num_threads(cores);
+    // Eigen::setNbThreads(cores);
   #endif
 
   const uint n = mX.rows();                  // The number of observations
@@ -464,7 +466,9 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
   }
 
   if (bCentre) {
-  	normalise(vy, mX);
+  	Normed normed = normalise(vy, mX);
+    vy = normed.vy;
+    mX = normed.mX;
   }
 
   vpgamma_all(0) = 0;
