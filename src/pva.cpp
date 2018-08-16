@@ -384,9 +384,9 @@ List pva(const NumericVector vy_in, const NumericMatrix mX_in,
          const int cores = 1L)
 {
   #ifdef _OPENMP
-    Eigen::initParallel();
-    omp_set_num_threads(cores);
-    Eigen::setNbThreads(cores);
+    // Eigen::initParallel();
+    // omp_set_num_threads(cores);
+    // Eigen::setNbThreads(cores);
   #endif
 
   VectorXd vy(vy_in.length());   // = Rcpp::as<Eigen::Map<Eigen::VectorXd>>(vy_in);
@@ -399,7 +399,9 @@ List pva(const NumericVector vy_in, const NumericMatrix mX_in,
   const auto n = mX.rows();
   const auto p = mX.cols();
   // Normalise vy and mX
-  normalise(vy, mX);
+  Normed normed = normalise(vy, mX);
+  vy = normed.vy;
+  mX = normed.mX;
   NumericVector modelpriorvec_r(0);
   if (!modelpriorvec_in.isNull()) {
     modelpriorvec_r = modelpriorvec_in.get();
