@@ -238,13 +238,11 @@ List sampler(const int iterations,
         mA_inv_prop.resize(q, q);
 		bool bUpdate = gamma_prop.count() > gamma.count();
 #ifdef DEBUG
-        if (j == 146) {
-          Rcpp::Rcout << "gamma " << gamma << std::endl;
-          Rcpp::Rcout << " gamma_prop " << gamma_prop << std::endl;
-          Rcpp::Rcout << "j " << j << std::endl;
-          Rcpp::Rcout << "mA_inv " << mA_inv << std::endl;
-          Rcpp::Rcout << "mA_inv_prop " << mA_inv_prop << std::endl;
-        }
+      Rcpp::Rcout << "gamma " << gamma << std::endl;
+      Rcpp::Rcout << " gamma_prop " << gamma_prop << std::endl;
+      Rcpp::Rcout << "j " << j << std::endl;
+      Rcpp::Rcout << "mA_inv " << mA_inv << std::endl;
+      Rcpp::Rcout << "mA_inv_prop " << mA_inv_prop << std::endl;
 #endif
         calculate_mXTX_inv_prime(gamma, gamma_prop, j, mXTX, mA_inv, mA_inv_prop, bUpdate);
         vb.resize(q, 1);
@@ -254,7 +252,8 @@ List sampler(const int iterations,
 #ifdef DEBUG
       // Rcpp::Rcout << "R2 " << R2 << std::endl;
 #endif
-      auto log_BF_prop = calculate_log_prob(n, p, R2, q, gamma_prop, log_prob, modelprior, modelpriorvec);
+      auto log_BF_prop = calculate_log_prob(n, p, R2, q, gamma_prop, log_prob,
+                                            modelprior, modelpriorvec);
       // auto log_BF_prop = BIC(n, p, R2, q);
 #ifdef DEBUG
       // Rcpp::Rcout << "log_BF_prop " << log_BF_prop << std::endl;
