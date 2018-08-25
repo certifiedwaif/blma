@@ -1,0 +1,311 @@
+---
+title: "sampler"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## MCMC sampler for model choice
+
+We wrote an MCMC sampler to do model selection. Here are some examples of it
+in use. First we load the Kakadu data set.
+
+```{r Load libraries and data}
+library(blma)
+library(reshape2)
+library(tidyverse)
+library(rlang)
+library(future)
+plan(multiprocess)
+library(furrr)
+
+source("PVA.Rs")
+
+data_set <- function(name)
+{
+  if (name == "Hitters") {
+  	library(ISLR)
+  	Hitters <- na.omit(Hitters)
+	
+  	# Get y vector and X matrix
+  	y.t <- Hitters$Salary
+  	X.f <- model.matrix(Salary~.,Hitters)[,-1]
+ 
+  	varnames <- colnames(X.f)
+  } 
+
+  if (name == "BodyFat") {
+	  # Read the bodyfat data
+	  dat  = data(bodyfat)
+	
+	
+	  # delete a number of obs with errors or otherwise extreme
+	  s.i  = c(39,42,48,96,76,182,31,86) 
+	  dat2 = dat[-s.i,-1]
+	  dat2$Weight  = round(0.45359237*dat2$Weight,2) # convert lbs into kg
+	
+	  # Get y vector and X matrix
+	  y.t <- dat2$Bodyfat
+	  X.f <- as.matrix(dat2[,-1]) # note: includes intercept
+ 
+	  varnames <- colnames(X.f)
+  }
+
+  if (name == "Wage") {
+	  library(ISLR)
+	  Wage <- na.omit(Wage) 
+	
+	  # Get y vector and X matrix
+	  y.t <- Wage$wage
+	  X.f <- model.matrix(wage~.,Wage)[,-1]
+	
+	  X.f <- X.f[,-which(colnames(X.f)%in%c("sex2. Female",
+	  "region2. Middle Atlantic",
+	  "region3. East North Central",
+	  "region4. West North Central",     
+	  "region5. South Atlantic", 
+	  "region6. East South Central", 
+	  "region7. West South Central",           
+	  "region8. Mountain",
+	  "region9. Pacific"))]
+ 
+	  varnames <- colnames(X.f)
+  }
+
+  if (name == "College") {
+	  library(ISLR)
+	  College <- na.omit(College)
+	
+	  # Get y vector and X matrix
+	  y.t <- College$Grad.Rate
+	  X.f <- model.matrix(Grad.Rate~.,College)[,-1]
+ 
+	  varnames <- colnames(X.f)
+  }
+  if (name == "UScrime") {
+
+	  library(MASS)
+	
+	  mD <- UScrime
+	  notlog <- c(2,ncol(UScrime))
+	  mD[,-notlog] <- log(mD[,-notlog])
+	
+	  for (j in 1:ncol(mD)) {
+		  mD[,j] <- (mD[,j] - mean(mD[,j]))/sd(mD[,j])
+	  }
+	
+	  varnames <- c(
+	  "log(AGE)",
+	  "S",
+	  "log(ED)",
+	  "log(Ex0)",
+	  "log(Ex1)",
+	  "log(LF)",
+	  "log(M)",
+	  "log(N)",
+	  "log(NW)",
+	  "log(U1)",
+	  "log(U2)",
+	  "log(W)",
+	  "log(X)",
+	  "log(prison)",
+	  "log(time)")
+	  
+	  y.t <- mD$y
+	  X.f <- data.matrix(cbind(mD[1:15]))
+	  colnames(X.f) <- varnames 
+	}
+  if (name == "Kakadu") {
+    # Fill in
+    # setwd("C:/Users/John/Desktop/Mark/LinearModelsPaper/R code")
+    Kakadu = data(Kakadu)
+
+    # Get y vector and X matrix
+		y.t <- as.vector(Kakadu$income)
+		X.f <- Kakadu[,c(2:21,23)]
+		X.f <- model.matrix(~.,data=X.f)[,-1]
+  }
+  if (name == "comCrime") {
+    # Fill in
+    comData <- bind_cols(Y %>% as.tibble, X %>% as.tibble)
+    data(comData)
+    Y <- comData[, 1:18]
+    X <- comData[, 19:142]
+    # Data preparation
+
+    sum.na <- function(x) {  sum(is.na(x)); }
+    inds <- which(apply(X,2,sum.na)==0)
+    X2 <- X[,inds]
+    X3 <- X2[,!colnames(X2)%in%c("ownHousQrange","rentQrange")]
+
+    y <- Y[,18]
+    inds <- which(is.na(y))
+
+    vy <- y[-inds]
+    mX <- X3[-inds,]
+    mX.til <- cbind(1,mX)
+
+    n <- length(vy)
+    p <- ncol(mX)
+
+    mult <- sqrt(n/(n-1))
+    mX <- mX
+    for (j in 1:p) {
+      mX[,j] = mult*(mX[,j] - mean(mX[,j]))/sd(mX[,j])
+    }
+    vy <- mult*(vy - mean(vy))/sd(vy)
+	  y.t <- vy
+		X.f <- mX
+  }
+  if (name == "QTL") {
+	  response <- data(phe_simulat)
+	  covariates <- data(gen_simulat)
+
+	  n <- nrow(response)
+	  P <- ncol(covariates)
+
+	  vbeta <- c()
+	  mX <- matrix(0,n,7381)
+	  count <- 1
+	  for (i in 1:P) {
+	    for (j in i:P) {
+	        if (i==j) {
+	            mX[,count] <- covariates[,i] 
+	        } else {
+	            mX[,count] <- covariates[,i]*covariates[,j]
+	        }
+	        
+	        vbeta[count] <- 0
+	        
+	        if ((i==1)&(j==1))     { vbeta[count] <- 4.47; }
+	        if ((i==21)&(j==21))   { vbeta[count] <- 3.16; }
+	        if ((i==31)&(j==31))   { vbeta[count] <- 2.24; }
+	        if ((i==51)&(j==51))   { vbeta[count] <- 1.58; }
+	        if ((i==71)&(j==71))   { vbeta[count] <- 1.58; }
+	        if ((i==91)&(j==91))   { vbeta[count] <- 1.10; }
+	        if ((i==101)&(j==101)) { vbeta[count] <- 1.10; }
+	        if ((i==111)&(j==111)) { vbeta[count] <- 0.77; }
+	        if ((i==121)&(j==121)) { vbeta[count] <- 0.77; }
+	        if ((i==1)&(j==11))    { vbeta[count] <- 1.00; }
+	        if ((i==2)&(j==119))   { vbeta[count] <- 3.87; }
+	        if ((i==10)&(j==91))   { vbeta[count] <- 1.30; }
+	        if ((i==15)&(j==75))   { vbeta[count] <- 1.73; }
+	        if ((i==20)&(j==46))   { vbeta[count] <- 1.00; }
+	        if ((i==21)&(j==22))   { vbeta[count] <- 1.00; }
+	        if ((i==26)&(j==91))   { vbeta[count] <- 1.00; }
+	        if ((i==41)&(j==61))   { vbeta[count] <- 0.71; }
+	        if ((i==56)&(j==91))   { vbeta[count] <- 3.16; }
+	        if ((i==65)&(j==85))   { vbeta[count] <- 2.24; }
+	        if ((i==86)&(j==96))   { vbeta[count] <- 0.89; }
+	        if ((i==101)&(j==105)) { vbeta[count] <- 1.00; }
+	        if ((i==111)&(j==121)) { vbeta[count] <- 2.24; }
+	       
+	        count <- count + 1
+	    }
+	  }
+	  vf <- mX%*%matrix(vbeta)
+	  sigma2.true <- 20
+	  vy <- vf + rnorm(nrow(mX),0,sqrt(sigma2.true)) ##how about intercept??
+    y.t <- vy
+    X.f <- mX
+  }
+  res <- normalize(y.t, X.f)
+  vy <- res$vy
+  mX <- res$mX
+  return(list(vy=vy, mX=mX))
+}
+```
+
+Next we run the sampler with 100000 iterations, using a range of priors, model priors
+and data sets.
+
+```{r Run the sampler}
+if (file.exists("parameters_tbl.RData")) {
+  load(file="parameters_tbl.RData")
+} else {
+  ITERATIONS <- 10000
+  data_set_names <- c("Kakadu", "Hitters", "BodyFat", "Wage", "College", "UScrime", "comCrime") #, "QTL")
+  priors <- c("BIC",
+              "ZE",
+              "liang_g1",
+              "liang_g2",
+              #"liang_g_n_appell", # This causes an error. Find out why.
+              "liang_g_n_approx",
+              #"liang_g_n_quad", # This is really slow.
+              "robust_bayarri1",
+              "robust_bayarri2")
+  model_priors <- c("uniform",
+                    "beta-binomial",
+                    "bernoulli")
+  parameters_tbl <- cross_df(list(data_set_name=data_set_names, prior=priors, model_prior=model_priors))
+  
+  model_prior_vec <- function(model_prior, ds) {
+    p <- ncol(ds$mX)
+    if (model_prior == "uniform") {
+      model_prior_vec <- NULL
+    } else if (model_prior == "beta-binomial") {
+      model_prior_vec <- c(1, p)
+    } else {
+      vrho <- matrix(runif(p),p,1)
+      vrho <- vrho / sum(vrho)
+      model_prior_vec <- vrho
+    }
+  }
+  parameters_tbl$sampler_result <- future_pmap(parameters_tbl[, c("data_set_name",  "prior", "model_prior")], function(data_set_name, prior, model_prior) {
+    cat("sampler", data_set_name, prior, model_prior, "\n")
+    ds <- data_set(data_set_name)
+    vy <- ds$vy
+    mX <- ds$mX
+    model_prior_vec <- model_prior_vec(model_prior, ds)
+    sampler(ITERATIONS, vy, mX, prior, model_prior, modelpriorvec = model_prior_vec)
+  }, .progress = TRUE)
+  parameters_tbl$blma_result <- future_pmap(parameters_tbl[, c("data_set_name", "prior", "model_prior")], function(data_set_name, prior, model_prior) {
+    cat("blma", data_set_name, prior, model_prior, "\n")
+    ds <- data_set(data_set_name)
+    vy <- ds$vy
+    mX <- ds$mX
+    model_prior_vec <- model_prior_vec(model_prior, ds)
+    blma(vy, mX, prior, model_prior, modelpriorvec = model_prior_vec)
+  }, .progress = TRUE)
+  save(parameters_tbl, file="parameters_tbl.RData")
+}
+parameters_tbl <- parameters_tbl %>%
+                      mutate(sampler_mGamma=future_map(sampler_result, "mGamma", .progress = TRUE),
+                             sampler_vip=future_map(sampler_mGamma, ~apply(.x, 2, mean), .progress = TRUE),
+                             blma_vip=future_map(blma_result, "vinclusion_prob", .progress = TRUE),
+                             error=future_map2_dbl(sampler_vip, blma_vip, ~sum((.x - .y)^2)), .progress = TRUE)
+#tibble(error=parameters_tbl$error[!is.na(parameters_tbl$error) & !is.nan(parameters_tbl$error) & parameters_tbl$error < 10]) %>% ggplot(aes(error)) + geom_histogram()
+parameters_tbl %>% select(error) %>% filter(!is.na(error) & !is.nan(error) & error < 10) %>% ggplot(aes(error)) + geom_histogram()
+```
+
+We examine the mean and sd of the gamma vectors returned by the sampler for each run. Note
+that the sampler consistently chooses sparser models when using the BIC prior than when
+using Liang's g prior. Comparing this against the exact results, we see that they are quite 
+close.
+
+```{r Tables and Matrices}
+prepare_tbl <- function(mGamma, caption)
+{
+  colnames(mGamma) <- varnames
+  mGamma_tbl <- mGamma %>% as_tibble
+  results_tbl <- bind_rows(mGamma_tbl %>% summarise_all(funs(round(mean(.), 2))),
+                           mGamma_tbl %>% summarise_all(funs(round(sd(.), 2))))
+  bind_cols(c("Mean", "SD") %>% as_tibble, results_tbl)
+}
+
+ggplot_matrix <- function(p)
+{
+  p %>% melt %>% rename(iteration=Var1, covariate=Var2) %>% ggplot(aes(x=covariate, y=iteration)) + geom_tile(aes(fill=value)) +     
+    scale_fill_gradient2(low = "white", high = "black", mid = "gray", 
+                         midpoint = 0.5, limit = c(0,1), space = "Lab", 
+   name="Value") +
+  theme_minimal()+ 
+ theme(axis.text.x = element_text(angle = 45, vjust = 1, 
+    size = 12, hjust = 1))+
+ coord_fixed() + scale_y_reverse()
+}
+```
