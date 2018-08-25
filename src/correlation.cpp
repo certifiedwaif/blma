@@ -442,6 +442,13 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
     // Eigen::setNbThreads(cores);
   #endif
 
+  #ifdef DEBUG
+    // None of R's functions, such as Rcpp::checkUserInterrupt() or
+    // Rcpp::Rcout, are threadsafe. If you're debugging and calling these
+    // functions in multiple threads, R will crash.
+    omp_set_num_threads(1);
+  #endif
+
   const uint n = mX.rows();                  // The number of observations
   const uint p = mX.cols();                  // The number of covariates
   VectorXd vR2_all(max_iterations);          // Vector of correlations for all models
@@ -476,23 +483,23 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
     vec_m1[i].resize(i + 1, 1);
   }
 
-  if (bCentre) {
+  // if (bCentre) {
   	Normed normed = normalise(vy, mX);
     vy = normed.vy;
     mX = normed.mX;
-  }
+  // }
 
   vpgamma_all(0) = 0;
   vR2_all(0) = 0.;
 
   // Loop through models, updating and downdating mA as necessary
+  Rcpp::checkUserInterrupt();
   #pragma omp parallel for\
     firstprivate(gamma, gamma_prime, bmA_set, vec_mX_gamma, vec_mA, vec_m1)\
     private(diff_idx, min_idx, p_gamma_prime, p_gamma, bUpdate)\
       shared(mX, vR2_all, vpgamma_all, graycode)\
       default(none)
   for (uint idx = 1; idx < max_iterations; idx++) {
-    Rcpp::checkUserInterrupt();
     #ifdef DEBUG
     Rcpp::Rcout << endl << "Iteration " << idx << endl;
     #endif
