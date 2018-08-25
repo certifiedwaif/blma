@@ -20,10 +20,31 @@ library(reshape2)
 library(tidyverse)
 library(rlang)
 library(future)
-plan(multiprocess)
+# plan(multiprocess)
 library(furrr)
 
-source("PVA.Rs")
+normalize <- function(y, X)
+{
+  n <- length(y)
+  p <- ncol(X)
+
+  mu.y <- mean(y)
+  sigma2.y <- (n - 1) * var(y) / n
+  vy <- (y - mu.y) / sqrt(sigma2.y)
+
+  # Normalise covariates
+  mX <- matrix(0, n, p)
+  mu.x <- c()
+  sigma2.x <- c()
+  for (j in 1:p)
+  {
+    mu.x[j] <- mean(X[, j])
+    sigma2.x[j] <- (n - 1) * var(X[, j]) / n
+    mX[, j] <- (X[, j] - mu.x[j]) / sqrt(sigma2.x[j])
+  }
+
+  return(list(vy = vy, mX = mX, mu.y = mu.y, sigma2.y = sigma2.y, mu.x = mu.x, sigma2.x = sigma2.x))
+}
 
 data_set <- function(name)
 {
@@ -40,12 +61,12 @@ data_set <- function(name)
 
   if (name == "BodyFat") {
 	  # Read the bodyfat data
-	  dat  = data(bodyfat)
+	  data(bodyfat)
 	
 	
 	  # delete a number of obs with errors or otherwise extreme
 	  s.i  = c(39,42,48,96,76,182,31,86) 
-	  dat2 = dat[-s.i,-1]
+	  dat2 = bodyfat[-s.i,-1]
 	  dat2$Weight  = round(0.45359237*dat2$Weight,2) # convert lbs into kg
 	
 	  # Get y vector and X matrix
@@ -120,9 +141,7 @@ data_set <- function(name)
 	  colnames(X.f) <- varnames 
 	}
   if (name == "Kakadu") {
-    # Fill in
-    # setwd("C:/Users/John/Desktop/Mark/LinearModelsPaper/R code")
-    Kakadu = data(Kakadu)
+    data(Kakadu)
 
     # Get y vector and X matrix
 		y.t <- as.vector(Kakadu$income)
@@ -131,7 +150,6 @@ data_set <- function(name)
   }
   if (name == "comCrime") {
     # Fill in
-    comData <- bind_cols(Y %>% as.tibble, X %>% as.tibble)
     data(comData)
     Y <- comData[, 1:18]
     X <- comData[, 19:142]
@@ -142,11 +160,11 @@ data_set <- function(name)
     X2 <- X[,inds]
     X3 <- X2[,!colnames(X2)%in%c("ownHousQrange","rentQrange")]
 
-    y <- Y[,18]
+    y <- Y %>% pull(18)
     inds <- which(is.na(y))
 
     vy <- y[-inds]
-    mX <- X3[-inds,]
+    mX <- X3[-inds,] %>% as.matrix
     mX.til <- cbind(1,mX)
 
     n <- length(vy)
@@ -158,12 +176,14 @@ data_set <- function(name)
       mX[,j] = mult*(mX[,j] - mean(mX[,j]))/sd(mX[,j])
     }
     vy <- mult*(vy - mean(vy))/sd(vy)
-	  y.t <- vy
-		X.f <- mX
+	y.t <- vy
+	X.f <- mX
   }
   if (name == "QTL") {
-	  response <- data(phe_simulat)
-	  covariates <- data(gen_simulat)
+      data(phe_simulat)
+	  response <- phe_simulat
+      data(gen_simulat)
+	  covariates <- gen_simulat
 
 	  n <- nrow(response)
 	  P <- ncol(covariates)
@@ -228,7 +248,7 @@ if (file.exists("parameters_tbl.RData")) {
   load(file="parameters_tbl.RData")
 } else {
   ITERATIONS <- 10000
-  data_set_names <- c("Kakadu", "Hitters", "BodyFat", "Wage", "College", "UScrime", "comCrime") #, "QTL")
+  data_set_names <- c("Kakadu", "Hitters", "BodyFat", "Wage", "College", "UScrime") #, "comCrime", "QTL")
   priors <- c("BIC",
               "ZE",
               "liang_g1",
