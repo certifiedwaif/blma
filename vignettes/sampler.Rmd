@@ -295,9 +295,9 @@ if (file.exists("parameters_tbl.RData")) {
 }
 parameters_tbl <- parameters_tbl %>%
                       mutate(sampler_mGamma=future_map(sampler_result, "mGamma", .progress = TRUE),
-                             sampler_vip=future_map(sampler_mGamma, ~apply(.x, 2, mean), .progress = TRUE),
+                             sampler_vip=future_map(sampler_mGamma, ~apply(.x, 2, mean, .progress = TRUE)),
                              blma_vip=future_map(blma_result, "vinclusion_prob", .progress = TRUE),
-                             error=future_map2_dbl(sampler_vip, blma_vip, ~sum((.x - .y)^2)), .progress = TRUE)
+                             error=future_map2_dbl(sampler_vip, blma_vip, ~sum((.x - .y)^2)))
 #tibble(error=parameters_tbl$error[!is.na(parameters_tbl$error) & !is.nan(parameters_tbl$error) & parameters_tbl$error < 10]) %>% ggplot(aes(error)) + geom_histogram()
 parameters_tbl %>% select(error) %>% filter(!is.na(error) & !is.nan(error) & error < 10) %>% ggplot(aes(error)) + geom_histogram()
 ```
