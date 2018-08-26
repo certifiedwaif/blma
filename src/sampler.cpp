@@ -216,19 +216,19 @@ List sampler(const int iterations,
     R2 = (vb.transpose() * mA_inv * vb / n).value();
   }
 #ifdef DEBUG
-  // Rcpp::Rcout << "R2 " << R2 << std::endl;
+  Rcpp::Rcout << "R2 " << R2 << std::endl;
 #endif
   log_BF_curr = calculate_log_prob(n, p, R2, q, gamma, log_prob, modelprior, modelpriorvec);
 #ifdef DEBUG
-  // Rcpp::Rcout << "log_BF_curr " << log_BF_curr << std::endl;
+  Rcpp::Rcout << "log_BF_curr " << log_BF_curr << std::endl;
 #endif
   for (auto i = 0; i < iterations - 1; i++) {
     for (auto j = 0; j < p; j++) {
       dbitset gamma_prop = gamma;
       gamma_prop[j] = !gamma[j];
 #ifdef DEBUG
-      // Rcpp::Rcout << "gamma " << gamma << std::end;
-      // Rcpp::Rcout << "gamma_prop " << gamma_prop << std::endl;
+      Rcpp::Rcout << "gamma " << gamma << std::end;
+      Rcpp::Rcout << "gamma_prop " << gamma_prop << std::endl;
 #endif
 
       q = gamma_prop.count();
@@ -250,13 +250,12 @@ List sampler(const int iterations,
         R2 = (vb.transpose() * mA_inv_prop * vb / n).value();
       }
 #ifdef DEBUG
-      // Rcpp::Rcout << "R2 " << R2 << std::endl;
+      Rcpp::Rcout << "R2 " << R2 << std::endl;
 #endif
       auto log_BF_prop = calculate_log_prob(n, p, R2, q, gamma_prop, log_prob,
                                             modelprior, modelpriorvec);
-      // auto log_BF_prop = BIC(n, p, R2, q);
 #ifdef DEBUG
-      // Rcpp::Rcout << "log_BF_prop " << log_BF_prop << std::endl;
+      Rcpp::Rcout << "log_BF_prop " << log_BF_prop << std::endl;
 #endif
 
       auto r = 1. / (1. + exp(log_BF_prop - log_BF_curr));

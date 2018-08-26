@@ -244,8 +244,8 @@ Next we run the sampler with 100000 iterations, using a range of priors, model p
 and data sets.
 
 ```{r Run the sampler}
-if (file.exists("parameters_tbl.RData")) {
-  load(file="parameters_tbl.RData")
+if (file.exists("./parameters_tbl_20180826.RData")) {
+  load("./parameters_tbl_20180826.RData")
 } else {
   ITERATIONS <- 10000
   data_set_names <- c("Kakadu", "Hitters", "BodyFat", "Wage", "College", "UScrime") #, "comCrime", "QTL")
@@ -283,22 +283,23 @@ if (file.exists("parameters_tbl.RData")) {
     model_prior_vec <- model_prior_vec(model_prior, ds)
     sampler(ITERATIONS, vy, mX, prior, model_prior, modelpriorvec = model_prior_vec)
   }, .progress = TRUE)
-  parameters_tbl$blma_result <- pmap(parameters_tbl[, c("data_set_name", "prior", "model_prior")], function(data_set_name, prior, model_prior) {
+  parameters_tbl$blma_result <- future_pmap(parameters_tbl[, c("data_set_name", "prior", "model_prior")], function(data_set_name, prior, model_prior) {
     cat("blma", data_set_name, prior, model_prior, "\n")
     ds <- data_set(data_set_name)
     vy <- ds$vy
     mX <- ds$mX
     model_prior_vec <- model_prior_vec(model_prior, ds)
     blma(vy, mX, prior, model_prior, modelpriorvec = model_prior_vec)
-  })
-  save(parameters_tbl, file="parameters_tbl.RData")
+  }, .progress = TRUE)
+  save(parameters_tbl, file="./parameters_tbl_20180826.RData")
 }
 parameters_tbl <- parameters_tbl %>%
                       mutate(sampler_mGamma=future_map(sampler_result, "mGamma", .progress = TRUE),
                              sampler_vip=future_map(sampler_mGamma, ~apply(.x, 2, mean, .progress = TRUE)),
                              blma_vip=future_map(blma_result, "vinclusion_prob", .progress = TRUE),
                              error=future_map2_dbl(sampler_vip, blma_vip, ~sum((.x - .y)^2)))
-#tibble(error=parameters_tbl$error[!is.na(parameters_tbl$error) & !is.nan(parameters_tbl$error) & parameters_tbl$error < 10]) %>% ggplot(aes(error)) + geom_histogram()
+parameters_tbl %>% select(data_set_name, prior, model_prior, error) %>% View
+tibble(error=parameters_tbl$error[!is.na(parameters_tbl$error) & !is.nan(parameters_tbl$error) & parameters_tbl$error < 10]) %>% ggplot(aes(error)) + geom_histogram()
 parameters_tbl %>% select(error) %>% filter(!is.na(error) & !is.nan(error) & error < 10) %>% ggplot(aes(error)) + geom_histogram()
 ```
 
