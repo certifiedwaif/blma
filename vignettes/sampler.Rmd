@@ -20,7 +20,7 @@ library(reshape2)
 library(tidyverse)
 library(rlang)
 library(future)
-# plan(multiprocess)
+plan(multiprocess)
 library(furrr)
 
 normalize <- function(y, X)
@@ -283,14 +283,14 @@ if (file.exists("parameters_tbl.RData")) {
     model_prior_vec <- model_prior_vec(model_prior, ds)
     sampler(ITERATIONS, vy, mX, prior, model_prior, modelpriorvec = model_prior_vec)
   }, .progress = TRUE)
-  parameters_tbl$blma_result <- future_pmap(parameters_tbl[, c("data_set_name", "prior", "model_prior")], function(data_set_name, prior, model_prior) {
+  parameters_tbl$blma_result <- pmap(parameters_tbl[, c("data_set_name", "prior", "model_prior")], function(data_set_name, prior, model_prior) {
     cat("blma", data_set_name, prior, model_prior, "\n")
     ds <- data_set(data_set_name)
     vy <- ds$vy
     mX <- ds$mX
     model_prior_vec <- model_prior_vec(model_prior, ds)
     blma(vy, mX, prior, model_prior, modelpriorvec = model_prior_vec)
-  }, .progress = TRUE)
+  })
   save(parameters_tbl, file="parameters_tbl.RData")
 }
 parameters_tbl <- parameters_tbl %>%
