@@ -163,8 +163,8 @@ List sampler(const int iterations,
   // Try using the parallelisation in Eigen. This is an inherently serial algorithm,
   // and I don't think OpenMP is going to help us here.
   #ifdef _OPENMP
-    Eigen::initParallel();
-    Eigen::setNbThreads(cores);
+    // Eigen::initParallel();
+    // Eigen::setNbThreads(cores);
   #endif
 
   VectorXd vy(vy_in.length());   // = Rcpp::as<Eigen::Map<Eigen::VectorXd>>(vy_in);
@@ -177,7 +177,9 @@ List sampler(const int iterations,
   const auto n = mX.rows();
   const auto p = mX.cols();
   // Normalise vy and mX
-  normalise(vy, mX);
+  Normed normed = normalise(vy, mX);
+  vy = normed.vy;
+  mX = normed.mX;
 
   NumericVector modelpriorvec_r(0);
   if (!modelpriorvec_in.isNull()) {
@@ -225,7 +227,8 @@ List sampler(const int iterations,
       dbitset gamma_prop = gamma;
       gamma_prop[j] = !gamma[j];
 #ifdef DEBUG
-      Rcpp::Rcout << "gamma " << gamma << " gamma_prop " << gamma_prop << std::endl;
+      Rcpp::Rcout << "gamma " << gamma << std::end;
+      Rcpp::Rcout << "gamma_prop " << gamma_prop << std::endl;
 #endif
 
       q = gamma_prop.count();
@@ -234,6 +237,13 @@ List sampler(const int iterations,
       } else {
         mA_inv_prop.resize(q, q);
 		bool bUpdate = gamma_prop.count() > gamma.count();
+#ifdef DEBUG
+      Rcpp::Rcout << "gamma " << gamma << std::endl;
+      Rcpp::Rcout << " gamma_prop " << gamma_prop << std::endl;
+      Rcpp::Rcout << "j " << j << std::endl;
+      Rcpp::Rcout << "mA_inv " << mA_inv << std::endl;
+      Rcpp::Rcout << "mA_inv_prop " << mA_inv_prop << std::endl;
+#endif
         calculate_mXTX_inv_prime(gamma, gamma_prop, j, mXTX, mA_inv, mA_inv_prop, bUpdate);
         vb.resize(q, 1);
         vb = get_rows(mXTy, gamma_prop, vb);
@@ -242,8 +252,8 @@ List sampler(const int iterations,
 #ifdef DEBUG
       Rcpp::Rcout << "R2 " << R2 << std::endl;
 #endif
-      auto log_BF_prop = calculate_log_prob(n, p, R2, q, gamma_prop, log_prob, modelprior, modelpriorvec);
-      // auto log_BF_prop = BIC(n, p, R2, q);
+      auto log_BF_prop = calculate_log_prob(n, p, R2, q, gamma_prop, log_prob,
+                                            modelprior, modelpriorvec);
 #ifdef DEBUG
       Rcpp::Rcout << "log_BF_prop " << log_BF_prop << std::endl;
 #endif

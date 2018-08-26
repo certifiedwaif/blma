@@ -117,7 +117,7 @@ double sd(const VectorXd& v)
 }
 
 
-void normalise(VectorXd& vy, MatrixXd& mX)
+Normed normalise(VectorXd& vy, MatrixXd& mX)
 {
   const auto n = vy.size();
   const auto p = mX.cols();
@@ -127,22 +127,26 @@ void normalise(VectorXd& vy, MatrixXd& mX)
   Rcpp::Rcout << "vy " << vy.head(10) << std::endl;
   Rcpp::Rcout << "mX " << mX.topRows(10) << std::endl;
   #endif
+  Normed normed;
+  normed.vy = vy;
+  normed.mX = mX;
 
   // Normalise vy and mX
   auto mu_vy = vy.mean();
   auto sigma2_vy = (n - 1) * var(vy) / n;
-  vy = (vy.array() - mu_vy) / sqrt(sigma2_vy);
+  normed.vy = (vy.array() - mu_vy) / sqrt(sigma2_vy);
   for (auto i = 0; i < p; i++) {
     mu_mX(i) = mX.col(i).mean();
     sigma2_mX(i) = (n - 1) * var(mX.col(i)) / n;
-    mX.col(i) = (mX.col(i).array() - mu_mX(i)) / sqrt(sigma2_mX(i));
+    normed.mX.col(i) = (mX.col(i).array() - mu_mX(i)) / sqrt(sigma2_mX(i));
   }
   #ifdef DEBUG
   Rcpp::Rcout << "vy " << vy.head(10) << std::endl;
   Rcpp::Rcout << "mX " << mX.topRows(10) << std::endl;
-  Rcpp::Rcout << "mu_vy " << mu_vy << " sigma2_mu_vy " << sigma2_mu_vy << std::endl;
+  Rcpp::Rcout << "mu_vy " << mu_vy << " sigma2_vy " << sigma2_vy << std::endl;
   Rcpp::Rcout << "mu_mX " << mu_mX << " sigma2_mX " << sigma2_mX << std::endl;
   #endif
+  return normed;
 }
 
 
@@ -177,6 +181,15 @@ const Eigen::MatrixBase<Derived1>& mXTX, const Eigen::MatrixBase<Derived1>& mA, 
   auto p_gamma_prime = mA_prime.cols();
   auto p_gamma = mA.cols();
 
+  if (gamma.count() == 0) {
+    // No need to do a rank-one update. Just construct a 1 by 1 matrix.
+    // TODO: This situation should never arise. But somehow it does. Find out
+    // how.
+    mA_prime.resize(1, 1);
+    mA_prime << 1. / mXTX(col_abs, col_abs);
+    bLow = false;
+    return mA_prime;
+  }
   // Construct mA_prime
   // b = 1 / (x^T x - x^T X_gamma A X_gamma^T x)
   auto xTx = mXTX(col_abs, col_abs);
@@ -424,9 +437,16 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
   const bool bCentre = true, uint cores = 1L)
 {
   #ifdef _OPENMP
-    Eigen::initParallel();
-    omp_set_num_threads(cores);
-    Eigen::setNbThreads(cores);
+    // Eigen::initParallel();
+    // omp_set_num_threads(cores);
+    // Eigen::setNbThreads(cores);
+  #endif
+
+  #ifdef DEBUG
+    // None of R's functions, such as Rcpp::checkUserInterrupt() or
+    // Rcpp::Rcout, are threadsafe. If you're debugging and calling these
+    // functions in multiple threads, R will crash.
+    omp_set_num_threads(1);
   #endif
 
   const uint n = mX.rows();                  // The number of observations
@@ -463,21 +483,23 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
     vec_m1[i].resize(i + 1, 1);
   }
 
-  if (bCentre) {
-  	normalise(vy, mX);
-  }
+  // if (bCentre) {
+  	Normed normed = normalise(vy, mX);
+    vy = normed.vy;
+    mX = normed.mX;
+  // }
 
   vpgamma_all(0) = 0;
   vR2_all(0) = 0.;
 
   // Loop through models, updating and downdating mA as necessary
+  Rcpp::checkUserInterrupt();
   #pragma omp parallel for\
     firstprivate(gamma, gamma_prime, bmA_set, vec_mX_gamma, vec_mA, vec_m1)\
     private(diff_idx, min_idx, p_gamma_prime, p_gamma, bUpdate)\
       shared(mX, vR2_all, vpgamma_all, graycode)\
       default(none)
   for (uint idx = 1; idx < max_iterations; idx++) {
-    Rcpp::checkUserInterrupt();
     #ifdef DEBUG
     Rcpp::Rcout << endl << "Iteration " << idx << endl;
     #endif

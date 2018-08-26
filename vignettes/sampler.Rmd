@@ -19,8 +19,32 @@ library(blma)
 library(reshape2)
 library(tidyverse)
 library(rlang)
+library(future)
+plan(multiprocess)
+library(furrr)
 
-source("PVA.Rs")
+normalize <- function(y, X)
+{
+  n <- length(y)
+  p <- ncol(X)
+
+  mu.y <- mean(y)
+  sigma2.y <- (n - 1) * var(y) / n
+  vy <- (y - mu.y) / sqrt(sigma2.y)
+
+  # Normalise covariates
+  mX <- matrix(0, n, p)
+  mu.x <- c()
+  sigma2.x <- c()
+  for (j in 1:p)
+  {
+    mu.x[j] <- mean(X[, j])
+    sigma2.x[j] <- (n - 1) * var(X[, j]) / n
+    mX[, j] <- (X[, j] - mu.x[j]) / sqrt(sigma2.x[j])
+  }
+
+  return(list(vy = vy, mX = mX, mu.y = mu.y, sigma2.y = sigma2.y, mu.x = mu.x, sigma2.x = sigma2.x))
+}
 
 data_set <- function(name)
 {
@@ -37,12 +61,12 @@ data_set <- function(name)
 
   if (name == "BodyFat") {
 	  # Read the bodyfat data
-	  dat  = read.table(file="bodyfat.txt",header=TRUE)
+	  data(bodyfat)
 	
 	
 	  # delete a number of obs with errors or otherwise extreme
 	  s.i  = c(39,42,48,96,76,182,31,86) 
-	  dat2 = dat[-s.i,-1]
+	  dat2 = bodyfat[-s.i,-1]
 	  dat2$Weight  = round(0.45359237*dat2$Weight,2) # convert lbs into kg
 	
 	  # Get y vector and X matrix
@@ -117,18 +141,18 @@ data_set <- function(name)
 	  colnames(X.f) <- varnames 
 	}
   if (name == "Kakadu") {
-    # Fill in
-    # setwd("C:/Users/John/Desktop/Mark/LinearModelsPaper/R code")
-    dat = read.csv("~/Dropbox/phd/code/Kakadu.csv")
+    data(Kakadu)
 
     # Get y vector and X matrix
-		y.t <- as.vector(dat$income)
-		X.f <- dat[,c(2:21,23)]
+		y.t <- as.vector(Kakadu$income)
+		X.f <- Kakadu[,c(2:21,23)]
 		X.f <- model.matrix(~.,data=X.f)[,-1]
   }
   if (name == "comCrime") {
     # Fill in
-		load("comData.Rdata")
+    data(comData)
+    Y <- comData[, 1:18]
+    X <- comData[, 19:142]
     # Data preparation
 
     sum.na <- function(x) {  sum(is.na(x)); }
@@ -136,11 +160,11 @@ data_set <- function(name)
     X2 <- X[,inds]
     X3 <- X2[,!colnames(X2)%in%c("ownHousQrange","rentQrange")]
 
-    y <- Y[,18]
+    y <- Y %>% pull(18)
     inds <- which(is.na(y))
 
     vy <- y[-inds]
-    mX <- X3[-inds,]
+    mX <- X3[-inds,] %>% as.matrix
     mX.til <- cbind(1,mX)
 
     n <- length(vy)
@@ -152,12 +176,14 @@ data_set <- function(name)
       mX[,j] = mult*(mX[,j] - mean(mX[,j]))/sd(mX[,j])
     }
     vy <- mult*(vy - mean(vy))/sd(vy)
-	  y.t <- vy
-		X.f <- mX
+	y.t <- vy
+	X.f <- mX
   }
   if (name == "QTL") {
-	  response <- read.table("phe_simulat.csv",header=FALSE,sep=",")
-	  covariates <- read.table("gen_simulat.csv",header=FALSE,sep=",")
+      data(phe_simulat)
+	  response <- phe_simulat
+      data(gen_simulat)
+	  covariates <- gen_simulat
 
 	  n <- nrow(response)
 	  P <- ncol(covariates)
@@ -218,11 +244,11 @@ Next we run the sampler with 100000 iterations, using a range of priors, model p
 and data sets.
 
 ```{r Run the sampler}
-if (file.exists("parameters_tbl.RData")) {
-  load(file="parameters_tbl.RData")
+if (file.exists("./parameters_tbl_20180826.RData")) {
+  load("./parameters_tbl_20180826.RData")
 } else {
   ITERATIONS <- 10000
-  data_set_names <- c("Kakadu", "Hitters", "BodyFat", "Wage", "College", "UScrime", "comCrime") #, "QTL")
+  data_set_names <- c("Kakadu", "Hitters", "BodyFat", "Wage", "College", "UScrime") #, "comCrime", "QTL")
   priors <- c("BIC",
               "ZE",
               "liang_g1",
@@ -249,30 +275,31 @@ if (file.exists("parameters_tbl.RData")) {
       model_prior_vec <- vrho
     }
   }
-  parameters_tbl$sampler_result <- pmap(parameters_tbl[, c("data_set_name",  "prior", "model_prior")], function(data_set_name, prior, model_prior) {
+  parameters_tbl$sampler_result <- future_pmap(parameters_tbl[, c("data_set_name",  "prior", "model_prior")], function(data_set_name, prior, model_prior) {
     cat("sampler", data_set_name, prior, model_prior, "\n")
     ds <- data_set(data_set_name)
     vy <- ds$vy
     mX <- ds$mX
     model_prior_vec <- model_prior_vec(model_prior, ds)
     sampler(ITERATIONS, vy, mX, prior, model_prior, modelpriorvec = model_prior_vec)
-  })
-  parameters_tbl$blma_result <- pmap(parameters_tbl[, c("data_set_name", "prior", "model_prior")], function(data_set_name, prior, model_prior) {
+  }, .progress = TRUE)
+  parameters_tbl$blma_result <- future_pmap(parameters_tbl[, c("data_set_name", "prior", "model_prior")], function(data_set_name, prior, model_prior) {
     cat("blma", data_set_name, prior, model_prior, "\n")
     ds <- data_set(data_set_name)
     vy <- ds$vy
     mX <- ds$mX
     model_prior_vec <- model_prior_vec(model_prior, ds)
     blma(vy, mX, prior, model_prior, modelpriorvec = model_prior_vec)
-  })
-  save(parameters_tbl, file="parameters_tbl.RData")
+  }, .progress = TRUE)
+  save(parameters_tbl, file="./parameters_tbl_20180826.RData")
 }
 parameters_tbl <- parameters_tbl %>%
-                      mutate(sampler_mGamma=map(sampler_result, "mGamma"),
-                             sampler_vip=map(sampler_mGamma, ~apply(.x, 2, mean)),
-                             blma_vip=map(blma_result, "vinclusion_prob"),
-                             error=map2_dbl(sampler_vip, blma_vip, ~sum((.x - .y)^2)))
-#tibble(error=parameters_tbl$error[!is.na(parameters_tbl$error) & !is.nan(parameters_tbl$error) & parameters_tbl$error < 10]) %>% ggplot(aes(error)) + geom_histogram()
+                      mutate(sampler_mGamma=future_map(sampler_result, "mGamma", .progress = TRUE),
+                             sampler_vip=future_map(sampler_mGamma, ~apply(.x, 2, mean, .progress = TRUE)),
+                             blma_vip=future_map(blma_result, "vinclusion_prob", .progress = TRUE),
+                             error=future_map2_dbl(sampler_vip, blma_vip, ~sum((.x - .y)^2)))
+parameters_tbl %>% select(data_set_name, prior, model_prior, error) %>% View
+tibble(error=parameters_tbl$error[!is.na(parameters_tbl$error) & !is.nan(parameters_tbl$error) & parameters_tbl$error < 10]) %>% ggplot(aes(error)) + geom_histogram()
 parameters_tbl %>% select(error) %>% filter(!is.na(error) & !is.nan(error) & error < 10) %>% ggplot(aes(error)) + geom_histogram()
 ```
 

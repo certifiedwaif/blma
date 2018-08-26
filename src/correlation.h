@@ -20,6 +20,11 @@ using Eigen::MatrixXd;
 using Eigen::MatrixBase;
 using std::string;
 
+struct Normed {
+    VectorXd vy;
+    MatrixXd mX;
+};
+
 MatrixXd parseCSVfile_double(string infilename);
 List blma_fixed_cpp(VectorXd vy, MatrixXd mX, MatrixXd mZ, std::string prior, std::string modelprior, VectorXd modelpriorvec,
                     const uint intercept_col, const bool bNatural_Order = false, const bool bIntercept = false,
@@ -43,4 +48,4 @@ Eigen::MatrixBase<Derived2>& rank_one_downdate(const uint col_abs, const uint mi
 const Eigen::MatrixBase<Derived1>& mA, Eigen::MatrixBase<Derived2>& mA_prime);
 double var(const VectorXd& v);
 double sd(const VectorXd& v);
-void normalise(VectorXd& vy, MatrixXd& mX);
+Normed normalise(VectorXd& vy, MatrixXd& mX);
