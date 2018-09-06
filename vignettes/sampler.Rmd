@@ -18,8 +18,17 @@ in use. First we load the Kakadu data set.
 library(blma)
 library(reshape2)
 library(tidyverse)
+library(stringr)
+library(glue)
 library(rlang)
 library(future)
+#public_ip <- c("bert", "ubuntu-desktop")
+#cl <- makeClusterPSOCK(
+  #workers = public_ip,
+  #user = "markg"
+#)
+#plan(cluster, workers = cl)
+#plan(list(tweak(cluster, workers = cl), multiprocess))
 plan(multiprocess)
 library(furrr)
 
@@ -233,11 +242,34 @@ data_set <- function(name)
     y.t <- vy
     X.f <- mX
   }
+  if (name == "building") {
+    #building <- readxl::read_excel("../Residential-Building-Data-Set.xlsx") %>% tail(-1) %>% map_dfc(as.numeric)
+    #save(building, file="../data/building.rda")
+    # https://archive.ics.uci.edu/ml/datasets/Residential+Building+Data+Set#
+    # Outcomes are Construction costs and Sales prices
+    data(building)
+    y.t <- building$OUTPUTS
+    X.f <- building[, 1:107] %>% as.matrix
+  }
+  if (name == "facebook_comments") {
+    facebook_comments <- read_csv("../inst/extdata/Dataset/Training/Features_Variant_1.csv", col_names=FALSE)
+  } 
+  if (name == "buzz") {
+    prefixes <- c("NCD", "BL", "NAD", "AI", "NAC", "ND", "CS", "AT", "NA",
+                  "ADL", "AS(NA)", "AS(NAC)")
+    TH_col_names <- cross2(0:7, prefixes) %>% map(rev) %>% map_chr(lift(paste, sep = "_"))
+    TomsHardware <- read_csv("../inst/extdata/regression/TomsHardware/TomsHardware.data", col_names = TH_col_names)
+    y <- TomsHardware %>% select(ND_0:ND_7)
+    y.t <- y$ND_7
+    X.f <- TomsHardware %>% select(-ND_0:-ND_7) %>% as.matrix
+    
+    # Twitter <- read_csv("../inst/extdata/regression/Twitter/Twitter.data", col_names = FALSE)
+  }
   res <- normalize(y.t, X.f)
   vy <- res$vy
   mX <- res$mX
   return(list(vy=vy, mX=mX))
-}
+} 
 ```
 
 Next we run the sampler with 100000 iterations, using a range of priors, model priors
@@ -248,7 +280,9 @@ if (file.exists("./parameters_tbl_20180826.RData")) {
   load("./parameters_tbl_20180826.RData")
 } else {
   ITERATIONS <- 10000
-  data_set_names <- c("Kakadu", "Hitters", "BodyFat", "Wage", "College", "UScrime") #, "comCrime", "QTL")
+  #data_set_names <- c("Kakadu", "Hitters", "BodyFat", "Wage", "College", "UScrime") #, "comCrime", "QTL")
+  #data_set_names <- c("building")
+  data_set_names <- c("buzz")
   priors <- c("BIC",
               "ZE",
               "liang_g1",
@@ -292,15 +326,20 @@ if (file.exists("./parameters_tbl_20180826.RData")) {
     blma(vy, mX, prior, model_prior, modelpriorvec = model_prior_vec)
   }, .progress = TRUE)
   save(parameters_tbl, file="./parameters_tbl_20180826.RData")
-}
+  #parameters_buzz_tbl <- parameters_tbl
+  #save(parameters_buzz_tbl, file="./parameters_buzz_tbl_20180905.RData")
+# }
 parameters_tbl <- parameters_tbl %>%
                       mutate(sampler_mGamma=future_map(sampler_result, "mGamma", .progress = TRUE),
                              sampler_vip=future_map(sampler_mGamma, ~apply(.x, 2, mean, .progress = TRUE)),
                              blma_vip=future_map(blma_result, "vinclusion_prob", .progress = TRUE),
                              error=future_map2_dbl(sampler_vip, blma_vip, ~sum((.x - .y)^2)))
 parameters_tbl %>% select(data_set_name, prior, model_prior, error) %>% View
-tibble(error=parameters_tbl$error[!is.na(parameters_tbl$error) & !is.nan(parameters_tbl$error) & parameters_tbl$error < 10]) %>% ggplot(aes(error)) + geom_histogram()
-parameters_tbl %>% select(error) %>% filter(!is.na(error) & !is.nan(error) & error < 10) %>% ggplot(aes(error)) + geom_histogram()
+#tibble(error=parameters_tbl$error[!is.na(parameters_tbl$error) & !is.nan(parameters_tbl$error) & parameters_tbl$error < 10]) %>% ggplot(aes(error)) + geom_histogram()
+#parameters_tbl %>% select(error) %>% filter(!is.na(error) & !is.nan(error) & error < 10) %>% ggplot(aes(error)) + geom_histogram()
+# If we could get the titles and axes right, we'd have plots
+parameters_tbl %>% filter(data_set_name == "Kakadu") %>% select(prior, model_prior, sampler_vip) -> sampler_tbl
+sampler_tbl %>% pmap(~ ggplot(tibble(prob=..3)) + geom_col(aes(x=1:length(prob), y=prob)) + ggtitle("Kakadu", subtitle = str_c("Variable inclusion for the ", ..1," prior with the ", ..2, " model prior")) + xlab("Covariates") + ylab("Inclusion probability"))
 ```
 
 We examine the mean and sd of the gamma vectors returned by the sampler for each run. Note
