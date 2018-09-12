@@ -281,19 +281,22 @@ if (file.exists("./parameters_tbl_20180826.RData")) {
   ITERATIONS <- 10000
   #data_set_names <- c("Kakadu", "Hitters", "BodyFat", "Wage", "College", "UScrime") #, "comCrime", "QTL")
   #data_set_names <- c("building")
-  data_set_names <- c("buzz")
-  priors <- c("BIC",
-              "ZE",
-              "liang_g1",
-              "liang_g2",
-              #"liang_g_n_appell", # This causes an error. Find out why.
-              "liang_g_n_approx",
-              #"liang_g_n_quad", # This is really slow.
-              "robust_bayarri1",
-              "robust_bayarri2")
-  model_priors <- c("uniform",
-                    "beta-binomial",
-                    "bernoulli")
+  #data_set_names <- c("buzz")
+  data_set_names <- c("Kakadu")
+  #priors <- c("BIC",
+              #"ZE",
+              #"liang_g1",
+              #"liang_g2",
+              ##"liang_g_n_appell", # This causes an error. Find out why.
+              #"liang_g_n_approx",
+              ##"liang_g_n_quad", # This is really slow.
+              #"robust_bayarri1",
+              #"robust_bayarri2")
+  #model_priors <- c("uniform",
+                    #"beta-binomial",
+                    #"bernoulli")
+  priors <- c("hyper_g_n_gauss_legendre")
+  model_priors <- c("uniform")
   parameters_tbl <- cross_df(list(data_set_name=data_set_names, prior=priors, model_prior=model_priors))
   
   model_prior_vec <- function(model_prior, ds) {
@@ -308,14 +311,14 @@ if (file.exists("./parameters_tbl_20180826.RData")) {
       model_prior_vec <- vrho
     }
   }
-  parameters_tbl$sampler_result <- future_pmap(parameters_tbl[, c("data_set_name",  "prior", "model_prior")], function(data_set_name, prior, model_prior) {
+  parameters_tbl$sampler_result <- pmap(parameters_tbl[, c("data_set_name",  "prior", "model_prior")], function(data_set_name, prior, model_prior) {
     cat("sampler", data_set_name, prior, model_prior, "\n")
     ds <- data_set(data_set_name)
     vy <- ds$vy
     mX <- ds$mX
     model_prior_vec <- model_prior_vec(model_prior, ds)
     sampler(ITERATIONS, vy, mX, prior, model_prior, modelpriorvec = model_prior_vec)
-  }, .progress = TRUE)
+  })
   parameters_tbl$blma_result <- future_pmap(parameters_tbl[, c("data_set_name", "prior", "model_prior")], function(data_set_name, prior, model_prior) {
     cat("blma", data_set_name, prior, model_prior, "\n")
     ds <- data_set(data_set_name)
