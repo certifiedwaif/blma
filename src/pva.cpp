@@ -61,10 +61,9 @@ double calculate_log_prob(const uint n, const uint p, const double R2, const uin
 }
 
 
-template <typename Derived1, typename Derived2>
-void calculate_log_probabilities(const vector< dbitset >& gamma, const Eigen::MatrixBase<Derived1>& sigma2,
+void calculate_log_probabilities(const vector< dbitset >& gamma, const VectorXd& sigma2,
                                   const int n,
-                                  Eigen::MatrixBase<Derived2>& log_probs,
+                                  VectorXd& log_probs,
                                   const log_prob_fn log_prob,
                                   const std::string& modelprior, const VectorXd& modelpriorvec)
 {
@@ -99,10 +98,9 @@ void calculate_log_probabilities(const vector< dbitset >& gamma, const Eigen::Ma
 }
 
 
-template <typename Derived1, typename Derived2, typename Derived3>
-void calculate_weights(const Eigen::MatrixBase<Derived1>& sigma2,
-                        const Eigen::MatrixBase<Derived2>& log_probs,
-                        Eigen::MatrixBase<Derived3>& w)
+void calculate_weights(const VectorXd& sigma2,
+                        const VectorXd& log_probs,
+                        VectorXd& w)
 {
   const auto K = log_probs.size();
   #pragma omp parallel for
@@ -121,8 +119,7 @@ void calculate_weights(const Eigen::MatrixBase<Derived1>& sigma2,
 }
 
 
-template <typename Derived1>
-double calculate_entropy(const Eigen::MatrixBase<Derived1>& w)
+double calculate_entropy(const VectorXd& w)
 {
   const auto K = w.size();
   auto H = 0.;
@@ -139,9 +136,8 @@ double calculate_entropy(const Eigen::MatrixBase<Derived1>& w)
 }
 
 
-template <typename Derived1, typename Derived2>
-double calculate_w_dot_prob(const Eigen::MatrixBase<Derived1>& w,
-                            const Eigen::MatrixBase<Derived2>& log_probs)
+double calculate_w_dot_prob(const VectorXd& w,
+                            const VectorXd& log_probs)
 {
   const auto K = w.size();
   auto w_dot_prob = 0.;
@@ -160,8 +156,7 @@ double calculate_w_dot_prob(const Eigen::MatrixBase<Derived1>& w,
 }
 
 
-template <typename Derived1>
-void gamma_to_MatrixXd(const vector< dbitset >& gamma, Eigen::MatrixBase<Derived1>& m)
+void gamma_to_MatrixXd(const vector< dbitset >& gamma, MatrixXd& m)
 {
   auto K = gamma.size();
   auto p = gamma[0].size();
@@ -174,10 +169,9 @@ void gamma_to_MatrixXd(const vector< dbitset >& gamma, Eigen::MatrixBase<Derived
 }
 
 
-template <typename Derived1, typename Derived2, typename Derived3>
 void calculate_mXTX_inv_prime(const dbitset& gamma, const dbitset& gamma_prime, int j,
-                              const Eigen::MatrixBase<Derived1>& mXTX, const Eigen::MatrixBase<Derived2>& mXTX_inv,
-                              Eigen::MatrixBase<Derived3>& mXTX_inv_prime,  bool bUpdate)
+                              const MatrixXd& mXTX, const MatrixXd& mXTX_inv,
+                              MatrixXd& mXTX_inv_prime,  bool bUpdate)
 {
   bool bLow;
   uint min_idx = std::min(gamma.find_first(), gamma_prime.find_first());
@@ -211,11 +205,10 @@ void calculate_mXTX_inv_prime(const dbitset& gamma, const dbitset& gamma_prime, 
 }
 
 
-template <typename Derived1, typename Derived2, typename Derived3>
 double calculate_sigma2_prime(const uint n, const uint p_gamma_prime,
-                              const Eigen::MatrixBase<Derived1>& mX, const dbitset& gamma_prime,
-                              const Eigen::MatrixBase<Derived2>& vy,
-                              const Eigen::MatrixBase<Derived3>& mXTX_inv_prime)
+                              const MatrixXd& mX, const dbitset& gamma_prime,
+                              const VectorXd& vy,
+                              const MatrixXd& mXTX_inv_prime)
 {
   MatrixXd mX_gamma_prime(n, p_gamma_prime);
   get_cols(mX, gamma_prime, mX_gamma_prime);

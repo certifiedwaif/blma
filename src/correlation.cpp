@@ -26,7 +26,6 @@ using namespace boost;
 using Eigen::VectorXd;
 using Eigen::RowVectorXd;
 using Eigen::MatrixXd;
-using Eigen::MatrixBase;
 using Eigen::VectorXi;
 using Eigen::RowVectorXi;
 using Eigen::MatrixXi;
@@ -52,8 +51,7 @@ vector<uint>& get_indices_from_dbitset(const dbitset& gamma, vector<uint>& v)
 // Get columns
 // Need a corresponding get rows
 // And get rows and columns
-template <typename Derived1, typename Derived2>
-Eigen::MatrixBase<Derived2>& get_cols(const Eigen::MatrixBase<Derived1>& m1, const dbitset& gamma, Eigen::MatrixBase<Derived2>& m2)
+MatrixXd& get_cols(const MatrixXd& m1, const dbitset& gamma, MatrixXd& m2)
 {
   // Special case of get_rows_and_cols
   vector<uint> columns;
@@ -67,8 +65,7 @@ Eigen::MatrixBase<Derived2>& get_cols(const Eigen::MatrixBase<Derived1>& m1, con
 }
 
 
-template <typename Derived1, typename Derived2>
-Eigen::MatrixBase<Derived2>& get_rows(const Eigen::MatrixBase<Derived1>& m1, const dbitset& gamma, Eigen::MatrixBase<Derived2>& m2)
+MatrixXd& get_rows(const MatrixXd& m1, const dbitset& gamma, MatrixXd& m2)
 {
   // Special case of get_rows_and_cols
   vector<uint> rows;
@@ -83,9 +80,8 @@ Eigen::MatrixBase<Derived2>& get_rows(const Eigen::MatrixBase<Derived1>& m1, con
 }
 
 
-template <typename Derived1, typename Derived2>
-Eigen::MatrixBase<Derived2>& get_rows_and_cols(const Eigen::MatrixBase<Derived1>& m1, const dbitset& rows_bs,
-const dbitset& cols_bs, Eigen::MatrixBase<Derived2>& m2)
+MatrixXd& get_rows_and_cols(const MatrixXd& m1, const dbitset& rows_bs,
+const dbitset& cols_bs, MatrixXd& m2)
 {
   vector<uint> row_indices;
   row_indices = get_indices_from_dbitset(rows_bs, row_indices);
@@ -172,10 +168,9 @@ void show_matrix_difference(ostream& os, const MatrixXd& m1, const MatrixXd& m2,
 
 
 // Perform the rank one update on (X_gamma^T X_gamma)^{-1}
-template <typename Derived1, typename Derived2>
-Eigen::MatrixBase<Derived2>& rank_one_update(const dbitset& gamma, const uint col_abs, const uint min_idx,
+MatrixXd& rank_one_update(const dbitset& gamma, const uint col_abs, const uint min_idx,
   const uint fixed,
-const Eigen::MatrixBase<Derived1>& mXTX, const Eigen::MatrixBase<Derived1>& mA, Eigen::MatrixBase<Derived2>& mA_prime, bool& bLow)
+const MatrixXd& mXTX, const MatrixXd& mA, MatrixXd& mA_prime, bool& bLow)
 {
   auto p = mXTX.cols();
   auto p_gamma_prime = mA_prime.cols();
@@ -265,9 +260,8 @@ const Eigen::MatrixBase<Derived1>& mXTX, const Eigen::MatrixBase<Derived1>& mA, 
 
 
 // Perform the rank one downdate on (X_gamma^T X_gamma)^{-1}
-template <typename Derived1, typename Derived2>
-Eigen::MatrixBase<Derived2>& rank_one_downdate(const uint col_abs, const uint min_idx, const uint fixed,
-const Eigen::MatrixBase<Derived1>& mA, Eigen::MatrixBase<Derived2>& mA_prime)
+MatrixXd& rank_one_downdate(const uint col_abs, const uint min_idx, const uint fixed,
+const MatrixXd& mA, MatrixXd& mA_prime)
 {
   auto p_gamma_prime = mA_prime.cols();
   auto p_gamma = mA.cols();
@@ -314,10 +308,9 @@ const Eigen::MatrixBase<Derived1>& mA, Eigen::MatrixBase<Derived2>& mA_prime)
 }
 
 
-template <typename Derived1, typename Derived2>
 void update_mA_prime(bool bUpdate, const dbitset& gamma,
 const uint col, const uint min_idx, const uint fixed,
-const Eigen::MatrixBase<Derived1>& mXTX, const Eigen::MatrixBase<Derived1>& mA, Eigen::MatrixBase<Derived2>& mA_prime,
+const MatrixXd& mXTX, const MatrixXd& mA, MatrixXd& mA_prime,
 bool& bLow)
 {
   if (bUpdate) {
@@ -384,12 +377,11 @@ bool check_model_prior_parameters(const std::string modelprior, const VectorXd& 
 }
 
 
-template <typename Derived1, typename Derived2, typename Derived3, typename Derived4>
 void calculate_probabilities(const std::string prior, const std::string modelprior, const VectorXd& modelpriorvec,
-                             const int n, const int p, const Eigen::MatrixBase<Derived1>& vR2_all,
-                             const Eigen::MatrixBase<Derived2>& vpgamma_all, const Graycode& graycode,
-                             Eigen::MatrixBase<Derived3>& vlogp_all,
-                             Eigen::MatrixBase<Derived4>& vinclusion_prob)
+                             const int n, const int p, const VectorXd& vR2_all,
+                             const VectorXi& vpgamma_all, const Graycode& graycode,
+                             VectorXd& vlogp_all,
+                             VectorXd& vinclusion_prob)
 {
   std::function<double (const int n, const int p, double vR2, int vp_gamma)> log_prob;
   set_log_prob(prior, log_prob);
