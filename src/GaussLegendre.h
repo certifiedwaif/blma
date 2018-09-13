@@ -32,16 +32,16 @@ namespace Rosetta {
             double q = (b + a) / 2;
             const LegendrePolynomial& legpoly = s_LegendrePolynomial;
 
-            double log_f[eDEGREE];
+            double log_f[eDEGREE + 1];
             double log_f_star = -INFINITY;
             for (int i = 1; i <= eDEGREE; ++i) {
                 log_f[i] = f(p * legpoly.root(i) + q);
                 if (log_f[i] > log_f_star)
-                    log_f_star = log_f[i - 1];
+                    log_f_star = log_f[i];
             }
             double sum = 0;
             for (int i = 1; i <= eDEGREE; ++i) {
-                sum += legpoly.weight(i) * exp(log_f[i - 1] - log_f_star);
+                sum += legpoly.weight(i) * exp(log_f[i] - log_f_star);
             }
 
             return p * sum;
