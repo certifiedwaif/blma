@@ -311,7 +311,7 @@ if (file.exists("./parameters_tbl_20180826.RData")) {
       model_prior_vec <- vrho
     }
   }
-  parameters_tbl$sampler_result <- pmap(parameters_tbl[, c("data_set_name",  "prior", "model_prior")], function(data_set_name, prior, model_prior) {
+  parameters_tbl$sampler_result <- future_pmap(parameters_tbl[, c("data_set_name",  "prior", "model_prior")], function(data_set_name, prior, model_prior) {
     cat("sampler", data_set_name, prior, model_prior, "\n")
     ds <- data_set(data_set_name)
     vy <- ds$vy

@@ -6,6 +6,7 @@
 #include <iostream>
 #include <iomanip>
 #include <cmath>
+#include <algorithm>
 
 namespace Rosetta {
 
@@ -34,12 +35,13 @@ namespace Rosetta {
 
             double log_f[eDEGREE + 1];
             double log_f_star = -INFINITY;
+#pragma omp parallel for reduction(max:log_f_star)
             for (int i = 1; i <= eDEGREE; ++i) {
                 log_f[i] = f(p * legpoly.root(i) + q);
-                if (log_f[i] > log_f_star)
-                    log_f_star = log_f[i];
+                log_f_star = std::max(log_f_star, log_f[i]);
             }
             double sum = 0;
+#pragma omp parallel for reduction(+:sum)
             for (int i = 1; i <= eDEGREE; ++i) {
                 sum += legpoly.weight(i) * exp(log_f[i] - log_f_star);
             }
