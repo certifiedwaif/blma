@@ -17,7 +17,6 @@ typedef unsigned int uint;
 using namespace Rcpp;
 using Eigen::VectorXd;
 using Eigen::MatrixXd;
-using Eigen::MatrixBase;
 using std::string;
 
 struct Normed {
@@ -32,20 +31,15 @@ List blma_fixed_cpp(VectorXd vy, MatrixXd mX, MatrixXd mZ, std::string prior, st
 List blma_cpp(VectorXd vy, MatrixXd mX, std::string prior, std::string modelprior, VectorXd modelpriorvec,
               const uint intercept_col, const bool bNatural_Order = false, const bool bIntercept = false,
               const bool bCentre = true, const uint cores = 1L);
-template <typename Derived1, typename Derived2>
-Eigen::MatrixBase<Derived2>& get_cols(const Eigen::MatrixBase<Derived1>& m1, const dbitset& gamma, Eigen::MatrixBase<Derived2>& m2);
-template <typename Derived1, typename Derived2>
-Eigen::MatrixBase<Derived2>& get_rows(const Eigen::MatrixBase<Derived1>& m1, const dbitset& gamma, Eigen::MatrixBase<Derived2>& m2);
-template <typename Derived1, typename Derived2>
-Eigen::MatrixBase<Derived2>& get_rows_and_cols(const Eigen::MatrixBase<Derived1>& m1, const dbitset& rows_bs,
-const dbitset& cols_bs, Eigen::MatrixBase<Derived2>& m2);
-template <typename Derived1, typename Derived2>
-Eigen::MatrixBase<Derived2>& rank_one_update(const dbitset& gamma, const uint col_abs, const uint min_idx,
+MatrixXd& get_cols(const MatrixXd& m1, const dbitset& gamma, MatrixXd& m2);
+MatrixXd& get_rows(const MatrixXd& m1, const dbitset& gamma, MatrixXd& m2);
+MatrixXd& get_rows_and_cols(const MatrixXd& m1, const dbitset& rows_bs,
+const dbitset& cols_bs, MatrixXd& m2);
+MatrixXd& rank_one_update(const dbitset& gamma, const uint col_abs, const uint min_idx,
   const uint fixed,
-const Eigen::MatrixBase<Derived1>& mXTX, const Eigen::MatrixBase<Derived1>& mA, Eigen::MatrixBase<Derived2>& mA_prime, bool& bLow);
-template <typename Derived1, typename Derived2>
-Eigen::MatrixBase<Derived2>& rank_one_downdate(const uint col_abs, const uint min_idx, const uint fixed,
-const Eigen::MatrixBase<Derived1>& mA, Eigen::MatrixBase<Derived2>& mA_prime);
+const MatrixXd& mXTX, const MatrixXd& mA, MatrixXd& mA_prime, bool& bLow);
+MatrixXd& rank_one_downdate(const uint col_abs, const uint min_idx, const uint fixed,
+const MatrixXd& mA, MatrixXd& mA_prime);
 double var(const VectorXd& v);
 double sd(const VectorXd& v);
 Normed normalise(VectorXd& vy, MatrixXd& mX);

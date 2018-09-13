@@ -299,26 +299,25 @@ double robust_bayarri2(const int n, const int p, double R2, int p_gamma)
   return log_vp_gprior7;
 }
 
-double log_BF_g_on_n_integrand(double vu, double R2, int n, int p, double a)
+double log_BF_g_on_n_integrand (double vu, int n, int p, double R2, double a)
 {
-	double vals = 0.;
-	vals += log(a - 2);
-	vals -= log(2*n);
-	vals += 0.5*(p + a - 4)*log(1 - vu);
-	vals -= 0.5*a*log(1 - vu*(1 - 1/n));
-	vals -= 0.5*(n - 1)*log(1 - vu*R2);
-	
-	return(vals);
+  double vals = 0.;
+  vals += log (a - 2);
+  vals -= log (2 * n);
+  vals += 0.5 * (p + a - 4) * log (1 - vu);
+  vals -= 0.5 * a * log (1 - vu * (1 - 1 / n));
+  vals -= 0.5 * (n - 1) * log (1 - vu * R2);
+
+  return (vals);
 }
 
-double log_BF_g_on_n_quad(const double R2, const int n, const int p, const int a)
+double log_BF_g_on_n_quad (const int n, const int p, const double R2, const int a)
 {
-    auto f = [=](double x)
-    {
-        return log_BF_g_on_n_integrand(x, R2, n, p, a);
-    };
-    Rosetta::GaussLegendreQuadrature<1000> gauss_legendre;
-    return(gauss_legendre.integrate(0., 1., f));
+  auto f=[=](double x) {
+    return log_BF_g_on_n_integrand (x, n, p, R2, a);
+  };
+  Rosetta::GaussLegendreQuadrature < 1000 > gauss_legendre;
+  return log(gauss_legendre.integrate (0., 1., f));
 }
 
 void set_log_prob(const string prior, log_prob_fn& log_prob)
@@ -344,15 +343,10 @@ void set_log_prob(const string prior, log_prob_fn& log_prob)
   } else if (prior == "robust_bayarri2") {
     log_prob = robust_bayarri2;
   } else if (prior == "hyper_g_n_gauss_legendre") {
-    log_prob = [](const int n, const int p, double R2, int p_gamma) {
-                    return log(log_BF_g_on_n_quad(n, p, R2, p_gamma));
-               };
+    log_prob = log_BF_g_on_n_quad;
   } else {
     stringstream ss;
     ss << "Prior " << prior << " unknown";
     Rcpp::stop(ss.str());
   }
 }
-
-
-
