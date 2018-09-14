@@ -22,7 +22,15 @@ using namespace Rcpp;
 using Eigen::VectorXd;
 using std::string;
 
-// Which one was this one again? Maruyama?
+//' Maruyama prior
+//'
+//' @param n The sample size, an integer
+//' @param p The number of covariates in the full matrix, an integer
+//' @param R2 The correlation co-efficient, a number between -1 and 1
+//' @param p_gamma The number of covariates in the model gamma
+//' @return The log of the Bayes Factor
+//' @export
+// [[Rcpp::export]]
 double maruyama(const int n, const int p, const double R2, int p_gamma)
 {
   const auto sigma2 = 1. - R2;
@@ -62,6 +70,15 @@ double maruyama(const int n, const int p, const double R2, int p_gamma)
 }
 
 
+//' BIC prior
+//'
+//' @param n The sample size, an integer
+//' @param p The number of covariates in the full matrix, an integer
+//' @param R2 The correlation co-efficient, a number between -1 and 1
+//' @param p_gamma The number of covariates in the model gamma
+//' @return The log of the Bayes Factor
+//' @export
+// [[Rcpp::export]]
 double BIC(const int n, const int p, double R2, int vp_gamma)
 {
   const auto sigma2 = 1. - R2;
@@ -81,6 +98,15 @@ double BIC(const int n, const int p, double R2, int vp_gamma)
 }
 
 
+//' ZE prior
+//'
+//' @param n The sample size, an integer
+//' @param p The number of covariates in the full matrix, an integer
+//' @param R2 The correlation co-efficient, a number between -1 and 1
+//' @param p_gamma The number of covariates in the model gamma
+//' @return The log of the Bayes Factor
+//' @export
+// [[Rcpp::export]]
 double ZE(const int n, const int p, double R2, int p_gamma)
 {
   auto a = -0.75;
@@ -94,6 +120,15 @@ double ZE(const int n, const int p, double R2, int p_gamma)
 }
 
 
+//' log_hyperg_2F1 prior
+//'
+//' @param n The sample size, an integer
+//' @param p The number of covariates in the full matrix, an integer
+//' @param R2 The correlation co-efficient, a number between -1 and 1
+//' @param p_gamma The number of covariates in the model gamma
+//' @return The log of the Bayes Factor
+//' @export
+// [[Rcpp::export]]
 double log_hyperg_2F1(double b, double c, double x)
 {
   if (x == 0.)
@@ -108,6 +143,15 @@ double log_hyperg_2F1(double b, double c, double x)
 }
 
 
+//' ZE prior
+//'
+//' @param n The sample size, an integer
+//' @param p The number of covariates in the full matrix, an integer
+//' @param R2 The correlation co-efficient, a number between -1 and 1
+//' @param p_gamma The number of covariates in the model gamma
+//' @return The log of the Bayes Factor
+//' @export
+// [[Rcpp::export]]
 double log_hyperg_2F1_naive(double b, double c, double x)
 {
   auto val = log(gsl_sf_hyperg_2F1( b, 1, c, x));
@@ -115,7 +159,15 @@ double log_hyperg_2F1_naive(double b, double c, double x)
 }
 
 
-// Liang's hyper g-prior
+//' Liang's hyper g-prior
+//'
+//' @param n The sample size, an integer
+//' @param p The number of covariates in the full matrix, an integer
+//' @param R2 The correlation co-efficient, a number between -1 and 1
+//' @param p_gamma The number of covariates in the model gamma
+//' @return The log of the Bayes Factor
+//' @export
+// [[Rcpp::export]]
 double liang_g1(const int n, const int p, double R2, int p_gamma)
 {
   auto a = 3.;
@@ -125,7 +177,15 @@ double liang_g1(const int n, const int p, double R2, int p_gamma)
 }
 
 
-// Liang's g prior
+//' Liang's g prior
+//'
+//' @param n The sample size, an integer
+//' @param p The number of covariates in the full matrix, an integer
+//' @param R2 The correlation co-efficient, a number between -1 and 1
+//' @param p_gamma The number of covariates in the model gamma
+//' @return The log of the Bayes Factor
+//' @export
+// [[Rcpp::export]]
 double liang_g2(const int n, const int p, double R2, int p_gamma)
 {
   auto a = 3.;
@@ -134,7 +194,15 @@ double liang_g2(const int n, const int p, double R2, int p_gamma)
 }
 
 
-// Liang's g/n prior Appell
+//' Liang's g/n prior Appell
+//'
+//' @param n The sample size, an integer
+//' @param p The number of covariates in the full matrix, an integer
+//' @param R2 The correlation co-efficient, a number between -1 and 1
+//' @param p_gamma The number of covariates in the model gamma
+//' @return The log of the Bayes Factor
+//' @export
+// [[Rcpp::export]]
 double liang_g_n_appell(const int n, const int p, double R2, int p_gamma)
 {
   auto a = 3.;
@@ -181,7 +249,15 @@ double trapint(const VectorXd& xgrid, const VectorXd& fgrid)
 }
 
 
-// Liang's g/n prior quadrature
+//' Liang's g/n prior quadrature
+//'
+//' @param n The sample size, an integer
+//' @param p The number of covariates in the full matrix, an integer
+//' @param R2 The correlation co-efficient, a number between -1 and 1
+//' @param p_gamma The number of covariates in the model gamma
+//' @return The log of the Bayes Factor
+//' @export
+// [[Rcpp::export]]
 double liang_g_n_quad(const int n, const int p, double R2, int p_gamma)
 {
   auto a = 3.;
@@ -201,7 +277,16 @@ double liang_g_n_quad(const int n, const int p, double R2, int p_gamma)
 }
 
 
-// Liang's g/n prior approximation
+//' Liang's g/n prior approximation
+//' Liang's g/n prior quadrature
+//'
+//' @param n The sample size, an integer
+//' @param p The number of covariates in the full matrix, an integer
+//' @param R2 The correlation co-efficient, a number between -1 and 1
+//' @param p_gamma The number of covariates in the model gamma
+//' @return The log of the Bayes Factor
+//' @export
+// [[Rcpp::export]]
 double liang_g_n_approx(const int n, const int p, double R2, int p_gamma)
 {
   // #ifdef DEBUG
@@ -228,6 +313,15 @@ double liang_g_n_approx(const int n, const int p, double R2, int p_gamma)
 }
 
 
+//' Robust Bayarri 1
+//'
+//' @param n The sample size, an integer
+//' @param p The number of covariates in the full matrix, an integer
+//' @param R2 The correlation co-efficient, a number between -1 and 1
+//' @param p_gamma The number of covariates in the model gamma
+//' @return The log of the Bayes Factor
+//' @export
+// [[Rcpp::export]]
 double robust_bayarri1(const int n, const int p, double R2, int p_gamma)
 {
   // Rcpp::Rcout << "n " << n << " R2 " << R2 << " p_gamma " << p_gamma << std::endl;
@@ -261,6 +355,15 @@ double robust_bayarri1(const int n, const int p, double R2, int p_gamma)
 }
 
 
+//' Robust Bayarri 2
+//'
+//' @param n The sample size, an integer
+//' @param p The number of covariates in the full matrix, an integer
+//' @param R2 The correlation co-efficient, a number between -1 and 1
+//' @param p_gamma The number of covariates in the model gamma
+//' @return The log of the Bayes Factor
+//' @export
+// [[Rcpp::export]]
 double robust_bayarri2(const int n, const int p, double R2, int p_gamma)
 {
   #ifdef DEBUG
@@ -299,6 +402,17 @@ double robust_bayarri2(const int n, const int p, double R2, int p_gamma)
   return log_vp_gprior7;
 }
 
+
+//' log_BF_g_on_n_integrand
+//'
+//' @param vu The argument, vu
+//' @param n The sample size, an integer
+//' @param p The number of covariates in the full matrix, an integer
+//' @param R2 The correlation co-efficient, a number between -1 and 1
+//' @param p_gamma The number of covariates in the model gamma
+//' @return The log of the Bayes Factor
+//' @export
+// [[Rcpp::export]]
 double log_BF_g_on_n_integrand (double vu, int n, int p, double R2, double a)
 {
   double vals = 0.;
@@ -311,6 +425,15 @@ double log_BF_g_on_n_integrand (double vu, int n, int p, double R2, double a)
   return (vals);
 }
 
+//' hyper-g/n Gauss-Legendre quadrature
+//'
+//' @param n The sample size, an integer
+//' @param p The number of covariates in the full matrix, an integer
+//' @param R2 The correlation co-efficient, a number between -1 and 1
+//' @param p_gamma The number of covariates in the model gamma
+//' @return The log of the Bayes Factor
+//' @export
+// [[Rcpp::export]]
 double log_BF_g_on_n_quad (const int n, const int p, const double R2, const int a)
 {
   auto f=[=](double x) {
