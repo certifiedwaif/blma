@@ -31,7 +31,7 @@ using std::string;
 //' @return The log of the Bayes Factor
 //' @export
 // [[Rcpp::export]]
-double maruyama(const int n, const int p, const double R2, int p_gamma)
+double maruyama(const int n, const int p, const double R2, const int p_gamma)
 {
   const auto sigma2 = 1. - R2;
   const auto a = 1.;
@@ -79,20 +79,20 @@ double maruyama(const int n, const int p, const double R2, int p_gamma)
 //' @return The log of the Bayes Factor
 //' @export
 // [[Rcpp::export]]
-double BIC(const int n, const int p, double R2, int vp_gamma)
+double BIC(const int n, const int p, double R2, const int p_gamma)
 {
   const auto sigma2 = 1. - R2;
   #ifdef DEBUG
   Rcpp::Rcout << "n " << n << " p " << p << " R2 " << R2 << " vp_gamma " << vp_gamma << std::endl;
   #endif
-  auto BIC = n * log(sigma2) + vp_gamma * log(n);
+  auto BIC = n * log(sigma2) + p_gamma * log(n);
   if (sigma2 == 0. || std::isnan(sigma2)) {
     BIC = -INFINITY;
     // throw std::range_error("Invalid sigma2");
   }
   #ifdef DEBUG
   Rcpp::Rcout << "n * log(1 - R2) " << n * log(1 - R2) << std::endl;
-  Rcpp::Rcout << "vp_gamma * log(n) " << vp_gamma * log(n) << std::endl;
+  Rcpp::Rcout << "p_gamma * log(n) " << p_gamma * log(n) << std::endl;
   #endif
   return -0.5 * BIC;
 }
@@ -107,7 +107,7 @@ double BIC(const int n, const int p, double R2, int vp_gamma)
 //' @return The log of the Bayes Factor
 //' @export
 // [[Rcpp::export]]
-double ZE(const int n, const int p, double R2, int p_gamma)
+double ZE(const int n, const int p, const double R2, const int p_gamma)
 {
   auto a = -0.75;
   auto b = 0.5 * (n - p_gamma - 5) - a;
@@ -122,11 +122,10 @@ double ZE(const int n, const int p, double R2, int p_gamma)
 
 //' log_hyperg_2F1 prior
 //'
-//' @param n The sample size, an integer
-//' @param p The number of covariates in the full matrix, an integer
-//' @param R2 The correlation co-efficient, a number between -1 and 1
-//' @param p_gamma The number of covariates in the model gamma
-//' @return The log of the Bayes Factor
+//' @param b
+//' @param c
+//' @param x
+//' @return 
 //' @export
 // [[Rcpp::export]]
 double log_hyperg_2F1(double b, double c, double x)
@@ -143,12 +142,11 @@ double log_hyperg_2F1(double b, double c, double x)
 }
 
 
-//' ZE prior
+//' log_hyperg_2F1_naive
 //'
-//' @param n The sample size, an integer
-//' @param p The number of covariates in the full matrix, an integer
-//' @param R2 The correlation co-efficient, a number between -1 and 1
-//' @param p_gamma The number of covariates in the model gamma
+//' @param b
+//' @param c
+//' @param x
 //' @return The log of the Bayes Factor
 //' @export
 // [[Rcpp::export]]
@@ -168,7 +166,7 @@ double log_hyperg_2F1_naive(double b, double c, double x)
 //' @return The log of the Bayes Factor
 //' @export
 // [[Rcpp::export]]
-double liang_g1(const int n, const int p, double R2, int p_gamma)
+double liang_g1(const int n, const int p, const double R2, const int p_gamma)
 {
   auto a = 3.;
   double log_p_g;
@@ -186,7 +184,7 @@ double liang_g1(const int n, const int p, double R2, int p_gamma)
 //' @return The log of the Bayes Factor
 //' @export
 // [[Rcpp::export]]
-double liang_g2(const int n, const int p, double R2, int p_gamma)
+double liang_g2(const int n, const int p, const double R2, const int p_gamma)
 {
   auto a = 3.;
   auto log_vp_g2 = log(a - 2) - log(p_gamma + a - 2) + log_hyperg_2F1( 0.5*(n-1), 0.5*(p_gamma+a), R2);
@@ -203,7 +201,7 @@ double liang_g2(const int n, const int p, double R2, int p_gamma)
 //' @return The log of the Bayes Factor
 //' @export
 // [[Rcpp::export]]
-double liang_g_n_appell(const int n, const int p, double R2, int p_gamma)
+double liang_g_n_appell(const int n, const int p, const double R2, const int p_gamma)
 {
   auto a = 3.;
 
@@ -258,7 +256,7 @@ double trapint(const VectorXd& xgrid, const VectorXd& fgrid)
 //' @return The log of the Bayes Factor
 //' @export
 // [[Rcpp::export]]
-double liang_g_n_quad(const int n, const int p, double R2, int p_gamma)
+double liang_g_n_quad(const int n, const int p, const double R2, const int p_gamma)
 {
   auto a = 3.;
   const int NUM_POINTS = 10000;
@@ -287,7 +285,7 @@ double liang_g_n_quad(const int n, const int p, double R2, int p_gamma)
 //' @return The log of the Bayes Factor
 //' @export
 // [[Rcpp::export]]
-double liang_g_n_approx(const int n, const int p, double R2, int p_gamma)
+double liang_g_n_approx(const int n, const int p, const double R2, const int p_gamma)
 {
   // #ifdef DEBUG
   // Rcpp::Rcout << "n " << n << " p " << p << " R2 " << R2 << " p_gamma " << p_gamma << std::endl;
@@ -322,7 +320,7 @@ double liang_g_n_approx(const int n, const int p, double R2, int p_gamma)
 //' @return The log of the Bayes Factor
 //' @export
 // [[Rcpp::export]]
-double robust_bayarri1(const int n, const int p, double R2, int p_gamma)
+double robust_bayarri1(const int n, const int p, const double R2, const int p_gamma)
 {
   // Rcpp::Rcout << "n " << n << " R2 " << R2 << " p_gamma " << p_gamma << std::endl;
   double r = (1. + n) / (1. + p_gamma);
@@ -364,7 +362,7 @@ double robust_bayarri1(const int n, const int p, double R2, int p_gamma)
 //' @return The log of the Bayes Factor
 //' @export
 // [[Rcpp::export]]
-double robust_bayarri2(const int n, const int p, double R2, int p_gamma)
+double robust_bayarri2(const int n, const int p, const double R2, const int p_gamma)
 {
   #ifdef DEBUG
   Rcpp::Rcout << "n " << n;
@@ -413,7 +411,7 @@ double robust_bayarri2(const int n, const int p, double R2, int p_gamma)
 //' @return The log of the Bayes Factor
 //' @export
 // [[Rcpp::export]]
-double log_BF_g_on_n_integrand (double vu, int n, int p, double R2, double a)
+double log_BF_g_on_n_integrand (const double vu, const int n, const int p, const double R2, const double a)
 {
   double vals = 0.;
   vals += log (a - 2);

@@ -12,11 +12,13 @@ Imports:
     RcppEigen,
     RcppGSL,
     BH,
-    MASS
+    MASS,
+    appell
 LinkingTo: Rcpp (>= 0.12.5),
     RcppEigen,
     RcppGSL,
-    BH
+    BH,
+    appell
 RoxygenNote: 6.1.0
 Suggests: knitr,
     rmarkdown

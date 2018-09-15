@@ -8,7 +8,7 @@
 using namespace Rcpp;
 
 // maruyama
-double maruyama(const int n, const int p, const double R2, int p_gamma);
+double maruyama(const int n, const int p, const double R2, const int p_gamma);
 RcppExport SEXP _blma_maruyama(SEXP nSEXP, SEXP pSEXP, SEXP R2SEXP, SEXP p_gammaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -16,35 +16,35 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int >::type n(nSEXP);
     Rcpp::traits::input_parameter< const int >::type p(pSEXP);
     Rcpp::traits::input_parameter< const double >::type R2(R2SEXP);
-    Rcpp::traits::input_parameter< int >::type p_gamma(p_gammaSEXP);
+    Rcpp::traits::input_parameter< const int >::type p_gamma(p_gammaSEXP);
     rcpp_result_gen = Rcpp::wrap(maruyama(n, p, R2, p_gamma));
     return rcpp_result_gen;
 END_RCPP
 }
 // BIC
-double BIC(const int n, const int p, double R2, int vp_gamma);
-RcppExport SEXP _blma_BIC(SEXP nSEXP, SEXP pSEXP, SEXP R2SEXP, SEXP vp_gammaSEXP) {
+double BIC(const int n, const int p, double R2, const int p_gamma);
+RcppExport SEXP _blma_BIC(SEXP nSEXP, SEXP pSEXP, SEXP R2SEXP, SEXP p_gammaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const int >::type n(nSEXP);
     Rcpp::traits::input_parameter< const int >::type p(pSEXP);
     Rcpp::traits::input_parameter< double >::type R2(R2SEXP);
-    Rcpp::traits::input_parameter< int >::type vp_gamma(vp_gammaSEXP);
-    rcpp_result_gen = Rcpp::wrap(BIC(n, p, R2, vp_gamma));
+    Rcpp::traits::input_parameter< const int >::type p_gamma(p_gammaSEXP);
+    rcpp_result_gen = Rcpp::wrap(BIC(n, p, R2, p_gamma));
     return rcpp_result_gen;
 END_RCPP
 }
 // ZE
-double ZE(const int n, const int p, double R2, int p_gamma);
+double ZE(const int n, const int p, const double R2, const int p_gamma);
 RcppExport SEXP _blma_ZE(SEXP nSEXP, SEXP pSEXP, SEXP R2SEXP, SEXP p_gammaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const int >::type n(nSEXP);
     Rcpp::traits::input_parameter< const int >::type p(pSEXP);
-    Rcpp::traits::input_parameter< double >::type R2(R2SEXP);
-    Rcpp::traits::input_parameter< int >::type p_gamma(p_gammaSEXP);
+    Rcpp::traits::input_parameter< const double >::type R2(R2SEXP);
+    Rcpp::traits::input_parameter< const int >::type p_gamma(p_gammaSEXP);
     rcpp_result_gen = Rcpp::wrap(ZE(n, p, R2, p_gamma));
     return rcpp_result_gen;
 END_RCPP
@@ -76,114 +76,114 @@ BEGIN_RCPP
 END_RCPP
 }
 // liang_g1
-double liang_g1(const int n, const int p, double R2, int p_gamma);
+double liang_g1(const int n, const int p, const double R2, const int p_gamma);
 RcppExport SEXP _blma_liang_g1(SEXP nSEXP, SEXP pSEXP, SEXP R2SEXP, SEXP p_gammaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const int >::type n(nSEXP);
     Rcpp::traits::input_parameter< const int >::type p(pSEXP);
-    Rcpp::traits::input_parameter< double >::type R2(R2SEXP);
-    Rcpp::traits::input_parameter< int >::type p_gamma(p_gammaSEXP);
+    Rcpp::traits::input_parameter< const double >::type R2(R2SEXP);
+    Rcpp::traits::input_parameter< const int >::type p_gamma(p_gammaSEXP);
     rcpp_result_gen = Rcpp::wrap(liang_g1(n, p, R2, p_gamma));
     return rcpp_result_gen;
 END_RCPP
 }
 // liang_g2
-double liang_g2(const int n, const int p, double R2, int p_gamma);
+double liang_g2(const int n, const int p, const double R2, const int p_gamma);
 RcppExport SEXP _blma_liang_g2(SEXP nSEXP, SEXP pSEXP, SEXP R2SEXP, SEXP p_gammaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const int >::type n(nSEXP);
     Rcpp::traits::input_parameter< const int >::type p(pSEXP);
-    Rcpp::traits::input_parameter< double >::type R2(R2SEXP);
-    Rcpp::traits::input_parameter< int >::type p_gamma(p_gammaSEXP);
+    Rcpp::traits::input_parameter< const double >::type R2(R2SEXP);
+    Rcpp::traits::input_parameter< const int >::type p_gamma(p_gammaSEXP);
     rcpp_result_gen = Rcpp::wrap(liang_g2(n, p, R2, p_gamma));
     return rcpp_result_gen;
 END_RCPP
 }
 // liang_g_n_appell
-double liang_g_n_appell(const int n, const int p, double R2, int p_gamma);
+double liang_g_n_appell(const int n, const int p, const double R2, const int p_gamma);
 RcppExport SEXP _blma_liang_g_n_appell(SEXP nSEXP, SEXP pSEXP, SEXP R2SEXP, SEXP p_gammaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const int >::type n(nSEXP);
     Rcpp::traits::input_parameter< const int >::type p(pSEXP);
-    Rcpp::traits::input_parameter< double >::type R2(R2SEXP);
-    Rcpp::traits::input_parameter< int >::type p_gamma(p_gammaSEXP);
+    Rcpp::traits::input_parameter< const double >::type R2(R2SEXP);
+    Rcpp::traits::input_parameter< const int >::type p_gamma(p_gammaSEXP);
     rcpp_result_gen = Rcpp::wrap(liang_g_n_appell(n, p, R2, p_gamma));
     return rcpp_result_gen;
 END_RCPP
 }
 // liang_g_n_quad
-double liang_g_n_quad(const int n, const int p, double R2, int p_gamma);
+double liang_g_n_quad(const int n, const int p, const double R2, const int p_gamma);
 RcppExport SEXP _blma_liang_g_n_quad(SEXP nSEXP, SEXP pSEXP, SEXP R2SEXP, SEXP p_gammaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const int >::type n(nSEXP);
     Rcpp::traits::input_parameter< const int >::type p(pSEXP);
-    Rcpp::traits::input_parameter< double >::type R2(R2SEXP);
-    Rcpp::traits::input_parameter< int >::type p_gamma(p_gammaSEXP);
+    Rcpp::traits::input_parameter< const double >::type R2(R2SEXP);
+    Rcpp::traits::input_parameter< const int >::type p_gamma(p_gammaSEXP);
     rcpp_result_gen = Rcpp::wrap(liang_g_n_quad(n, p, R2, p_gamma));
     return rcpp_result_gen;
 END_RCPP
 }
 // liang_g_n_approx
-double liang_g_n_approx(const int n, const int p, double R2, int p_gamma);
+double liang_g_n_approx(const int n, const int p, const double R2, const int p_gamma);
 RcppExport SEXP _blma_liang_g_n_approx(SEXP nSEXP, SEXP pSEXP, SEXP R2SEXP, SEXP p_gammaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const int >::type n(nSEXP);
     Rcpp::traits::input_parameter< const int >::type p(pSEXP);
-    Rcpp::traits::input_parameter< double >::type R2(R2SEXP);
-    Rcpp::traits::input_parameter< int >::type p_gamma(p_gammaSEXP);
+    Rcpp::traits::input_parameter< const double >::type R2(R2SEXP);
+    Rcpp::traits::input_parameter< const int >::type p_gamma(p_gammaSEXP);
     rcpp_result_gen = Rcpp::wrap(liang_g_n_approx(n, p, R2, p_gamma));
     return rcpp_result_gen;
 END_RCPP
 }
 // robust_bayarri1
-double robust_bayarri1(const int n, const int p, double R2, int p_gamma);
+double robust_bayarri1(const int n, const int p, const double R2, const int p_gamma);
 RcppExport SEXP _blma_robust_bayarri1(SEXP nSEXP, SEXP pSEXP, SEXP R2SEXP, SEXP p_gammaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const int >::type n(nSEXP);
     Rcpp::traits::input_parameter< const int >::type p(pSEXP);
-    Rcpp::traits::input_parameter< double >::type R2(R2SEXP);
-    Rcpp::traits::input_parameter< int >::type p_gamma(p_gammaSEXP);
+    Rcpp::traits::input_parameter< const double >::type R2(R2SEXP);
+    Rcpp::traits::input_parameter< const int >::type p_gamma(p_gammaSEXP);
     rcpp_result_gen = Rcpp::wrap(robust_bayarri1(n, p, R2, p_gamma));
     return rcpp_result_gen;
 END_RCPP
 }
 // robust_bayarri2
-double robust_bayarri2(const int n, const int p, double R2, int p_gamma);
+double robust_bayarri2(const int n, const int p, const double R2, const int p_gamma);
 RcppExport SEXP _blma_robust_bayarri2(SEXP nSEXP, SEXP pSEXP, SEXP R2SEXP, SEXP p_gammaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const int >::type n(nSEXP);
     Rcpp::traits::input_parameter< const int >::type p(pSEXP);
-    Rcpp::traits::input_parameter< double >::type R2(R2SEXP);
-    Rcpp::traits::input_parameter< int >::type p_gamma(p_gammaSEXP);
+    Rcpp::traits::input_parameter< const double >::type R2(R2SEXP);
+    Rcpp::traits::input_parameter< const int >::type p_gamma(p_gammaSEXP);
     rcpp_result_gen = Rcpp::wrap(robust_bayarri2(n, p, R2, p_gamma));
     return rcpp_result_gen;
 END_RCPP
 }
 // log_BF_g_on_n_integrand
-double log_BF_g_on_n_integrand(double vu, int n, int p, double R2, double a);
+double log_BF_g_on_n_integrand(const double vu, const int n, const int p, const double R2, const double a);
 RcppExport SEXP _blma_log_BF_g_on_n_integrand(SEXP vuSEXP, SEXP nSEXP, SEXP pSEXP, SEXP R2SEXP, SEXP aSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type vu(vuSEXP);
-    Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< int >::type p(pSEXP);
-    Rcpp::traits::input_parameter< double >::type R2(R2SEXP);
-    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< const double >::type vu(vuSEXP);
+    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const double >::type R2(R2SEXP);
+    Rcpp::traits::input_parameter< const double >::type a(aSEXP);
     rcpp_result_gen = Rcpp::wrap(log_BF_g_on_n_integrand(vu, n, p, R2, a));
     return rcpp_result_gen;
 END_RCPP

@@ -21,8 +21,8 @@ maruyama <- function(n, p, R2, p_gamma) {
 #' @param p_gamma The number of covariates in the model gamma
 #' @return The log of the Bayes Factor
 #' @export
-BIC <- function(n, p, R2, vp_gamma) {
-    .Call('_blma_BIC', PACKAGE = 'blma', n, p, R2, vp_gamma)
+BIC <- function(n, p, R2, p_gamma) {
+    .Call('_blma_BIC', PACKAGE = 'blma', n, p, R2, p_gamma)
 }
 
 #' ZE prior
@@ -39,22 +39,20 @@ ZE <- function(n, p, R2, p_gamma) {
 
 #' log_hyperg_2F1 prior
 #'
-#' @param n The sample size, an integer
-#' @param p The number of covariates in the full matrix, an integer
-#' @param R2 The correlation co-efficient, a number between -1 and 1
-#' @param p_gamma The number of covariates in the model gamma
-#' @return The log of the Bayes Factor
+#' @param b
+#' @param c
+#' @param x
+#' @return 
 #' @export
 log_hyperg_2F1 <- function(b, c, x) {
     .Call('_blma_log_hyperg_2F1', PACKAGE = 'blma', b, c, x)
 }
 
-#' ZE prior
+#' log_hyperg_2F1_naive
 #'
-#' @param n The sample size, an integer
-#' @param p The number of covariates in the full matrix, an integer
-#' @param R2 The correlation co-efficient, a number between -1 and 1
-#' @param p_gamma The number of covariates in the model gamma
+#' @param b
+#' @param c
+#' @param x
 #' @return The log of the Bayes Factor
 #' @export
 log_hyperg_2F1_naive <- function(b, c, x) {
