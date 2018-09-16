@@ -437,7 +437,7 @@ double log_BF_g_on_n_quad (const int n, const int p, const double R2, const int 
   auto f = [=](double x) {
     return log_BF_g_on_n_integrand (x, n, p, R2, a);
   };
-  Rosetta::GaussLegendreQuadrature < 1000 > gauss_legendre;
+  static Rosetta::GaussLegendreQuadrature < 1000 > gauss_legendre;
   return gauss_legendre.integrate (0., 1., f);
 }
 
