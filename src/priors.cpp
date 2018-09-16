@@ -434,11 +434,11 @@ double log_BF_g_on_n_integrand (const double vu, const int n, const int p, const
 // [[Rcpp::export]]
 double log_BF_g_on_n_quad (const int n, const int p, const double R2, const int a)
 {
-  auto f=[=](double x) {
+  auto f = [=](double x) {
     return log_BF_g_on_n_integrand (x, n, p, R2, a);
   };
   Rosetta::GaussLegendreQuadrature < 1000 > gauss_legendre;
-  return log(gauss_legendre.integrate (0., 1., f));
+  return gauss_legendre.integrate (0., 1., f);
 }
 
 void set_log_prob(const string prior, log_prob_fn& log_prob)

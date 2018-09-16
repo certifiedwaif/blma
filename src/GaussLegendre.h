@@ -46,7 +46,7 @@ namespace Rosetta {
                 sum += legpoly.weight(i) * exp(log_f[i] - log_f_star);
             }
 
-            return p * sum;
+            return log_f_star + p * sum;
         }
 
         /*! Print out roots and weights for information
