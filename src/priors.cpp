@@ -125,7 +125,7 @@ double ZE(const int n, const int p, const double R2, const int p_gamma)
 //' @param b
 //' @param c
 //' @param x
-//' @return 
+//' @return
 //' @export
 // [[Rcpp::export]]
 double log_hyperg_2F1(double b, double c, double x)
@@ -262,6 +262,7 @@ double liang_g_n_quad(const int n, const int p, const double R2, const int p_gam
   const int NUM_POINTS = 10000;
   VectorXd xgrid(NUM_POINTS);
   VectorXd fgrid(NUM_POINTS);
+  #pragma omp parallel for
   for (int i = 0; i < NUM_POINTS; i++) {
     double u = static_cast<double>(i) / static_cast<double>(NUM_POINTS);
     xgrid(i) = u;
@@ -334,6 +335,7 @@ double robust_bayarri1(const int n, const int p, const double R2, const int p_ga
   double beta   = (1 + sigma2*L)/sigma2;
 
   VectorXd log_f(NUM_POINTS);
+  #pragma omp parallel for
   for (int i = 0; i < NUM_POINTS; i++) {
     log_f(i) = -log(2.) + 0.5 * log(r) + 0.5 * (n - p_gamma - 4.) * log(1. + x(i)) - 0.5 * (n - 1.) * log(1. + x(i) * (1. - R2));
     // log_f(i) = -log(2.) + 0.5 * log(r) - 0.5 * (n - 1.)*log(sigma2) + 0.5 * (n - p_gamma - 4.) * log(r + x[i]) - 0.5 * (n - 1.) * log(beta + x[i]);
@@ -413,14 +415,14 @@ double robust_bayarri2(const int n, const int p, const double R2, const int p_ga
 // [[Rcpp::export]]
 double log_BF_g_on_n_integrand (const double vu, const int n, const int p, const double R2, const double a)
 {
-  double vals = 0.;
-  vals += log (a - 2);
-  vals -= log (2 * n);
-  vals += 0.5 * (p + a - 4) * log (1 - vu);
-  vals -= 0.5 * a * log (1 - vu * (1 - 1 / n));
-  vals -= 0.5 * (n - 1) * log (1 - vu * R2);
+  double result = 0.;
+  result += log (a - 2);
+  result -= log (2 * n);
+  result += 0.5 * (p + a - 4) * log (1 - vu);
+  result -= 0.5 * a * log (1 - vu * (1 - 1 / n));
+  result -= 0.5 * (n - 1) * log (1 - vu * R2);
 
-  return (vals);
+  return result;
 }
 
 //' hyper-g/n Gauss-Legendre quadrature
@@ -432,14 +434,47 @@ double log_BF_g_on_n_integrand (const double vu, const int n, const int p, const
 //' @return The log of the Bayes Factor
 //' @export
 // [[Rcpp::export]]
-double log_BF_g_on_n_quad (const int n, const int p, const double R2, const int a)
+double log_BF_g_on_n_quad (const int n, const int p, const double R2, const int p_gamma)
 {
   auto f = [=](double x) {
-    return log_BF_g_on_n_integrand (x, n, p, R2, a);
+    return log_BF_g_on_n_integrand (x, n, p, R2, p_gamma);
   };
   static Rosetta::GaussLegendreQuadrature < 1000 > gauss_legendre;
   return gauss_legendre.integrate (0., 1., f);
 }
+
+
+double log_BF_Zellner_Siow_integrand(double x, const int n, const int p, const double R2, const int p_gamma)
+{
+  auto sigma2 = 1. - R2;
+  auto vz = 0.5 * n * sigma2;
+	auto result = 0.5 * (p - 1.) * log(2. * x / n);
+	result += 0.5 * (n - p - 1.) * log(1. + 2. * x / n);
+	result -= 0.5 * (n - 1.) * log(1. + (x / vz));
+	result -= 0.5 * (n - 1) * log(sigma2);
+
+  return result;
+}
+
+
+//' Zellner-Siow Gauss-Legendre quadrature
+//'
+//' @param n The sample size, an integer
+//' @param p The number of covariates in the full matrix, an integer
+//' @param R2 The correlation co-efficient, a number between -1 and 1
+//' @param p_gamma The number of covariates in the model gamma
+//' @return The log of the Bayes Factor
+//' @export
+// [[Rcpp::export]]
+double log_BF_Zellner_Siow_quad(const int n, const int p, const double R2, const int p_gamma)
+{
+  auto f = [=](double x) {
+    return log_BF_Zellner_Siow_integrand(x, n, p, R2, p_gamma);
+  };
+  static Rosetta::GaussLegendreQuadrature < 1000 > gauss_legendre;
+  return gauss_legendre.integrate (0., 1., f);
+}
+
 
 void set_log_prob(const string prior, log_prob_fn& log_prob)
 {
@@ -465,6 +500,8 @@ void set_log_prob(const string prior, log_prob_fn& log_prob)
     log_prob = robust_bayarri2;
   } else if (prior == "hyper_g_n_gauss_legendre") {
     log_prob = log_BF_g_on_n_quad;
+  } else if (prior == "zellner_siow_gauss_legendre") {
+    log_prob = log_BF_Zellner_Siow_quad;
   } else {
     stringstream ss;
     ss << "Prior " << prior << " unknown";

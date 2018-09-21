@@ -42,7 +42,7 @@ ZE <- function(n, p, R2, p_gamma) {
 #' @param b
 #' @param c
 #' @param x
-#' @return 
+#' @return
 #' @export
 log_hyperg_2F1 <- function(b, c, x) {
     .Call('_blma_log_hyperg_2F1', PACKAGE = 'blma', b, c, x)
@@ -165,8 +165,20 @@ log_BF_g_on_n_integrand <- function(vu, n, p, R2, a) {
 #' @param p_gamma The number of covariates in the model gamma
 #' @return The log of the Bayes Factor
 #' @export
-log_BF_g_on_n_quad <- function(n, p, R2, a) {
-    .Call('_blma_log_BF_g_on_n_quad', PACKAGE = 'blma', n, p, R2, a)
+log_BF_g_on_n_quad <- function(n, p, R2, p_gamma) {
+    .Call('_blma_log_BF_g_on_n_quad', PACKAGE = 'blma', n, p, R2, p_gamma)
+}
+
+#' Zellner-Siow Gauss-Legendre quadrature
+#'
+#' @param n The sample size, an integer
+#' @param p The number of covariates in the full matrix, an integer
+#' @param R2 The correlation co-efficient, a number between -1 and 1
+#' @param p_gamma The number of covariates in the model gamma
+#' @return The log of the Bayes Factor
+#' @export
+log_BF_Zellner_Siow_quad <- function(n, p, R2, p_gamma) {
+    .Call('_blma_log_BF_Zellner_Siow_quad', PACKAGE = 'blma', n, p, R2, p_gamma)
 }
 
 #' Run a Collapsed Variational Approximation to find the K best linear models
