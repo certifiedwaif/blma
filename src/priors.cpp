@@ -415,12 +415,14 @@ double robust_bayarri2(const int n, const int p, const double R2, const int p_ga
 // [[Rcpp::export]]
 double log_BF_g_on_n_integrand (const double vu, const int n, const int p, const double R2, const double a)
 {
+  Rcpp::Rcout << "vu " << vu;
   double result = 0.;
-  result += log (a - 2);
-  result -= log (2 * n);
-  result += 0.5 * (p + a - 4) * log (1 - vu);
-  result -= 0.5 * a * log (1 - vu * (1 - 1 / n));
-  result -= 0.5 * (n - 1) * log (1 - vu * R2);
+  result += log (a - 2.);
+  result -= log (2. * n);
+  result += 0.5 * (p + a - 4.) * log (1. - vu);
+  result -= 0.5 * a * log (1. - vu * (1. - 1. / n));
+  result -= 0.5 * (n - 1.) * log (1. - vu * R2);
+  Rcpp::Rcout << " log_BF_g_on_n_integrand " << result << std::endl;
 
   return result;
 }
@@ -444,6 +446,16 @@ double log_BF_g_on_n_quad (const int n, const int p, const double R2, const int 
 }
 
 
+//' log_BF_Zellner_Siow_integrand
+//'
+//' @param x The argument, x
+//' @param n The sample size, an integer
+//' @param p The number of covariates in the full matrix, an integer
+//' @param R2 The correlation co-efficient, a number between -1 and 1
+//' @param p_gamma The number of covariates in the model gamma
+//' @return The log of the Bayes Factor
+//' @export
+// [[Rcpp::export]]
 double log_BF_Zellner_Siow_integrand(double x, const int n, const int p, const double R2, const int p_gamma)
 {
   auto sigma2 = 1. - R2;

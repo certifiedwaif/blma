@@ -202,6 +202,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// log_BF_Zellner_Siow_integrand
+double log_BF_Zellner_Siow_integrand(double x, const int n, const int p, const double R2, const int p_gamma);
+RcppExport SEXP _blma_log_BF_Zellner_Siow_integrand(SEXP xSEXP, SEXP nSEXP, SEXP pSEXP, SEXP R2SEXP, SEXP p_gammaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const double >::type R2(R2SEXP);
+    Rcpp::traits::input_parameter< const int >::type p_gamma(p_gammaSEXP);
+    rcpp_result_gen = Rcpp::wrap(log_BF_Zellner_Siow_integrand(x, n, p, R2, p_gamma));
+    return rcpp_result_gen;
+END_RCPP
+}
 // log_BF_Zellner_Siow_quad
 double log_BF_Zellner_Siow_quad(const int n, const int p, const double R2, const int p_gamma);
 RcppExport SEXP _blma_log_BF_Zellner_Siow_quad(SEXP nSEXP, SEXP pSEXP, SEXP R2SEXP, SEXP p_gammaSEXP) {
@@ -313,6 +328,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_blma_robust_bayarri2", (DL_FUNC) &_blma_robust_bayarri2, 4},
     {"_blma_log_BF_g_on_n_integrand", (DL_FUNC) &_blma_log_BF_g_on_n_integrand, 5},
     {"_blma_log_BF_g_on_n_quad", (DL_FUNC) &_blma_log_BF_g_on_n_quad, 4},
+    {"_blma_log_BF_Zellner_Siow_integrand", (DL_FUNC) &_blma_log_BF_Zellner_Siow_integrand, 5},
     {"_blma_log_BF_Zellner_Siow_quad", (DL_FUNC) &_blma_log_BF_Zellner_Siow_quad, 4},
     {"_blma_pva", (DL_FUNC) &_blma_pva, 9},
     {"_blma_blma", (DL_FUNC) &_blma_blma, 6},

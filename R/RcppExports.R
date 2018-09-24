@@ -169,6 +169,19 @@ log_BF_g_on_n_quad <- function(n, p, R2, p_gamma) {
     .Call('_blma_log_BF_g_on_n_quad', PACKAGE = 'blma', n, p, R2, p_gamma)
 }
 
+#' log_BF_Zellner_Siow_integrand
+#'
+#' @param x The argument, x
+#' @param n The sample size, an integer
+#' @param p The number of covariates in the full matrix, an integer
+#' @param R2 The correlation co-efficient, a number between -1 and 1
+#' @param p_gamma The number of covariates in the model gamma
+#' @return The log of the Bayes Factor
+#' @export
+log_BF_Zellner_Siow_integrand <- function(x, n, p, R2, p_gamma) {
+    .Call('_blma_log_BF_Zellner_Siow_integrand', PACKAGE = 'blma', x, n, p, R2, p_gamma)
+}
+
 #' Zellner-Siow Gauss-Legendre quadrature
 #'
 #' @param n The sample size, an integer
