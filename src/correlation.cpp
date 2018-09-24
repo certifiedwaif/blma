@@ -383,13 +383,13 @@ void calculate_probabilities(const std::string prior, const std::string modelpri
                              VectorXd& vlogp_all,
                              VectorXd& vinclusion_prob)
 {
-  std::function<double (const int n, const int p, double vR2, int vp_gamma)> log_prob;
+  log_prob_fn log_prob;
   set_log_prob(prior, log_prob);
 
   auto nmodels = vR2_all.size();
   #pragma omp parallel for
   for (auto i = 0; i < nmodels; i++) {
-    vlogp_all(i) = log_prob(n, p, vR2_all(i), vpgamma_all(i));
+    vlogp_all(i) = log_prob(n, vpgamma_all(i), vR2_all(i));
     if (modelprior == "beta-binomial") {
       double alpha = modelpriorvec(0);
       double beta = modelpriorvec(1);

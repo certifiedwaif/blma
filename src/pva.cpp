@@ -40,7 +40,7 @@ double calculate_log_prob(const uint n, const uint p, const double R2, const uin
                           const log_prob_fn log_prob,
                           const std::string modelprior, const VectorXd& modelpriorvec)
 {
-  double result = log_prob(n, p, R2, p_gamma);
+  double result = log_prob(n, p_gamma, R2);
 
   if (modelprior == "beta-binomial") {
     double alpha = modelpriorvec(0);
@@ -75,7 +75,7 @@ void calculate_log_probabilities(const vector< dbitset >& gamma, const VectorXd&
   for (auto k = 0; k < K; k++) {
     auto p_gamma = gamma[k].count();
     auto b = p;
-    log_probs(k) = log_prob(n, p, 1. - sigma2[k], p_gamma);
+    log_probs(k) = log_prob(n, p_gamma, 1. - sigma2[k]);
     #ifdef DEBUG
     // Rcpp::Rcout << "log_probs[" << k << "] " << log_probs[k] << std::endl;
     #endif
@@ -420,7 +420,6 @@ List pva(const NumericVector vy_in, const NumericMatrix mX_in,
   vector<dbitset> vm(K);
   // const gsl_rng_type *T;
   // gsl_rng *r;
-  const auto RHO = 0.1;
   auto f_lambda_prev = 0.;
   const auto EPSILON = 1e-8;
 
@@ -716,7 +715,6 @@ List pva(const NumericVector vy_in, const NumericMatrix mX_in,
   VectorXd vinclusion_prob = mGamma_prime.transpose() * vmodel_prob;
 
   uint max_idx;
-  auto max_prob = vmodel_prob.maxCoeff(&max_idx);
   VectorXd vgamma_hat = mGamma_prime.row(max_idx);
 
   List result = List::create(Named("mGamma") = mGamma_prime,

@@ -25,7 +25,7 @@ using namespace Rcpp;
 
 double calculate_log_prob(const uint n, const uint p, const double R2, const uint p_gamma,
                           const dbitset& gamma,
-                          const std::function<double (const int n, const int p, double vR2, int vp_gamma)> log_prob,
+                          const log_prob_fn log_prob,
                           const std::string modelprior, const VectorXd& modelpriorvec);
 void calculate_log_probabilities(const vector< dbitset >& gamma, const VectorXd& sigma2,
                                   const int n,
