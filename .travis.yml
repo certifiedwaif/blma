@@ -11,3 +11,4 @@ install:
     - Rscript -e 'install.packages("MASS", dependencies = TRUE)'
     - Rscript -e 'install.packages("RcppEigen", dependencies = TRUE)'
     - Rscript -e 'install.packages("RcppGSL", dependencies = TRUE)'
+    - Rscript -e 'install.packages("appell", dependencies = TRUE)'
