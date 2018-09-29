@@ -5,7 +5,7 @@
 \title{Perform Bayesian Linear Model Averaging over all of the possible linear models where 
 vy is the response and the covariates are in mX.}
 \usage{
-blma(vy, mX, prior = "maruyama", modelprior = "uniform", modelpriorvec = NULL)
+blma(vy, mX, prior = "BIC", modelprior = "uniform", modelpriorvec = NULL)
 }
 \arguments{
 \item{vy}{Vector of responses}
@@ -18,7 +18,7 @@ averaging. The choices available include:
     \item{"BIC"}{-- the Bayesian information criterion obtained by using the cake
     prior of Ormerod et al. (2017).}
 
-    \item{"ZE"}{-- special case of the prior structure described by Maruyama and
+    \item{"ZE"}{-- special case of the prior structure described by BIC and
 George (2011).}
 
     \item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior 
@@ -111,7 +111,7 @@ varnames <- c(
 vy <- mD$y
 mX <- data.matrix(cbind(mD[1:15]))
 colnames(mX) <- varnames
-blma_result <- blma(vy, mX, "maruyama")
+blma_result <- blma(vy, mX, "BIC")
 }
 \references{
 Bayarri, M. J., Berger, J. O., Forte, A., Garcia-Donato, G., 2012. Criteria for
