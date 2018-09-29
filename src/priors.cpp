@@ -150,11 +150,11 @@ double liang_g2(const int n, const int p_gamma, const double R2)
 double liang_g_n_appell(const int n, const int p_gamma, const double R2)
 {
   auto a = 3.;
-
-  Rcpp::Environment appell("package:appell");
-  Rcpp::Function appellf1_r = appell["appellf1"];
   Rcpp::ComplexVector val(1);
+
   try {
+    Rcpp::Environment appell_env("package:appell");
+    Rcpp::Function appellf1_r = appell_env["appellf1"];
     Rcpp::List res = appellf1_r(Rcpp::_["a"] = 1.,
                                 Rcpp::_["b1"] = a / 2.,
                                 Rcpp::_["b2"] = (n - 1.)/2.,
