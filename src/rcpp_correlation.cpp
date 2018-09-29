@@ -17,7 +17,7 @@ using namespace std;
 //' @importFrom Rcpp evalCpp
 //' @useDynLib blma
 //'
-//' @usage blma(vy, mX, prior = "maruyama", modelprior = "uniform", modelpriorvec = NULL)
+//' @usage blma(vy, mX, prior = "BIC", modelprior = "uniform", modelpriorvec = NULL)
 //' @param vy Vector of responses
 //' @param mX Covariate matrix
 //' @param prior -- the choice of mixture $g$-prior used to perform Bayesian model
@@ -26,7 +26,7 @@ using namespace std;
 //'     \item{"BIC"}{-- the Bayesian information criterion obtained by using the cake
 //'     prior of Ormerod et al. (2017).}
 //'
-//'     \item{"ZE"}{-- special case of the prior structure described by Maruyama and
+//'     \item{"ZE"}{-- special case of the prior structure described by BIC and
 //'	George (2011).}
 //'
 //'     \item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior 
@@ -109,7 +109,7 @@ using namespace std;
 //' vy <- mD$y
 //' mX <- data.matrix(cbind(mD[1:15]))
 //' colnames(mX) <- varnames
-//' blma_result <- blma(vy, mX, "maruyama")
+//' blma_result <- blma(vy, mX, "BIC")
 //' @references
 //' Bayarri, M. J., Berger, J. O., Forte, A., Garcia-Donato, G., 2012. Criteria for
 //' Bayesian model choice with application to variable selection. Annals of Statistics
@@ -149,7 +149,7 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 //' Perform Bayesian Linear Model Averaging over all of the possible linear models where //' vy is the response, covariates that may be included are in mZ and covariates which
 //' are always included are in mX.
 //'
-//' @usage blma_fixed(y.t, X.f, Z.f, "maruyama")
+//' @usage blma_fixed(y.t, X.f, Z.f, "BIC")
 //' @param vy The vector of responses
 //' @param mX The matrix of fixed covariates which will be included in every model
 //' @param mZ The matrix of varying covariates, which may or may not be included in each 
@@ -160,7 +160,7 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 //'     \item{"BIC"}{-- the Bayesian information criterion obtained by using the cake
 //'     prior of Ormerod et al. (2017).}
 //'
-//'     \item{"ZE"}{-- special case of the prior structure described by Maruyama and
+//'     \item{"ZE"}{-- special case of the prior structure described by BIC and
 //'	George (2011).}
 //'
 //'     \item{"liang_g1"}{-- the mixture \eqn{g}-prior of Liang et al. (2008) with prior 
@@ -245,7 +245,7 @@ List blma(NumericVector vy, NumericMatrix mX, std::string prior,
 //' mX <- data.matrix(cbind(mD[, 1:10]))
 //' colnames(mX) <- varnames[1:10]
 //' mZ <- data.matrix(cbind(mD[, 11:15]))
-//' blma_result <- blma_fixed(vy, mX, mZ, "maruyama")
+//' blma_result <- blma_fixed(vy, mX, mZ, "BIC")
 //' @references
 //' Bayarri, M. J., Berger, J. O., Forte, A., Garcia-Donato, G., 2012. Criteria for
 //' Bayesian model choice with application to variable selection. Annals of Statistics
