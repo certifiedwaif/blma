@@ -49,7 +49,7 @@ double calculate_log_prob(const uint n, const uint p, const double R2, const uin
   }
 
   if (modelprior == "bernoulli") {
-    for (auto j = 0; j < p; j++) {
+    for (int j = 0; j < p; j++) {
       auto igamma = gamma[j] ? 1. : 0.;
       if (modelpriorvec(j) == 0. || modelpriorvec(j) == 1.)
         continue;
@@ -69,12 +69,10 @@ void calculate_log_probabilities(const vector< dbitset >& gamma, const VectorXd&
 {
   auto K = gamma.size();
   auto p = gamma[0].size();
-  auto a = 1.;
 
   #pragma omp parallel for
-  for (auto k = 0; k < K; k++) {
+  for (int k = 0; k < K; k++) {
     auto p_gamma = gamma[k].count();
-    auto b = p;
     log_probs(k) = log_prob(n, p_gamma, 1. - sigma2[k]);
     #ifdef DEBUG
     // Rcpp::Rcout << "log_probs[" << k << "] " << log_probs[k] << std::endl;
@@ -85,7 +83,7 @@ void calculate_log_probabilities(const vector< dbitset >& gamma, const VectorXd&
       log_probs(k) += ::Rf_lbeta(alpha + p_gamma, beta + p - p_gamma) - ::Rf_lbeta(alpha, beta);
     }
     if (modelprior == "bernoulli") {
-      for (auto j = 0; j < p; j++) {
+      for (int j = 0; j < p; j++) {
         auto igamma = gamma[k][j] ? 1. : 0.;
         if (modelpriorvec(j) == 0. || modelpriorvec(j) == 1.)
           continue;
@@ -161,8 +159,8 @@ void gamma_to_MatrixXd(const vector< dbitset >& gamma, MatrixXd& m)
   auto K = gamma.size();
   auto p = gamma[0].size();
   #pragma omp parallel for
-  for (auto k = 0; k < K; k++) {
-    for (auto j = 0; j < p; j++) {
+  for (int k = 0; k < K; k++) {
+    for (int j = 0; j < p; j++) {
       m(k, j) = gamma[k][j] ? 1. : 0.;
     }
   }
@@ -183,7 +181,7 @@ void calculate_mXTX_inv_prime(const dbitset& gamma, const dbitset& gamma_prime, 
   // Explanation: mXTX is addressed absolutely, but mXTX_inv is addressed relatively. To account for
   // this, we abuse fixed to adjust for the gaps in gamma_prime
   int fixed = 0;
-  for (auto idx = min_idx; idx < j; idx++) {
+  for (int idx = min_idx; idx < j; idx++) {
     if (!gamma_prime[idx])
       fixed--;
   }
@@ -472,7 +470,7 @@ List pva(const NumericVector vy_in, const NumericMatrix mX_in,
   // Initialise mXTX_inv
   // Initialise sigma2
   #pragma omp parallel for
-  for (auto k = 0; k < K; k++) {
+  for (int k = 0; k < K; k++) {
     auto p_gamma = gamma[k].count();
     if (p_gamma == 0) {
       stringstream ss;
@@ -505,12 +503,12 @@ List pva(const NumericVector vy_in, const NumericMatrix mX_in,
     // #pragma omp parallel for\
     // shared(vy, mX, modelpriorvec, mGamma, gamma, log_prob, log_probs, w, mXTX_inv, sigma2, vm)\
     // default(none)
-    for (auto k = 0; k < K; k++) {
+    for (int k = 0; k < K; k++) {
       #ifdef DEBUG
       Rcpp::Rcout << "gamma[" << k << "] " << gamma[k] << std::endl;
       #endif
       // Try to update the 0s
-      for (auto j = 0; j < p; j++) {
+      for (int j = 0; j < p; j++) {
         if (gamma[k][j])
           continue;
         dbitset gamma_prime = gamma[k];
@@ -675,7 +673,7 @@ List pva(const NumericVector vy_in, const NumericMatrix mX_in,
     else {
       converged = true;
     }
-    for (auto k = 0; k < K; k++) {
+    for (int k = 0; k < K; k++) {
       #ifdef DEBUG
       Rcpp::Rcout << "gamma[" << k + 1 << "] " << gamma[k] << std::endl;
       #endif
@@ -705,7 +703,7 @@ List pva(const NumericVector vy_in, const NumericMatrix mX_in,
   // TODO: Add vBF, vR2, posterior inclusion probabilities, vp
 
   VectorXd vp_gamma(K);
-  for (auto k = 0; k < K; k++) {
+  for (int k = 0; k < K; k++) {
     vp_gamma(k) = gamma[k].count();
   }
 
@@ -714,7 +712,7 @@ List pva(const NumericVector vy_in, const NumericMatrix mX_in,
   VectorXd vmodel_prob = (log_probs.array() - M).array().exp() / (log_probs.array() - M).array().exp().sum();
   VectorXd vinclusion_prob = mGamma_prime.transpose() * vmodel_prob;
 
-  uint max_idx;
+  uint max_idx = 0;
   VectorXd vgamma_hat = mGamma_prime.row(max_idx);
 
   List result = List::create(Named("mGamma") = mGamma_prime,

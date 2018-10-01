@@ -451,8 +451,8 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
   uint min_idx;                              // The minimum bit which is set in gamma_prime
   dbitset gamma(p);                          // The model gamma
   dbitset gamma_prime(p);                    // The model gamma_prime
-  uint p_gamma_prime;                        // The number of columns in the matrix mX_gamma_prime
-  uint p_gamma;                              // The number of columns in the matrix mX_gamma
+  uint p_gamma_prime = 0;                        // The number of columns in the matrix mX_gamma_prime
+  uint p_gamma = 0;                              // The number of columns in the matrix mX_gamma
   vector<MatrixXd> vec_mA(p);
   vector<MatrixXd> vec_mX_gamma(p);
   vector<MatrixXd> vec_m1(p);

@@ -31,7 +31,7 @@ VectorXd gamma_to_row(const dbitset& gamma)
 {
   auto p = gamma.size();
   VectorXd v(p);
-  for (auto j = 0; j < p; j++) {
+  for (int j = 0; j < p; j++) {
     v(j) = gamma[j] ? 1. : 0.;
   }
   return v;
