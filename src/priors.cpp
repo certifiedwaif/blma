@@ -139,6 +139,13 @@ double liang_g2(const int n, const int p_gamma, const double R2)
 }
 
 
+extern "C" {
+	void f1(complex a, complex b1, complex b2, complex c, double x, double y,
+			int algoflag, int userflag, bool debug, complex val,
+            int hyp2f1);
+}
+
+
 //' Liang's g/n prior Appell
 //'
 //' @param n The sample size, an integer
