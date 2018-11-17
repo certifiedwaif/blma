@@ -2,6 +2,8 @@
 
 #include <Rcpp.h>
 #include <cmath>
+#include <complex>
+#include <inttypes.h>
 
 // Enable C++11 via this plugin (Rcpp 0.10.3 or later)
 // [[Rcpp::plugins(cpp11)]]
@@ -16,7 +18,6 @@
 #include "GaussLegendre.h"
 #include "priors.h"
 
-using namespace std;
 using namespace Rcpp;
 
 using Eigen::VectorXd;
@@ -139,9 +140,15 @@ double liang_g2(const int n, const int p_gamma, const double R2)
 }
 
 
+typedef struct {
+	double real;
+	double imag;
+} complex;
+
+
 extern "C" {
 	void f1(complex a, complex b1, complex b2, complex c, double x, double y,
-			int algoflag, int userflag, bool debug, complex val,
+			int32_t algoflag, int32_t userflag, bool debug, complex *val,
             int hyp2f1);
 }
 
@@ -156,35 +163,34 @@ extern "C" {
 // [[Rcpp::export]]
 double liang_g_n_appell(const int n, const int p_gamma, const double R2)
 {
-  double result = NA_REAL;
-  if (p_gamma == 0)
-    return result;
-  #pragma omp master
-  {
-      #ifdef DEBUG
-      Rcpp::Rcout << "liang_g_n_appell(" << n << ", " << p << ", " << R2 << ", " << p_gamma << ") = ";
-      #endif
-      Rcpp::ComplexVector val(1);
+		double result = NA_REAL;
+		if (p_gamma == 0)
+				return result;
+#pragma omp master
+		{
+#ifdef DEBUG
+				Rcpp::Rcout << "liang_g_n_appell(" << n << ", " << p << ", " << R2 << ", " << p_gamma << ") = ";
+#endif
+				complex val;
 
-      auto a = 1.;
-      auto b1 = a / 2.;
-      auto b2 = (n - 1.)/2.;
-      auto c = (p_gamma + a) / 2.;
-      auto x = 1. - 1. / n;
-      auto y = R2;
-      auto algoflag;
-      auto userflag = 1;
-      auto hyp2f1 = "michel.stoitsov";
-      auto debug = false;
-      auto f1_result = f1(a, b1, b2, c, x, y, algoflag, userflag, debug, val,
-                          hyp2f1);
+				complex a = {1., 0.};
+				complex b1 = {a.real / 2., 0.};
+				complex b2 = {(n - 1.)/2., 0.};
+				complex c = {(p_gamma + a.real) / 2., 0.};
+				double x = 1. - 1. / n;
+				double y = R2;
+				int32_t algoflag = 0;
+				int32_t userflag = 1;
+				int hyp2f1 = 2; // "michel.stoitsov";
+				bool debug = false;
+				f1(a, b1, b2, c, x, y, algoflag, userflag, debug, &val, hyp2f1);
 
-      result = log(a - 2.) - log(n) - log(p_gamma + a - 2.) + log(val(0).r);
-      #ifdef DEBUG
-      Rcpp::Rcout << result << std::endl;
-      #endif
-  }
-  return result;
+				result = log(a.real - 2.) - log(n) - log(p_gamma + a.real - 2.) + log(val.real);
+#ifdef DEBUG
+				Rcpp::Rcout << result << std::endl;
+#endif
+		}
+		return result;
 }
 
 
@@ -456,7 +462,7 @@ void set_log_prob(const string prior, log_prob_fn& log_prob)
   } else if (prior == "zellner_siow_gauss_legendre") {
     log_prob = log_BF_Zellner_Siow_quad;
   } else {
-    stringstream ss;
+	std::stringstream ss;
     ss << "Prior " << prior << " unknown";
     Rcpp::stop(ss.str());
   }
