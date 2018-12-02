@@ -14,8 +14,8 @@ correctly.
 ```{r plot_log_BF}
 library(tidyverse)
 library(blma)
-library(appell)
 library(furrr)
+#plan(sequential)
 plan(multiprocess)
 
 n <- 1000
