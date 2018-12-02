@@ -1,4 +1,5 @@
-PKG_CPPFLAGS= -fopenmp -O4 -I../windows/gsl-2.4/include
+CPPFLAGS= -Wno-ignored-attributes
+PKG_CPPFLAGS= -Wno-ignored-attributes -fopenmp -O4 -I../windows/gsl-2.4/include -std=c++11
 PKG_LIBS= -fopenmp -O4 -L../windows/gsl-2.4/lib${R_ARCH} -lgsl -lgslcblas
 CXX_STD = CXX11
 
