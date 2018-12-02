@@ -140,17 +140,10 @@ double liang_g2(const int n, const int p_gamma, const double R2)
 }
 
 
-extern "C" void f1(std::complex<double> a,
-		std::complex<double> b1,
-		std::complex<double> b2,
-		std::complex<double> c,
-		double x,
-		double y,
-		int32_t algoflag,
-		int32_t userflag,
-		bool debug,
-		std::complex<double> val,
-		int hyp2f1);
+extern "C" void f1(std::complex<double>* a, std::complex<double>* b1,
+		std::complex<double>* b2, std::complex<double>* c, double* x, double*
+		y, int32_t* algoflag, int32_t* userflag, bool* debug,
+		std::complex<double>* val, int* hyp2f1);
 
 
 //' Liang's g/n prior Appell
@@ -171,8 +164,8 @@ double liang_g_n_appell(const int n, const int p_gamma, const double R2)
 #ifdef DEBUG
 				Rcpp::Rcout << "liang_g_n_appell(" << n << ", " << p << ", " << R2 << ", " << p_gamma << ") = ";
 #endif
+				double a_prime = 3.;
 				std::complex<double> val;
-
 				std::complex<double> a = 1.;
 				std::complex<double> b1 = a / 2.;
 				std::complex<double> b2 = (n - 1.)/2.;
@@ -183,10 +176,9 @@ double liang_g_n_appell(const int n, const int p_gamma, const double R2)
 				int32_t userflag = 1;
 				int hyp2f1 = 2; // "michel.stoitsov";
 				bool debug = false;
-				f1(a, b1, b2, c, x, y, algoflag, userflag, debug, val, hyp2f1);
-
-				result = log((a - 2.).real()) - log(n) - log(p_gamma +
-							a.real() - 2.) + log(val.real());
+				f1(&a, &b1, &b2, &c, &x, &y, &algoflag, &userflag, &debug, &val, &hyp2f1);
+				result = log(a_prime - 2.) - log(n) - log(p_gamma + a_prime -
+						2.) + log(val.real());
 #ifdef DEBUG
 				Rcpp::Rcout << result << std::endl;
 #endif
