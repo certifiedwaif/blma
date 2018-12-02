@@ -2,7 +2,7 @@ CPPFLAGS= -Wno-ignored-attributes
 GSL_CFLAGS=`${R_HOME}/bin/Rscript -e "RcppGSL:::CFlags()"`
 GSL_LIBS=`${R_HOME}/bin/Rscript -e "RcppGSL:::LdFlags()"`
 CXX_STD = CXX11
-PKG_CXXFLAGS = -Wno-ignored-attributes $(SHLIB_OPENMP_CXXFLAGS) $(GSL_CFLAGS)
+PKG_CXXFLAGS = -Wno-ignored-attributes $(SHLIB_OPENMP_CXXFLAGS) $(GSL_CFLAGS) -std=c++11
 PKG_LIBS = $(SHLIB_OPENMP_CFLAGS) $(GSL_LIBS)
 # PKG_CXXFLAGS = $(GSL_CFLAGS)
 # PKG_LIBS = $(GSL_LIBS)

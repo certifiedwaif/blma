@@ -280,9 +280,10 @@ if (file.exists("./parameters_tbl_20180826.RData")) {
 } else {
   ITERATIONS <- 10000
   #data_set_names <- c("Kakadu", "Hitters", "BodyFat", "Wage", "College", "UScrime") #, "comCrime", "QTL")
+  data_set_names <- c("comCrime", "QTL")
   #data_set_names <- c("building")
   #data_set_names <- c("buzz")
-  data_set_names <- c("Kakadu")
+  #data_set_names <- c("Kakadu")
   #priors <- c("BIC",
               #"ZE",
               #"liang_g1",
@@ -325,7 +326,11 @@ if (file.exists("./parameters_tbl_20180826.RData")) {
     vy <- ds$vy
     mX <- ds$mX
     model_prior_vec <- model_prior_vec(model_prior, ds)
-    blma(vy, mX, prior, model_prior, modelpriorvec = model_prior_vec)
+    if (ncol(mX) > 45) {
+      NULL
+    } else {
+      blma(vy, mX, prior, model_prior, modelpriorvec = model_prior_vec)
+    } 
   }, .progress = TRUE)
   save(parameters_tbl, file="./parameters_tbl_20180826.RData")
   #parameters_buzz_tbl <- parameters_tbl
