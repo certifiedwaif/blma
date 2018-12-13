@@ -19,7 +19,8 @@ LinkingTo: Rcpp (>= 0.12.5),
     RcppGSL,
     BH,
     appell
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
+SystemRequirements: C++11

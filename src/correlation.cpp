@@ -131,10 +131,14 @@ Normed normalise(VectorXd& vy, MatrixXd& mX)
   auto mu_vy = vy.mean();
   auto sigma2_vy = (n - 1) * var(vy) / n;
   normed.vy = (vy.array() - mu_vy) / sqrt(sigma2_vy);
+  Rcpp::Rcout << normed.vy.mean() << std::endl;
+  Rcpp::Rcout << normed.vy.squaredNorm() << std::endl;
   for (auto i = 0; i < p; i++) {
     mu_mX(i) = mX.col(i).mean();
     sigma2_mX(i) = (n - 1) * var(mX.col(i)) / n;
     normed.mX.col(i) = (mX.col(i).array() - mu_mX(i)) / sqrt(sigma2_mX(i));
+	Rcpp::Rcout << normed.mX.col(i).mean() << std::endl;
+	Rcpp::Rcout << normed.mX.col(i).squaredNorm() << std::endl;
   }
   #ifdef DEBUG
   Rcpp::Rcout << "vy " << vy.head(10) << std::endl;
