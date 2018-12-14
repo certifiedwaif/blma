@@ -34,20 +34,20 @@ using std::string;
 // [[Rcpp::export]]
 double BIC(const int n, const int p_gamma, double R2)
 {
-  const auto sigma2 = 1. - R2;
-  #ifdef DEBUG
-  Rcpp::Rcout << "n " << n << " p " << p << " R2 " << R2 << " p_gamma " << p_gamma << std::endl;
-  #endif
-  auto BIC = n * log(sigma2) + p_gamma * log(n);
-  if (sigma2 == 0. || std::isnan(sigma2)) {
-    BIC = -INFINITY;
-    // throw std::range_error("Invalid sigma2");
-  }
-  #ifdef DEBUG
-  Rcpp::Rcout << "n * log(1 - R2) " << n * log(1 - R2) << std::endl;
-  Rcpp::Rcout << "p_gamma * log(n) " << p_gamma * log(n) << std::endl;
-  #endif
-  return -0.5 * BIC;
+  	const auto sigma2 = 1. - R2;
+#ifdef DEBUG
+  	Rcpp::Rcout << "n " << n << " p " << p << " R2 " << R2 << " p_gamma " << p_gamma << std::endl;
+#endif
+  	auto BIC = n * log(sigma2) + p_gamma * log(n);
+  	if (sigma2 == 0. || std::isnan(sigma2)) {
+    	BIC = -INFINITY;
+    	// throw std::range_error("Invalid sigma2");
+  	}
+#ifdef DEBUG
+  	Rcpp::Rcout << "n * log(1 - R2) " << n * log(1 - R2) << std::endl;
+  	Rcpp::Rcout << "p_gamma * log(n) " << p_gamma * log(n) << std::endl;
+#endif
+  	return -0.5 * BIC;
 }
 
 
@@ -61,12 +61,12 @@ double BIC(const int n, const int p_gamma, double R2)
 // [[Rcpp::export]]
 double ZE(const int n, const int p_gamma, const double R2)
 {
-  auto a = -0.75;
-  auto b = 0.5 * (n - p_gamma - 5) - a;
-  auto d = 0.5 * p_gamma + a;
+  	auto a = -0.75;
+  	auto b = 0.5 * (n - p_gamma - 5) - a;
+  	auto d = 0.5 * p_gamma + a;
 
-  auto log_p = -(b+1)*log(1 - R2) + Rf_lbeta(d+1,b+1) - Rf_lbeta(a+1,b+1);
-  return log_p;
+  	auto log_p = -(b+1)*log(1 - R2) + Rf_lbeta(d+1,b+1) - Rf_lbeta(a+1,b+1);
+  	return log_p;
 }
 
 
@@ -80,15 +80,15 @@ double ZE(const int n, const int p_gamma, const double R2)
 // [[Rcpp::export]]
 double log_hyperg_2F1(double b, double c, double x)
 {
-  if (x == 0.)
-    return 0.;
-  auto val = 0.;
-  val += log(c-1);
-  val += (1-c)*log(x);
-  val += (c-b-1)*log(1-x);
-  val += Rf_lbeta(c-1,b-c+1);
-  val += Rf_pbeta(x, (c-1), (b-c+1), true, true);
-  return val;
+  	if (x == 0.)
+    	return 0.;
+  	auto val = 0.;
+  	val += log(c-1);
+  	val += (1-c)*log(x);
+  	val += (c-b-1)*log(1-x);
+  	val += Rf_lbeta(c-1,b-c+1);
+  	val += Rf_pbeta(x, (c-1), (b-c+1), true, true);
+  	return val;
 }
 
 
@@ -102,8 +102,8 @@ double log_hyperg_2F1(double b, double c, double x)
 // [[Rcpp::export]]
 double log_hyperg_2F1_naive(double b, double c, double x)
 {
-  auto val = log(gsl_sf_hyperg_2F1( b, 1, c, x));
-  return val;
+  	auto val = log(gsl_sf_hyperg_2F1( b, 1, c, x));
+  	return val;
 }
 
 
@@ -117,10 +117,10 @@ double log_hyperg_2F1_naive(double b, double c, double x)
 // [[Rcpp::export]]
 double liang_g1(const int n, const int p_gamma, const double R2)
 {
-  auto a = 3.;
-  double log_p_g;
-  log_p_g = log(a - 2) - log(p_gamma + a - 2) + log(gsl_sf_hyperg_2F1(0.5*(n-1), 1, 0.5*(p_gamma + a), R2));
-  return log_p_g;
+  	auto a = 3.;
+  	double log_p_g;
+  	log_p_g = log(a - 2) - log(p_gamma + a - 2) + log(gsl_sf_hyperg_2F1(0.5*(n-1), 1, 0.5*(p_gamma + a), R2));
+  	return log_p_g;
 }
 
 
@@ -134,9 +134,9 @@ double liang_g1(const int n, const int p_gamma, const double R2)
 // [[Rcpp::export]]
 double liang_g2(const int n, const int p_gamma, const double R2)
 {
-  auto a = 3.;
-  auto log_vp_g2 = log(a - 2) - log(p_gamma + a - 2) + log_hyperg_2F1( 0.5*(n-1), 0.5*(p_gamma+a), R2);
-  return log_vp_g2;
+  	auto a = 3.;
+  	auto log_vp_g2 = log(a - 2) - log(p_gamma + a - 2) + log_hyperg_2F1( 0.5*(n-1), 0.5*(p_gamma+a), R2);
+  	return log_vp_g2;
 }
 
 
@@ -187,15 +187,15 @@ double liang_g_n_appell(const int n, const int p_gamma, const double R2)
 // Trapezoidal integration over a potentially irregular grid
 double trapint(const VectorXd& xgrid, const VectorXd& fgrid)
 {
-  auto sum = 0.;
+  	auto sum = 0.;
 
-  #pragma omp parallel for reduction(+:sum)
-  for (auto i = 0; i < xgrid.size() - 1; i++) {
-    sum += 0.5 * (xgrid(i + 1) - xgrid(i)) * (fgrid(i) + fgrid(i + 1));
-  }
-  // Rcpp::Rcout << "sum " << sum << std::endl;
+#pragma omp parallel for reduction(+:sum)
+  	for (auto i = 0; i < xgrid.size() - 1; i++) {
+    	sum += 0.5 * (xgrid(i + 1) - xgrid(i)) * (fgrid(i) + fgrid(i + 1));
+  	}
+  	// Rcpp::Rcout << "sum " << sum << std::endl;
 
-  return sum;
+  	return sum;
 }
 
 
@@ -209,21 +209,21 @@ double trapint(const VectorXd& xgrid, const VectorXd& fgrid)
 // [[Rcpp::export]]
 double liang_g_n_quad(const int n, const int p_gamma, const double R2)
 {
-  auto a = 3.;
-  const int NUM_POINTS = 10000;
-  VectorXd xgrid(NUM_POINTS);
-  VectorXd fgrid(NUM_POINTS);
-  #pragma omp parallel for
-  for (int i = 0; i < NUM_POINTS; i++) {
-    double u = static_cast<double>(i) / static_cast<double>(NUM_POINTS);
-    xgrid(i) = u;
-    fgrid(i) = exp((p_gamma / 2. + a / 2. - 2.) * log(1 - u) + -a/2. * log(1. - u * (1. - 1. / n)) + (-(n-1.)/2.) * log(1 - u*R2));
-  }
-  auto result = log(a - 2.) - log(2. * n) + log(trapint(xgrid, fgrid));
-  #ifdef DEBUG
-  Rcpp::Rcout << "liang_g_n_quad(" << n << ", " << p << ", " << R2 << ", " << p_gamma << ") = " << result << std::endl;
-  #endif
-  return result;
+  	auto a = 3.;
+  	const int NUM_POINTS = 10000;
+  	VectorXd xgrid(NUM_POINTS);
+  	VectorXd fgrid(NUM_POINTS);
+#pragma omp parallel for
+  	for (int i = 0; i < NUM_POINTS; i++) {
+    	double u = static_cast<double>(i) / static_cast<double>(NUM_POINTS);
+    	xgrid(i) = u;
+    	fgrid(i) = exp((p_gamma / 2. + a / 2. - 2.) * log(1 - u) + -a/2. * log(1. - u * (1. - 1. / n)) + (-(n-1.)/2.) * log(1 - u*R2));
+  	}
+  	auto result = log(a - 2.) - log(2. * n) + log(trapint(xgrid, fgrid));
+#ifdef DEBUG
+  	Rcpp::Rcout << "liang_g_n_quad(" << n << ", " << p << ", " << R2 << ", " << p_gamma << ") = " << result << std::endl;
+#endif
+  	return result;
 }
 
 
@@ -238,27 +238,27 @@ double liang_g_n_quad(const int n, const int p_gamma, const double R2)
 // [[Rcpp::export]]
 double liang_g_n_approx(const int n, const int p_gamma, const double R2)
 {
-  // #ifdef DEBUG
-  // Rcpp::Rcout << "n " << n << " p " << p << " R2 " << R2 << " p_gamma " << p_gamma << std::endl;
-  // #endif
-  if (p_gamma == 0)
-    return 0.;
-  if (p_gamma == 1 || p_gamma == 2)
-    return liang_g_n_quad(n, p_gamma, R2);
+  	// #ifdef DEBUG
+  	// Rcpp::Rcout << "n " << n << " p " << p << " R2 " << R2 << " p_gamma " << p_gamma << std::endl;
+  	// #endif
+  	if (p_gamma == 0)
+    	return 0.;
+  	if (p_gamma == 1 || p_gamma == 2)
+    	return liang_g_n_quad(n, p_gamma, R2);
 
-  auto a = 3.;
+  	auto a = 3.;
 
-  auto shape1 = 0.5*(p_gamma - 1.);
-  auto shape2 = 0.5*(n - p_gamma + 1.);
+  	auto shape1 = 0.5*(p_gamma - 1.);
+  	auto shape2 = 0.5*(n - p_gamma + 1.);
 
-  auto log_y = log(a - 2) - log(n) - log(R2) - log(1 - R2);
-  log_y = log_y + ::Rf_pbeta(R2,shape1,shape2,true,true);
-  log_y = log_y - ::Rf_dbeta(R2,shape1,shape2,true);
+  	auto log_y = log(a - 2) - log(n) - log(R2) - log(1 - R2);
+  	log_y = log_y + ::Rf_pbeta(R2,shape1,shape2,true,true);
+  	log_y = log_y - ::Rf_dbeta(R2,shape1,shape2,true);
 
-  #ifdef DEBUG
-  Rcpp::Rcout << "liang_g_n_approx(" << n << ", " << p << ", " << R2 << ", " << p_gamma << ") = " << log_y << std::endl;
-  #endif
-  return log_y;
+#ifdef DEBUG
+  	Rcpp::Rcout << "liang_g_n_approx(" << n << ", " << p << ", " << R2 << ", " << p_gamma << ") = " << log_y << std::endl;
+#endif
+  	return log_y;
 }
 
 
@@ -272,32 +272,32 @@ double liang_g_n_approx(const int n, const int p_gamma, const double R2)
 // [[Rcpp::export]]
 double robust_bayarri1(const int n, const int p_gamma, const double R2)
 {
-  // Rcpp::Rcout << "n " << n << " R2 " << R2 << " p_gamma " << p_gamma << std::endl;
-  double r = (1. + n) / (1. + p_gamma);
-  double L = r - 1.;
+  	// Rcpp::Rcout << "n " << n << " R2 " << R2 << " p_gamma " << p_gamma << std::endl;
+  	double r = (1. + n) / (1. + p_gamma);
+  	double L = r - 1.;
 
-  const int NUM_POINTS = 10000;
-  VectorXd x(NUM_POINTS);
-  x.setLinSpaced(NUM_POINTS, L, 10000);
+  	const int NUM_POINTS = 10000;
+  	VectorXd x(NUM_POINTS);
+  	x.setLinSpaced(NUM_POINTS, L, 10000);
 
-  VectorXd log_f(NUM_POINTS);
-  #pragma omp parallel for
-  for (int i = 0; i < NUM_POINTS; i++) {
-    log_f(i) = -log(2.) + 0.5 * log(r) + 0.5 * (n - p_gamma - 4.) * log(1. + x(i)) - 0.5 * (n - 1.) * log(1. + x(i) * (1. - R2));
-    // log_f(i) = -log(2.) + 0.5 * log(r) - 0.5 * (n - 1.)*log(sigma2) + 0.5 * (n - p_gamma - 4.) * log(r + x[i]) - 0.5 * (n - 1.) * log(beta + x[i]);
-    // #ifdef DEBUG
-    // Rcpp::Rcout << "-log(2) " << -log(2) << std::endl;
-    // Rcpp::Rcout << "0.5 * log(r) " << 0.5 * log(r) << std::endl;
-    // Rcpp::Rcout << "-0.5 * (n - 1) * log(sigma2) " << -0.5 * (n - 1) * log(sigma2) << std::endl;
-    // Rcpp::Rcout << "0.5 * (n - p_gamma - 4) * log(r + x[i]) " << 0.5 * (n - p_gamma - 4) * log(r + x[i]) << std::endl;
-    // Rcpp::Rcout << "0.5 * (n - 1.) * log(beta + x[i])  " << 0.5 * (n - 1.) * log(beta + x[i])  << std::endl;
-    // // if (i < 10)
-    // //   Rcpp::Rcout << "x(" << i << ") " << x(i) << " log_f(i) " << log_f(i) << std::endl;
-    // #endif
-  }
-  double result = log(trapint(x, log_f.array().exp()));
-  // Rcpp::Rcout << "result " << result << std::endl;
-  return result;
+  	VectorXd log_f(NUM_POINTS);
+#pragma omp parallel for
+  	for (int i = 0; i < NUM_POINTS; i++) {
+    	log_f(i) = -log(2.) + 0.5 * log(r) + 0.5 * (n - p_gamma - 4.) * log(1. + x(i)) - 0.5 * (n - 1.) * log(1. + x(i) * (1. - R2));
+    	// log_f(i) = -log(2.) + 0.5 * log(r) - 0.5 * (n - 1.)*log(sigma2) + 0.5 * (n - p_gamma - 4.) * log(r + x[i]) - 0.5 * (n - 1.) * log(beta + x[i]);
+    	// #ifdef DEBUG
+    	// Rcpp::Rcout << "-log(2) " << -log(2) << std::endl;
+    	// Rcpp::Rcout << "0.5 * log(r) " << 0.5 * log(r) << std::endl;
+    	// Rcpp::Rcout << "-0.5 * (n - 1) * log(sigma2) " << -0.5 * (n - 1) * log(sigma2) << std::endl;
+    	// Rcpp::Rcout << "0.5 * (n - p_gamma - 4) * log(r + x[i]) " << 0.5 * (n - p_gamma - 4) * log(r + x[i]) << std::endl;
+    	// Rcpp::Rcout << "0.5 * (n - 1.) * log(beta + x[i])  " << 0.5 * (n - 1.) * log(beta + x[i])  << std::endl;
+    	// // if (i < 10)
+    	// //   Rcpp::Rcout << "x(" << i << ") " << x(i) << " log_f(i) " << log_f(i) << std::endl;
+    	// #endif
+  	}
+  	double result = log(trapint(x, log_f.array().exp()));
+  	// Rcpp::Rcout << "result " << result << std::endl;
+  	return result;
 }
 
 
@@ -311,39 +311,39 @@ double robust_bayarri1(const int n, const int p_gamma, const double R2)
 // [[Rcpp::export]]
 double robust_bayarri2(const int n, const int p_gamma, const double R2)
 {
-  #ifdef DEBUG
-  Rcpp::Rcout << "n " << n;
-  Rcpp::Rcout << " p " << p;
-  Rcpp::Rcout << " R2 " << R2;
-  Rcpp::Rcout << " p_gamma " << p_gamma;
-  #endif
-  auto sigma2 = 1. - R2;
-  auto L = (1. + n)/(1. + p_gamma) - 1.;
+#ifdef DEBUG
+  	Rcpp::Rcout << "n " << n;
+  	Rcpp::Rcout << " p " << p;
+  	Rcpp::Rcout << " R2 " << R2;
+  	Rcpp::Rcout << " p_gamma " << p_gamma;
+#endif
+  	auto sigma2 = 1. - R2;
+  	auto L = (1. + n)/(1. + p_gamma) - 1.;
 
-  if (p_gamma == 0)
-    return 0.;
-  double log_vp_gprior7 = 0.5*(n - p_gamma - 1)*log( n + 1 );
-  #ifdef DEBUG
-  Rcpp::Rcout << " log_vp_gprior7 1 " << log_vp_gprior7 << std::endl;
-  #endif
-  log_vp_gprior7 -= 0.5*(n - p_gamma - 1)*log( p_gamma + 1);
-  #ifdef DEBUG
-  Rcpp::Rcout << " log_vp_gprior7 1 " << log_vp_gprior7 << std::endl;
-  #endif
-  log_vp_gprior7 -= 0.5*(n - 1)*log(1 + L*sigma2);
-  #ifdef DEBUG
-  Rcpp::Rcout << " log_vp_gprior7 1 " << log_vp_gprior7 << std::endl;
-  #endif
-  double R2_gamma_tilde = R2 / (1. + L * sigma2);
-  log_vp_gprior7 -= log(2 * R2_gamma_tilde * (1. - R2_gamma_tilde));
-  #ifdef DEBUG
-  Rcpp::Rcout << " log_vp_gprior7 1 " << log_vp_gprior7 << std::endl;
-  #endif
-  log_vp_gprior7 += ::Rf_pbeta(R2_gamma_tilde, 0.5 * (p_gamma + 1.), 0.5 * (n - p_gamma - 2.), true, true) - ::Rf_dbeta(R2_gamma_tilde, 0.5 * (p_gamma + 1.), 0.5 * (n - p_gamma - 2.), true);
-  #ifdef DEBUG
-  Rcpp::Rcout << " log_vp_gprior7 1 " << log_vp_gprior7 << std::endl;
-  #endif
-  return log_vp_gprior7;
+  	if (p_gamma == 0)
+    	return 0.;
+  	double log_vp_gprior7 = 0.5*(n - p_gamma - 1)*log( n + 1 );
+#ifdef DEBUG
+  	Rcpp::Rcout << " log_vp_gprior7 1 " << log_vp_gprior7 << std::endl;
+#endif
+  	log_vp_gprior7 -= 0.5*(n - p_gamma - 1)*log( p_gamma + 1);
+#ifdef DEBUG
+  	Rcpp::Rcout << " log_vp_gprior7 1 " << log_vp_gprior7 << std::endl;
+#endif
+  	log_vp_gprior7 -= 0.5*(n - 1)*log(1 + L*sigma2);
+#ifdef DEBUG
+  	Rcpp::Rcout << " log_vp_gprior7 1 " << log_vp_gprior7 << std::endl;
+#endif
+  	double R2_gamma_tilde = R2 / (1. + L * sigma2);
+  	log_vp_gprior7 -= log(2 * R2_gamma_tilde * (1. - R2_gamma_tilde));
+#ifdef DEBUG
+  	Rcpp::Rcout << " log_vp_gprior7 1 " << log_vp_gprior7 << std::endl;
+#endif
+  	log_vp_gprior7 += ::Rf_pbeta(R2_gamma_tilde, 0.5 * (p_gamma + 1.), 0.5 * (n - p_gamma - 2.), true, true) - ::Rf_dbeta(R2_gamma_tilde, 0.5 * (p_gamma + 1.), 0.5 * (n - p_gamma - 2.), true);
+#ifdef DEBUG
+  	Rcpp::Rcout << " log_vp_gprior7 1 " << log_vp_gprior7 << std::endl;
+#endif
+  	return log_vp_gprior7;
 }
 
 
@@ -358,15 +358,15 @@ double robust_bayarri2(const int n, const int p_gamma, const double R2)
 // [[Rcpp::export]]
 double log_BF_g_on_n_integrand (const double vu, const int n, const int p_gamma, const double R2)
 {
-  auto a = 3.;
-  auto result = 0.;
-  result += log (a - 2.);
-  result -= log (2. * n);
-  result += 0.5 * (p_gamma + a - 4.) * log (1. - vu);
-  result -= 0.5 * a * log (1. - vu * (1. - 1. / n));
-  result -= 0.5 * (n - 1.) * log (1. - vu * R2);
+  	auto a = 3.;
+  	auto result = 0.;
+  	result += log (a - 2.);
+  	result -= log (2. * n);
+  	result += 0.5 * (p_gamma + a - 4.) * log (1. - vu);
+  	result -= 0.5 * a * log (1. - vu * (1. - 1. / n));
+  	result -= 0.5 * (n - 1.) * log (1. - vu * R2);
 
-  return result;
+  	return result;
 }
 
 //' hyper-g/n Gauss-Legendre quadrature
@@ -379,11 +379,11 @@ double log_BF_g_on_n_integrand (const double vu, const int n, const int p_gamma,
 // [[Rcpp::export]]
 double log_BF_g_on_n_quad (const int n, const int p_gamma, const double R2)
 {
-  auto f = [=](double x) {
-    return log_BF_g_on_n_integrand(x, n, p_gamma, R2);
-  };
-  static Rosetta::GaussLegendreQuadrature < 1000 > gauss_legendre;
-  return gauss_legendre.integrate(0., 1., f);
+  	auto f = [=](double x) {
+    	return log_BF_g_on_n_integrand(x, n, p_gamma, R2);
+  	};
+  	static Rosetta::GaussLegendreQuadrature < 1000 > gauss_legendre;
+  	return gauss_legendre.integrate(0., 1., f);
 }
 
 
@@ -398,14 +398,14 @@ double log_BF_g_on_n_quad (const int n, const int p_gamma, const double R2)
 // [[Rcpp::export]]
 double log_BF_Zellner_Siow_integrand(double x, const int n, const int p_gamma, const double R2)
 {
-  auto sigma2 = 1. - R2;
-  auto vz = 0.5 * n * sigma2;
-  auto result = 0.5 * (p_gamma - 1.) * log(2. * x / n);
-  result += 0.5 * (n - p_gamma - 1.) * log(1. + 2. * x / n);
-  result -= 0.5 * (n - 1.) * log(1. + (x / vz));
-  result -= 0.5 * (n - 1) * log(sigma2);
+  	auto sigma2 = 1. - R2;
+  	auto vz = 0.5 * n * sigma2;
+  	auto result = 0.5 * (p_gamma - 1.) * log(2. * x / n);
+  	result += 0.5 * (n - p_gamma - 1.) * log(1. + 2. * x / n);
+  	result -= 0.5 * (n - 1.) * log(1. + (x / vz));
+  	result -= 0.5 * (n - 1) * log(sigma2);
 
-  return result;
+  	return result;
 }
 
 
@@ -419,41 +419,41 @@ double log_BF_Zellner_Siow_integrand(double x, const int n, const int p_gamma, c
 // [[Rcpp::export]]
 double log_BF_Zellner_Siow_quad(const int n, const int p_gamma, const double R2)
 {
-  auto f = [=](double x) {
-    return log_BF_Zellner_Siow_integrand(x, n, p_gamma, R2);
-  };
-  static Rosetta::GaussLegendreQuadrature < 1000 > gauss_legendre;
-  return gauss_legendre.integrate (0., 1., f);
+  	auto f = [=](double x) {
+    	return log_BF_Zellner_Siow_integrand(x, n, p_gamma, R2);
+  	};
+  	static Rosetta::GaussLegendreQuadrature < 1000 > gauss_legendre;
+  	return gauss_legendre.integrate (0., 1., f);
 }
 
 
 void set_log_prob(const string prior, log_prob_fn& log_prob)
 {
-  if (prior == "BIC") {
-    log_prob = BIC;
-  } else if (prior == "ZE") {
-    log_prob = ZE;
-  } else if (prior == "liang_g1") {
-    log_prob = liang_g1;
-  } else if (prior == "liang_g2") {
-    log_prob = liang_g2;
-  } else if (prior == "liang_g_n_appell") {
-    log_prob = liang_g_n_appell;
-  } else if (prior == "liang_g_n_approx") {
-    log_prob = liang_g_n_approx;
-  } else if (prior == "liang_g_n_quad") {
-    log_prob = liang_g_n_quad;
-  } else if (prior == "robust_bayarri1") {
-    log_prob = robust_bayarri1;
-  } else if (prior == "robust_bayarri2") {
-    log_prob = robust_bayarri2;
-  } else if (prior == "hyper_g_n_gauss_legendre") {
-    log_prob = log_BF_g_on_n_quad;
-  } else if (prior == "zellner_siow_gauss_legendre") {
-    log_prob = log_BF_Zellner_Siow_quad;
-  } else {
-	std::stringstream ss;
-    ss << "Prior " << prior << " unknown";
-    Rcpp::stop(ss.str());
-  }
+  	if (prior == "BIC") {
+    	log_prob = BIC;
+  	} else if (prior == "ZE") {
+    	log_prob = ZE;
+  	} else if (prior == "liang_g1") {
+    	log_prob = liang_g1;
+  	} else if (prior == "liang_g2") {
+    	log_prob = liang_g2;
+  	} else if (prior == "liang_g_n_appell") {
+    	log_prob = liang_g_n_appell;
+  	} else if (prior == "liang_g_n_approx") {
+    	log_prob = liang_g_n_approx;
+  	} else if (prior == "liang_g_n_quad") {
+    	log_prob = liang_g_n_quad;
+  	} else if (prior == "robust_bayarri1") {
+    	log_prob = robust_bayarri1;
+  	} else if (prior == "robust_bayarri2") {
+    	log_prob = robust_bayarri2;
+  	} else if (prior == "hyper_g_n_gauss_legendre") {
+    	log_prob = log_BF_g_on_n_quad;
+  	} else if (prior == "zellner_siow_gauss_legendre") {
+    	log_prob = log_BF_Zellner_Siow_quad;
+  	} else {
+		std::stringstream ss;
+    	ss << "Prior " << prior << " unknown";
+    	Rcpp::stop(ss.str());
+  	}
 }
