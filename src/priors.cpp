@@ -156,7 +156,7 @@ extern "C" void f1(std::complex<double>* a, std::complex<double>* b1,
 // [[Rcpp::export]]
 double liang_g_n_appell(const int n, const int p_gamma, const double R2)
 {
-	double result = NA_REAL;
+	double result = 1;
 	if (p_gamma == 0)
 		return result;
 #ifdef DEBUG
