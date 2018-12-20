@@ -156,18 +156,24 @@ extern "C" void f1(std::complex<double>* a, std::complex<double>* b1,
 // [[Rcpp::export]]
 double liang_g_n_appell(const int n, const int p_gamma, const double R2)
 {
-	double result = NA_REAL;
+	double result = 1;
 	if (p_gamma == 0)
 		return result;
 #ifdef DEBUG
 	Rcpp::Rcout << "liang_g_n_appell(" << n << ", " << p << ", " << R2 << ", " << p_gamma << ") = ";
 #endif
-	double a_prime = 3.;
+
+
+	double a_prime_dub = 3.;
+
+	std::complex<double> a_prime = 3.;
+
 	std::complex<double> val;
 	std::complex<double> a = 1.;
-	std::complex<double> b1 = a / 2.;
+	std::complex<double> b1 = a_prime.real() / 2.;
 	std::complex<double> b2 = (n - 1.)/2.;
-	std::complex<double> c = (p_gamma + a.real()) / 2.;
+	std::complex<double> c = (p_gamma + a_prime.real()) / 2.;
+
 	double x = 1. - 1. / n;
 	double y = R2;
 	int32_t algoflag = 0;
@@ -175,7 +181,7 @@ double liang_g_n_appell(const int n, const int p_gamma, const double R2)
 	int hyp2f1 = 2; // "michel.stoitsov";
 	bool debug = false;
 	f1(&a, &b1, &b2, &c, &x, &y, &algoflag, &userflag, &debug, &val, &hyp2f1);
-	result = log(a_prime - 2.) - log(n) - log(p_gamma + a_prime -
+	result = log(a_prime_dub - 2.) - log(n) - log(p_gamma + a_prime_dub -
 			2.) + log(val.real());
 #ifdef DEBUG
 	Rcpp::Rcout << result << std::endl;
