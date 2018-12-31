@@ -400,7 +400,6 @@ void calculate_probabilities(const std::string prior, const std::string modelpri
   	set_log_prob(prior, log_prob);
 
   	auto nmodels = vR2_all.size();
-#pragma omp parallel for
   	for (auto i = 0; i < nmodels; i++) {
     	vlogp_all(i) = log_prob(n, vpgamma_all(i), vR2_all(i));
     	if (modelprior == "beta-binomial") {
