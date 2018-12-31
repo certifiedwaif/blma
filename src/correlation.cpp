@@ -443,7 +443,7 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
 {
 #ifdef _OPENMP
     // Eigen::initParallel();
-    // omp_set_num_threads(cores);
+    omp_set_num_threads(cores);
     // Eigen::setNbThreads(cores);
 #endif
 
