@@ -447,6 +447,7 @@ double log_BF_Zellner_Siow_quad(const int n, const int p_gamma, const double R2)
   	}
   	delete [] w;
   	delete [] x;
+  	return sum;
 }
 
 
