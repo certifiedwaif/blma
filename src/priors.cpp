@@ -16,6 +16,7 @@
 #include <gsl/gsl_errno.h>
 
 #include "GaussLegendre.h"
+#include "laguerre_rule.h"
 #include "priors.h"
 
 using namespace Rcpp;
@@ -415,7 +416,7 @@ double log_BF_Zellner_Siow_integrand(double x, const int n, const int p_gamma, c
 }
 
 
-//' Zellner-Siow Gauss-Legendre quadrature
+//' Zellner-Siow Gauss-Laguerre quadrature
 //'
 //' @param n The sample size, an integer
 //' @param p_gamma The number of covariates in the model gamma
@@ -425,11 +426,27 @@ double log_BF_Zellner_Siow_integrand(double x, const int n, const int p_gamma, c
 // [[Rcpp::export]]
 double log_BF_Zellner_Siow_quad(const int n, const int p_gamma, const double R2)
 {
-  	auto f = [=](double x) {
-    	return log_BF_Zellner_Siow_integrand(x, n, p_gamma, R2);
-  	};
-  	static Rosetta::GaussLegendreQuadrature < 1000 > gauss_legendre;
-  	return gauss_legendre.integrate (0., 1., f);
+  	// TODO: Change this to use Gauss-Legendre
+  	// auto f = [=](double x) {
+    	// return log_BF_Zellner_Siow_integrand(x, n, p_gamma, R2);
+  	// };
+  	// static Rosetta::GaussLegendreQuadrature < 1000 > gauss_legendre;
+  	// return gauss_legendre.integrate (0., 1., f);
+  	auto *w = new double[n];
+  	auto *x = new double[n];
+  	const auto alpha = 0.;
+  	const auto beta = 0.;
+  	const auto a = 0.;
+  	const auto b = 1.;
+  	const auto kind = 5;
+  	cgqf(n, kind, alpha, beta, a, b, x, w);
+  	auto sum = 0.;
+#pragma omp parallel for reduction(+:sum)
+  	for (auto i = 0; i < n; i++) {
+  		sum += w[i] * log_BF_Zellner_Siow_integrand(x[i], n, p_gamma, R2);
+  	}
+  	delete [] w;
+  	delete [] x;
 }
 
 
