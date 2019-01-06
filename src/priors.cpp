@@ -439,7 +439,8 @@ double log_BF_Zellner_Siow_quad(const int n, const int p_gamma, const double R2)
   	const auto a = 0.;
   	const auto b = 1.;
   	const auto kind = 5;
-  	cgqf(n, kind, alpha, beta, a, b, x, w);
+  	const auto N_POINTS = 1000;
+  	cgqf(N_POINTS, kind, alpha, beta, a, b, x, w);
   	auto sum = 0.;
 #pragma omp parallel for reduction(+:sum)
   	for (auto i = 0; i < n; i++) {
@@ -473,7 +474,7 @@ void set_log_prob(const string prior, log_prob_fn& log_prob)
     	log_prob = robust_bayarri2;
   	} else if (prior == "hyper_g_n_gauss_legendre") {
     	log_prob = log_BF_g_on_n_quad;
-  	} else if (prior == "zellner_siow_gauss_legendre") {
+  	} else if (prior == "zellner_siow_gauss_laguerre") {
     	log_prob = log_BF_Zellner_Siow_quad;
   	} else {
 		std::stringstream ss;
