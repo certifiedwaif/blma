@@ -415,6 +415,10 @@ double log_BF_Zellner_Siow_integrand(double x, const int n, const int p_gamma, c
   	return result;
 }
 
+const int order = 1000;
+bool calculated = false;
+double w[order];
+double x[order];
 
 //' Zellner-Siow Gauss-Laguerre quadrature
 //'
@@ -426,30 +430,22 @@ double log_BF_Zellner_Siow_integrand(double x, const int n, const int p_gamma, c
 // [[Rcpp::export]]
 double log_BF_Zellner_Siow_quad(const int n, const int p_gamma, const double R2)
 {
-  	// TODO: Change this to use Gauss-Legendre
-  	// auto f = [=](double x) {
-    	// return log_BF_Zellner_Siow_integrand(x, n, p_gamma, R2);
-  	// };
-  	// static Rosetta::GaussLegendreQuadrature < 1000 > gauss_legendre;
-  	// return gauss_legendre.integrate (0., 1., f);
-	
-  	const int order = 1000;
   	const double alpha = 0.;
   	const double beta = 0.;
   	const double a = 0.;
   	const double b = 1.;
   	const int kind = 5;
   	
-  	auto *w = new double[order];
-  	auto *x = new double[order];
-  	auto *logf = new double[order];
-  	
-  	cgqf(order, kind, alpha, beta, a, b, x, w);
+  	if (!calculated) {
+		cgqf(order, kind, alpha, beta, a, b, x, w);
+		calculated = true;
+  	}
   	
   	//for (auto i = 0; i < order; i++) {
   	//	Rcpp::Rcout << "x[" << i << "]=" << x[i] << "w[" << i << "]=" << w[i] << std::endl;
   	//}
   	
+  	auto *logf = new double[order];
   	double maxval = log_BF_Zellner_Siow_integrand(x[0], n, p_gamma, R2);
   	for (auto i = 0; i < order; i++) {
   		logf[i] = log_BF_Zellner_Siow_integrand(x[i], n, p_gamma, R2);
@@ -466,10 +462,7 @@ double log_BF_Zellner_Siow_quad(const int n, const int p_gamma, const double R2)
   	double pi = 3.14159265358979323846264338327950;
   	double finalval =  maxval + log(sumval) +  0.5*log(0.5*n/pi) - log(0.5*n);
   	
- 
   	delete [] logf;
-  	delete [] w;
-  	delete [] x;
   	return finalval;
 }
 
