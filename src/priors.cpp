@@ -489,7 +489,7 @@ void set_log_prob(const string prior, log_prob_fn& log_prob)
     	log_prob = robust_bayarri2;
   	} else if (prior == "hyper_g_n_gauss_legendre") {
     	log_prob = log_BF_g_on_n_quad;
-  	} else if (prior == "zellner_siow_gauss_legendre") {
+  	} else if (prior == "zellner_siow_gauss_laguerre") {
     	log_prob = log_BF_Zellner_Siow_quad;
   	} else {
 		std::stringstream ss;
