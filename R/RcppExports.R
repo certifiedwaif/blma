@@ -158,7 +158,7 @@ log_BF_Zellner_Siow_integrand <- function(x, n, p_gamma, R2) {
     .Call('_blma_log_BF_Zellner_Siow_integrand', PACKAGE = 'blma', x, n, p_gamma, R2)
 }
 
-#' Zellner-Siow Gauss-Legendre quadrature
+#' Zellner-Siow Gauss-Laguerre quadrature
 #'
 #' @param n The sample size, an integer
 #' @param p_gamma The number of covariates in the model gamma
