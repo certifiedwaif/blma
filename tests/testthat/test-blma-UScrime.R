@@ -131,3 +131,17 @@ test_that("UScrime produces correct results robust_bayarri2", {
 	  0.9954498578038506,0.8345042702863100,0.2452186439348585
 	), tolerance = 1e-8)
 })
+
+test_that("UScrime produces correct results zellner_siow_gauss_laguerre", {
+	UScrime <- get_UScrime()
+	vy <- UScrime$vy
+	mX <- UScrime$mX
+	result <- blma(vy, mX, "zellner_siow_gauss_laguerre")
+	expect_equal(result$vinclusion_prob, c(
+		0.6529769401655269,0.2267683042922874,0.8679006779518879,0.6958693064404211,
+		0.4227195813764282,0.1997499011463117,0.3232070948482000,0.5673433815457235,
+		0.3556018636146491,0.2408930357989732,0.4988904773514005,0.2135955436462610,
+		0.9969385837823613,0.8482357484619247,0.2236271676913612
+		
+	), tolerance = 1e-8)
+})
