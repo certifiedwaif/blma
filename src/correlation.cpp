@@ -247,6 +247,9 @@ MatrixXd& rank_one_update(const dbitset& gamma, const uint col_abs, const uint m
 #ifdef DEBUG
       		Rcpp::Rcout << "mA_prime " << endl << mA_prime << endl;
 #endif
+#pragma omp parallel for\
+			shared(mA_prime, p_gamma_prime)\
+			default(none)
       		for (auto j = 0; j < p_gamma_prime; j++) {
         		for (auto i = 0; i < j; i++) {
           			mA_prime(i, j) = mA_prime(j, i);
@@ -427,11 +430,16 @@ void calculate_probabilities(const std::string prior, const std::string modelpri
   	// MatrixXd mGamma = graycode.to_MatrixXi().cast<double>();
   	// vinclusion_prob = mGamma.transpose() * vmodel_prob;
   	vinclusion_prob = VectorXd::Zero(p);
-  	for (int i = 0; i < nmodels; i++) {
-    	for (int j = 0; j < p; j++) {
+    for (int j = 0; j < p; j++) {
+    	auto sum = 0.;
+#pragma omp parallel for reduction(+:sum)\
+		shared(vinclusion_prob, graycode, vmodel_prob, j)\
+		default(none)
+  		for (int i = 0; i < nmodels; i++) {
       		auto gamma = graycode[i][j] ? 1. : 0.;
-      		vinclusion_prob(j) += gamma * vmodel_prob(i);
+      		sum += gamma * vmodel_prob(i);
     	}
+		vinclusion_prob(j) = sum;
   	}
 }
 
@@ -641,6 +649,9 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
     	VectorXd vR2(max_iterations);
     	VectorXi vp_gamma(max_iterations);
     	VectorXd vlogp(max_iterations);
+#pragma omp parallel for\
+		shared(vR2, vR2_all, graycode, vp_gamma, vpgamma_all, vlogp, vlogp_all)\
+		default(none)
     	for (uint i = 1; i < max_iterations; i++) {
       		vR2(i) = vR2_all(graycode.gray_to_binary(i));
       		vp_gamma(i) = vpgamma_all(graycode.gray_to_binary(i));
