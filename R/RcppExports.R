@@ -339,6 +339,8 @@ pva <- function(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in = N
 #'     \item{"robust_bayarri2"}{-- the robust prior of Bayarri et al. (2012) using 
 #'	default prior hyper choices evaluated directly using Equation (19) of Greenaway
 #'	and Ormerod (2018).}
+#'     \item{"zellner_siow_gauss_laguerre"}{-- the Zellner-Siow prior calculated
+#' using Gauss-Laguerre quadrature with 1000 quadrature points}
 #' }
 #' @param modelprior The model prior to use. The choices of model prior are "uniform",
 #' "beta-binomial" or "bernoulli". The choice of model prior dictates the meaning of the

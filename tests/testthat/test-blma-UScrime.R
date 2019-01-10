@@ -1,3 +1,5 @@
+context("blma UScrime")
+
 get_UScrime <- function()
 {
 	mD <- MASS::UScrime
@@ -14,11 +16,12 @@ get_UScrime <- function()
 	return(list(vy=vy, mX=mX))
 }
 
+# modelprior = uniform
 test_that("UScrime produces correct results BIC", {
 	UScrime <- get_UScrime()
 	vy <- UScrime$vy
 	mX <- UScrime$mX
-	result <- blma(vy, mX, "BIC")
+	result <- blma(vy, mX, prior="BIC", modelprior="uniform")
 	expect_equal(result$vinclusion_prob, c(
 		0.7086661153970550,0.1906278707126815,0.9207138264989706,0.7253039423829655,
 		0.3701199526247380,0.1582273002726970,0.2705746685548234,0.6064309892368921,
@@ -31,7 +34,7 @@ test_that("UScrime produces correct results ZE", {
 	UScrime <- get_UScrime()
 	vy <- UScrime$vy
 	mX <- UScrime$mX
-	result <- blma(vy, mX, "ZE")
+	result <- blma(vy, mX, prior="ZE", modelprior="uniform")
 	expect_equal(result$vinclusion_prob, c(
 		0.6551129989168902,0.2287509395743590,0.8691121295594134,0.6964900562039598,
 		0.4236469337382322,0.2017927025100451,0.3243432277162467,0.5691166496984528,
@@ -44,7 +47,7 @@ test_that("UScrime produces correct results liang_g1", {
 	UScrime <- get_UScrime()
 	vy <- UScrime$vy
 	mX <- UScrime$mX
-	result <- blma(vy, mX, "liang_g1")
+	result <- blma(vy, mX, prior="liang_g1", modelprior="uniform")
 	expect_equal(result$vinclusion_prob, c(
 		0.6592570082818343,0.2551890195947963,0.8623073076292519,0.6920362397961507,
 		0.4460647456912883,0.2306155050885771,0.3455094697420374,0.5734193328978876,
@@ -58,7 +61,7 @@ test_that("UScrime produces correct results liang_g2", {
 	UScrime <- get_UScrime()
 	vy <- UScrime$vy
 	mX <- UScrime$mX
-	result <- blma(vy, mX, "liang_g2")
+	result <- blma(vy, mX, prior="liang_g2", modelprior="uniform")
 	expect_equal(result$vinclusion_prob, c(
 		0.6592570082818349,0.2551890195947963,0.8623073076292518,0.6920362397961510,
 		0.4460647456912886,0.2306155050885771,0.3455094697420375,0.5734193328978877,
@@ -71,7 +74,7 @@ test_that("UScrime produces correct results liang_g_n_appell", {
 	UScrime <- get_UScrime()
 	vy <- UScrime$vy
 	mX <- UScrime$mX
-	result <- blma(vy, mX, "liang_g_n_appell")
+	result <- blma(vy, mX, prior="liang_g_n_appell", modelprior="uniform")
 	expect_equal(result$vinclusion_prob, c(
 	  0.6510317307247586,0.2291245644515895,0.8651014024703148,0.6951167568300936,
 	  0.4252167906333386,0.2025875318978383,0.3258937597030980,0.5663482122162754,
@@ -84,7 +87,7 @@ test_that("UScrime produces correct results liang_g_n_approx", {
 	UScrime <- get_UScrime()
 	vy <- UScrime$vy
 	mX <- UScrime$mX
-	result <- blma(vy, mX, "liang_g_n_approx")
+	result <- blma(vy, mX, prior="liang_g_n_approx", modelprior="uniform")
 	expect_equal(result$vinclusion_prob, c(
 	  0.6572101998512460,0.2246852625428866,0.8724241652237846,0.6988559837509296,
 	  0.4187705059074147,0.1972665987685162,0.3200139348087251,0.5707013245228147,
@@ -97,7 +100,7 @@ test_that("UScrime produces correct results liang_g_n_quad", {
 	UScrime <- get_UScrime()
 	vy <- UScrime$vy
 	mX <- UScrime$mX
-	result <- blma(vy, mX, "liang_g_n_quad")
+	result <- blma(vy, mX, prior="liang_g_n_quad", modelprior="uniform")
 	expect_equal(result$vinclusion_prob, c(
 	  0.6510319616402197,0.2291246515020669,0.8651016578499309,0.6951167646184457,
 	  0.4252168286795515,0.2025876028333554,0.3258937799141847,0.5663483825834370,
@@ -110,7 +113,7 @@ test_that("UScrime produces correct results robust_bayarri1", {
 	UScrime <- get_UScrime()
 	vy <- UScrime$vy
 	mX <- UScrime$mX
-	result <- blma(vy, mX, "robust_bayarri1")
+	result <- blma(vy, mX, prior="robust_bayarri1", modelprior="uniform")
 	expect_equal(result$vinclusion_prob, c(
 	  0.6473883232855026,0.2450615600524966,0.8559561722433557,0.6902233614648986,
 	  0.4408054425401610,0.2203974917215597,0.3408084056726517,0.5647124777936052,
@@ -123,7 +126,7 @@ test_that("UScrime produces correct results robust_bayarri2", {
 	UScrime <- get_UScrime()
 	vy <- UScrime$vy
 	mX <- UScrime$mX
-	result <- blma(vy, mX, "robust_bayarri2")
+	result <- blma(vy, mX, prior="robust_bayarri2", modelprior="uniform")
 	expect_equal(result$vinclusion_prob, c(
 	  0.6473659645368532,0.2450935725931694,0.8559277873673219,0.6902103956460465,
 	  0.4408397852569301,0.2204342991741803,0.3408415449185910,0.5647004484926239,
@@ -136,12 +139,28 @@ test_that("UScrime produces correct results zellner_siow_gauss_laguerre", {
 	UScrime <- get_UScrime()
 	vy <- UScrime$vy
 	mX <- UScrime$mX
-	result <- blma(vy, mX, "zellner_siow_gauss_laguerre")
+	result <- blma(vy, mX, prior="zellner_siow_gauss_laguerre", modelprior="uniform")
 	expect_equal(result$vinclusion_prob, c(
 		0.6529769401655269,0.2267683042922874,0.8679006779518879,0.6958693064404211,
 		0.4227195813764282,0.1997499011463117,0.3232070948482000,0.5673433815457235,
 		0.3556018636146491,0.2408930357989732,0.4988904773514005,0.2135955436462610,
 		0.9969385837823613,0.8482357484619247,0.2236271676913612
 		
+	), tolerance = 1e-8)
+})
+
+# prior = BIC, modelprior = beta-binomial
+test_that("UScrime produces correct results modelprior beta-binomial", {
+	UScrime <- get_UScrime()
+	vy <- UScrime$vy
+	mX <- UScrime$mX
+	p <- ncol(mX)
+	result <- blma(vy, mX, prior="BIC", modelprior="beta-binomial", modelpriorvec = c(1, p))
+	expect_equal(result$vinclusion_prob, c(
+		0.28382041872785302,0.05401025213196230,0.52472573681024470,
+		0.67899545738306066,0.34415858271523636,0.05257683401220613,
+		0.31709892405155543,0.32163128053123047,0.09511945604467670,
+		0.04703321836137517,0.13984669234378327,0.05271970967353467,
+		0.99021404499476029,0.54819562466110150,0.06534213149560644
 	), tolerance = 1e-8)
 })
