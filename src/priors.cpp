@@ -220,7 +220,9 @@ double liang_g_n_quad(const int n, const int p_gamma, const double R2)
   	const int NUM_POINTS = 10000;
   	VectorXd xgrid(NUM_POINTS);
   	VectorXd fgrid(NUM_POINTS);
-#pragma omp parallel for
+#pragma omp parallel for\
+	shared(xgrid, fgrid, a)\
+	default(none)
   	for (int i = 0; i < NUM_POINTS; i++) {
     	double u = static_cast<double>(i) / static_cast<double>(NUM_POINTS);
     	xgrid(i) = u;
@@ -288,7 +290,9 @@ double robust_bayarri1(const int n, const int p_gamma, const double R2)
   	x.setLinSpaced(NUM_POINTS, L, 10000);
 
   	VectorXd log_f(NUM_POINTS);
-#pragma omp parallel for
+#pragma omp parallel for\
+	shared(log_f, x, r)\
+	default(none)
   	for (int i = 0; i < NUM_POINTS; i++) {
     	log_f(i) = -log(2.) + 0.5 * log(r) + 0.5 * (n - p_gamma - 4.) * log(1. + x(i)) - 0.5 * (n - 1.) * log(1. + x(i) * (1. - R2));
     	// log_f(i) = -log(2.) + 0.5 * log(r) - 0.5 * (n - 1.)*log(sigma2) + 0.5 * (n - p_gamma - 4.) * log(r + x[i]) - 0.5 * (n - 1.) * log(beta + x[i]);

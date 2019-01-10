@@ -398,8 +398,11 @@ void calculate_probabilities(const std::string prior, const std::string modelpri
 {
   	log_prob_fn log_prob;
   	set_log_prob(prior, log_prob);
+  	const auto nmodels = vR2_all.size();
 
-  	auto nmodels = vR2_all.size();
+#pragma omp parallel for\
+	shared(vlogp_all, log_prob, vpgamma_all, vR2_all, modelpriorvec, graycode)\
+	default(none)
   	for (auto i = 0; i < nmodels; i++) {
     	vlogp_all(i) = log_prob(n, vpgamma_all(i), vR2_all(i));
     	if (modelprior == "beta-binomial") {
@@ -441,9 +444,9 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
   		const bool bCentre = true, uint cores = 1L)
 {
 #ifdef _OPENMP
-    // Eigen::initParallel();
+    Eigen::initParallel();
     omp_set_num_threads(cores);
-    // Eigen::setNbThreads(cores);
+    Eigen::setNbThreads(cores);
 #endif
 
 #ifdef DEBUG
