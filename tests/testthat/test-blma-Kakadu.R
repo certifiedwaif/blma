@@ -101,32 +101,46 @@ test_that("Kakadu produces correct results liang_g2", {
 	), tolerance = 1e-8)
 })
 
-#test_that("Kakadu produces correct results liang_g_n_appell", {
-	#Kakadu <- get_Kakadu()
-	#vy <- Kakadu$vy
-	#mX <- Kakadu$mX
-	#result <- blma(vy, mX, prior="liang_g_n_appell", modelprior="uniform")
-	#expect_equal(result$vinclusion_prob, c(
-	#), tolerance = 1e-8)
-#})
+# We get NANs. This simply doesn't work. Move on for now.
+test_that("Kakadu produces correct results liang_g_n_appell", {
+	skip("We cannot get this to work. It's too numerically difficult for large n. We get NaNs")
+	Kakadu <- get_Kakadu()
+	vy <- Kakadu$vy
+	mX <- Kakadu$mX
+	result <- blma(vy, mX, prior="liang_g_n_appell", modelprior="uniform")
+	expect_equal(result$vinclusion_prob, c(
+	), tolerance = 1e-8)
+})
 
-#test_that("Kakadu produces correct results liang_g_n_approx", {
-	#Kakadu <- get_Kakadu()
-	#vy <- Kakadu$vy
-	#mX <- Kakadu$mX
-	#result <- blma(vy, mX, prior="liang_g_n_approx", modelprior="uniform")
-	#expect_equal(result$vinclusion_prob, c(
-	#), tolerance = 1e-8)
-#})
+test_that("Kakadu produces correct results liang_g_n_approx", {
+	Kakadu <- get_Kakadu()
+	vy <- Kakadu$vy
+	mX <- Kakadu$mX
+	result <- blma(vy, mX, prior="liang_g_n_approx", modelprior="uniform", cores=144)
+	expect_equal(result$vinclusion_prob, c(
+		0.3296136691294210,0.4997609497180022,0.1579846499019243,0.4631387408540441,
+		0.9006995511063154,0.4005475083511888,0.1982925439416997,0.2209076900143787,
+		0.1575545973403185,0.8998253808608440,0.9453194636814199,0.9996900361221982,
+		0.1456947072049949,0.3654752994812290,0.3329298710932005,0.8268178993825527,
+		0.1806657458627090,0.8573731512895385,0.9999999999992192,0.6083132163536824,
+		0.9999983508359184,0.2714475290242928
+	), tolerance = 1e-8)
+})
 
-#test_that("Kakadu produces correct results liang_g_n_quad", {
-	#Kakadu <- get_Kakadu()
-	#vy <- Kakadu$vy
-	#mX <- Kakadu$mX
-	#result <- blma(vy, mX, prior="liang_g_n_quad", modelprior="uniform")
-	#expect_equal(result$vinclusion_prob, c(
-	#), tolerance = 1e-8)
-#})
+test_that("Kakadu produces correct results liang_g_n_quad", {
+	Kakadu <- get_Kakadu()
+	vy <- Kakadu$vy
+	mX <- Kakadu$mX
+	result <- blma(vy, mX, prior="liang_g_n_quad", modelprior="uniform")
+	expect_equal(result$vinclusion_prob, c(
+		0.3203591831238068,0.4977774306550474,0.1512859110442455,0.4601315123732897,
+		0.8984723576023463,0.3910244742565688,0.1894701351919556,0.2126145072480971,
+		0.1506655077406368,0.8944304522063428,0.9448935925720320,0.9996801335893382,
+		0.1391831130834718,0.3538609740786210,0.3223705659773634,0.8229190449064608,
+		0.1730543020195790,0.8521810234828430,0.9999999999993161,0.5982779020650832,
+		0.9999983946351332,0.2609239705895227
+	), tolerance = 1e-8)
+})
 
 #test_that("Kakadu produces correct results robust_bayarri1", {
 	#Kakadu <- get_Kakadu()
