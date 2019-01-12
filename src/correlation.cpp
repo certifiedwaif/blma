@@ -404,7 +404,7 @@ void calculate_probabilities(const std::string prior, const std::string modelpri
   	const auto nmodels = vR2_all.size();
 
 #pragma omp parallel for\
-	shared(vlogp_all, log_prob, vpgamma_all, vR2_all, modelpriorvec, graycode)\
+	shared(vlogp_all, log_prob, vpgamma_all, vR2_all, modelprior, modelpriorvec, graycode)\
 	default(none)
   	for (auto i = 0; i < nmodels; i++) {
     	vlogp_all(i) = log_prob(n, vpgamma_all(i), vR2_all(i));
