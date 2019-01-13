@@ -165,6 +165,7 @@ List sampler(const int iterations,
   	// help us with the linear algebra though.
 #ifdef _OPENMP
     Eigen::initParallel();
+    omp_set_num_threads(cores);
     Eigen::setNbThreads(cores);
 #endif
 
@@ -272,7 +273,7 @@ List sampler(const int iterations,
   	}
   	VectorXd vinclusion_prob(p);
 #pragma omp parallel for \
-	shared(mGamma, vinclusion_prob, p) \
+	shared(mGamma, vinclusion_prob) \
 	default(none)
   	for (auto i = 0; i < p; i++) {
   		vinclusion_prob(i) = mGamma.col(i).mean();
