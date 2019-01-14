@@ -41,7 +41,7 @@ VectorXd gamma_to_row(const dbitset& gamma)
 //' sampler
 //'
 //' @usage sampler(iterations, vy, mX, prior = "BIC", modelprior = "uniform",
-//' modelpriorvec_in=NULL)
+//' modelpriorvec_in=NULL, cores=1)
 //' @param iterations The number of iterations to run the MCMC sampler for
 //' @param vy_in Vector of responses
 //' @param mX_in The matrix of covariates which may or may not be included in each model
@@ -161,10 +161,12 @@ List sampler(const int iterations,
         const int cores = 1L)
 {
   	// Try using the parallelisation in Eigen. This is an inherently serial algorithm,
-  	// and I don't think OpenMP is going to help us here.
+  	// and I don't think OpenMP is going to help us here. More cores might
+  	// help us with the linear algebra though.
 #ifdef _OPENMP
-    // Eigen::initParallel();
-    // Eigen::setNbThreads(cores);
+    //Eigen::initParallel();
+    omp_set_num_threads(cores);
+    //Eigen::setNbThreads(cores);
 #endif
 
   	VectorXd vy(vy_in.length());   // = Rcpp::as<Eigen::Map<Eigen::VectorXd>>(vy_in);
@@ -269,7 +271,14 @@ List sampler(const int iterations,
 
     	mGamma.row(i) = gamma_to_row(gamma);
   	}
+  	VectorXd vinclusion_prob(p);
+#pragma omp parallel for \
+	shared(mGamma, vinclusion_prob) \
+	default(none)
+  	for (auto i = 0; i < p; i++) {
+  		vinclusion_prob(i) = mGamma.col(i).mean();
+  	}
 
-  	return List::create(Named("mGamma") = mGamma);
+  	return List::create(Named("mGamma") = mGamma,
+						Named("vinclusion_prob") = vinclusion_prob);
 }
-

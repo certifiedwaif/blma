@@ -196,7 +196,7 @@ double trapint(const VectorXd& xgrid, const VectorXd& fgrid)
 {
   	auto sum = 0.;
 
-#pragma omp parallel for reduction(+:sum)
+#pragma omp parallel for simd reduction(+:sum)
   	for (auto i = 0; i < xgrid.size() - 1; i++) {
     	sum += 0.5 * (xgrid(i + 1) - xgrid(i)) * (fgrid(i) + fgrid(i + 1));
   	}
@@ -205,6 +205,13 @@ double trapint(const VectorXd& xgrid, const VectorXd& fgrid)
   	return sum;
 }
 
+
+double liang_g_n_quad_integrand(const int n, const int p_gamma, const double R2,
+								const double u)
+{
+  	const auto a = 3.;
+	return exp((p_gamma / 2. + a / 2. - 2.) * log(1 - u) + -a/2. * log(1. - u * (1. - 1. / n)) + (-(n-1.)/2.) * log(1 - u*R2));
+}
 
 //' Liang's g/n prior quadrature
 //'
@@ -216,19 +223,21 @@ double trapint(const VectorXd& xgrid, const VectorXd& fgrid)
 // [[Rcpp::export]]
 double liang_g_n_quad(const int n, const int p_gamma, const double R2)
 {
-  	auto a = 3.;
-  	const int NUM_POINTS = 10000;
-  	VectorXd xgrid(NUM_POINTS);
-  	VectorXd fgrid(NUM_POINTS);
-#pragma omp parallel for\
-	shared(xgrid, fgrid, a)\
+  	const auto a = 3.;
+  	const int NUM_POINTS = 1000;
+  	auto sum = 0.;
+#pragma omp parallel for simd\
+	reduction(+:sum)\
 	default(none)
-  	for (int i = 0; i < NUM_POINTS; i++) {
+  	for (int i = 1; i < NUM_POINTS; i++) {
+    	double u_prev = static_cast<double>(i - 1) / static_cast<double>(NUM_POINTS);
     	double u = static_cast<double>(i) / static_cast<double>(NUM_POINTS);
-    	xgrid(i) = u;
-    	fgrid(i) = exp((p_gamma / 2. + a / 2. - 2.) * log(1 - u) + -a/2. * log(1. - u * (1. - 1. / n)) + (-(n-1.)/2.) * log(1 - u*R2));
+    	auto fgrid = liang_g_n_quad_integrand(n, p_gamma, R2, u_prev);
+    	auto fgrid_prev = liang_g_n_quad_integrand(n, p_gamma, R2, u);
+    	sum += 0.5 * (fgrid_prev + fgrid) / static_cast<double>(NUM_POINTS);
   	}
-  	auto result = log(a - 2.) - log(2. * n) + log(trapint(xgrid, fgrid));
+
+  	auto result = log(a - 2.) - log(2. * n) + log(sum);
 #ifdef DEBUG
   	Rcpp::Rcout << "liang_g_n_quad(" << n << ", " << p << ", " << R2 << ", " << p_gamma << ") = " << result << std::endl;
 #endif
