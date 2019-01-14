@@ -41,7 +41,6 @@ get_Kakadu <- function()
 
 # modelprior = uniform
 test_that("Kakadu produces correct results BIC", {
-	skip("I don't care about this right now")
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
@@ -59,7 +58,6 @@ test_that("Kakadu produces correct results BIC", {
 })
 
 test_that("Kakadu produces correct results ZE", {
-	skip("I don't care about this right now")
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
@@ -77,7 +75,6 @@ test_that("Kakadu produces correct results ZE", {
 })
 
 test_that("Kakadu produces correct results liang_g1", {
-	skip("I don't care about this right now")
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
@@ -94,7 +91,6 @@ test_that("Kakadu produces correct results liang_g1", {
 
 
 test_that("Kakadu produces correct results liang_g2", {
-	skip("I don't care about this right now")
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
@@ -121,7 +117,6 @@ test_that("Kakadu produces correct results liang_g_n_appell", {
 })
 
 test_that("Kakadu produces correct results liang_g_n_approx", {
-	skip("I don't care about this right now")
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
@@ -137,7 +132,6 @@ test_that("Kakadu produces correct results liang_g_n_approx", {
 })
 
 test_that("Kakadu produces correct results liang_g_n_quad", {
-	skip("I don't care about this right now")
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
@@ -153,7 +147,6 @@ test_that("Kakadu produces correct results liang_g_n_quad", {
 })
 
 test_that("Kakadu produces correct results robust_bayarri1", {
-	skip("I don't care about this right now")
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
@@ -169,7 +162,6 @@ test_that("Kakadu produces correct results robust_bayarri1", {
 })
 
 test_that("kakadu produces correct results robust_bayarri2", {
-	skip("I don't care about this right now")
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
@@ -204,7 +196,6 @@ test_that("Kakadu produces correct results zellner_siow_gauss_laguerre", {
 
 # prior = BIC, modelprior = beta-binomial
 test_that("Kakadu produces correct results modelprior beta-binomial", {
-	skip("I don't care about this right now")
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
