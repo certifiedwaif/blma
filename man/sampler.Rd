@@ -5,7 +5,7 @@
 \title{sampler}
 \usage{
 sampler(iterations, vy, mX, prior = "BIC", modelprior = "uniform",
-modelpriorvec_in=NULL)
+modelpriorvec_in=NULL, cores=1)
 }
 \arguments{
 \item{iterations}{The number of iterations to run the MCMC sampler for}

@@ -549,7 +549,7 @@ graycode <- function(varying, fixed = 0L) {
 #' sampler
 #'
 #' @usage sampler(iterations, vy, mX, prior = "BIC", modelprior = "uniform",
-#' modelpriorvec_in=NULL)
+#' modelpriorvec_in=NULL, cores=1)
 #' @param iterations The number of iterations to run the MCMC sampler for
 #' @param vy_in Vector of responses
 #' @param mX_in The matrix of covariates which may or may not be included in each model
