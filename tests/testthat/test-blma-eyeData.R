@@ -1,14 +1,23 @@
-context('blma eyeData')
-get_eyeData <- function()
+library(parallel)
+
+context("sampler eyeData")
+
+vector_to_str <- function(vec)
 {
-    data(eyeData)
-    vy <- y
-    mX <- x
-    norm <- normalize(vy, mX)
-    vy <- norm$vy
-    mX <- norm$mX
-    return(list(vy=vy, mX=mX))
+	options(digits=16)
+	cat("c(")
+	for (i in 1:length(vec)) {
+	  cat(vec[i])	
+	  if (i < length(vec)) {
+	  	  cat(",\n")
+	  }
+	}
+	cat(")\n")
 }
+
+#cores <- detectCores()
+cores <- 1
+
 normalize <- function(y, X)
 {
   n <- length(y)
@@ -31,11 +40,23 @@ normalize <- function(y, X)
 
   return(list(vy = vy, mX = mX, mu.y = mu.y, sigma2.y = sigma2.y, mu.x = mu.x, sigma2.x = sigma2.x))
 }
+
+get_eyeData <- function()
+{
+    data(eyeData)
+    vy <- y
+    mX <- x
+    norm <- normalize(vy, mX)
+    vy <- norm$vy
+    mX <- norm$mX
+    return(list(vy=vy, mX=mX))
+}
+
 test_that('eyeData produces correct results BIC', {
     eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
-    result <- sampler(10000, vy, mX, prior='BIC', modelprior='uniform', cores=1)
+    result <- sampler(10000, vy, mX, prior='BIC', modelprior='uniform', cores=cores)
     expect_equal(result$vinclusion_prob, c(0.0037,
 0.0067,
 0.0012,
@@ -242,7 +263,7 @@ test_that('eyeData produces correct results ZE', {
     eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
-    result <- sampler(10000, vy, mX, prior='ZE', modelprior='uniform', cores=1)
+    result <- sampler(10000, vy, mX, prior='ZE', modelprior='uniform', cores=cores)
     expect_equal(result$vinclusion_prob, c(0.003688497230715404,
 0.005603326220676895,
 0.001533945443797199,
@@ -449,7 +470,7 @@ test_that('eyeData produces correct results liang_g1', {
     eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
-    result <- sampler(10000, vy, mX, prior='liang_g1', modelprior='uniform', cores=1)
+    result <- sampler(10000, vy, mX, prior='liang_g1', modelprior='uniform', cores=cores)
     expect_equal(result$vinclusion_prob, c(0.003888497230715404,
 0.005603326220676895,
 0.002933945443797199,
@@ -656,7 +677,7 @@ test_that('eyeData produces correct results liang_g2', {
     eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
-    result <- sampler(10000, vy, mX, prior='liang_g2', modelprior='uniform', cores=1)
+    result <- sampler(10000, vy, mX, prior='liang_g2', modelprior='uniform', cores=cores)
     expect_equal(result$vinclusion_prob, c(0.002788497230715404,
 0.005303326220676895,
 0.002833945443797199,
@@ -863,7 +884,7 @@ test_that('eyeData produces correct results liang_g_n_approx', {
     eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
-    result <- sampler(10000, vy, mX, prior='liang_g_n_approx', modelprior='uniform', cores=1)
+    result <- sampler(10000, vy, mX, prior='liang_g_n_approx', modelprior='uniform', cores=cores)
     expect_equal(result$vinclusion_prob, c(0.003088497230715404,
 0.002703326220676895,
 0.001333945443797199,
@@ -1070,7 +1091,7 @@ test_that('eyeData produces correct results liang_g_n_quad', {
     eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
-    result <- sampler(10000, vy, mX, prior='liang_g_n_quad', modelprior='uniform', cores=1)
+    result <- sampler(10000, vy, mX, prior='liang_g_n_quad', modelprior='uniform', cores=cores)
     expect_equal(result$vinclusion_prob, c(0.002488497230715403,
 0.004403326220676894,
 0.001733945443797199,
@@ -1277,7 +1298,7 @@ test_that('eyeData produces correct results robust_bayarri1', {
     eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
-    result <- sampler(10000, vy, mX, prior='robust_bayarri1', modelprior='uniform', cores=1)
+    result <- sampler(10000, vy, mX, prior='robust_bayarri1', modelprior='uniform', cores=cores)
     expect_equal(result$vinclusion_prob, c(0.003788497230715404,
 0.005003326220676895,
 0.001633945443797199,
@@ -1484,7 +1505,7 @@ test_that('eyeData produces correct results robust_bayarri2', {
     eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
-    result <- sampler(10000, vy, mX, prior='robust_bayarri2', modelprior='uniform', cores=1)
+    result <- sampler(10000, vy, mX, prior='robust_bayarri2', modelprior='uniform', cores=cores)
     expect_equal(result$vinclusion_prob, c(0.004388497230715403,
 0.004503326220676894,
 0.001733945443797199,
@@ -1691,7 +1712,7 @@ test_that('eyeData produces correct results zellner_siow_gauss_laguerre', {
     eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
-    result <- sampler(10000, vy, mX, prior='zellner_siow_gauss_laguerre', modelprior='uniform', cores=1)
+    result <- sampler(10000, vy, mX, prior='zellner_siow_gauss_laguerre', modelprior='uniform', cores=cores)
     expect_equal(result$vinclusion_prob, c(0.003688497230715404,
 0.003603326220676895,
 0.002033945443797199,

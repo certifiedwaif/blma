@@ -282,4 +282,3 @@ List sampler(const int iterations,
   	return List::create(Named("mGamma") = mGamma,
 						Named("vinclusion_prob") = vinclusion_prob);
 }
-
