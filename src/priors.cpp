@@ -206,6 +206,13 @@ double trapint(const VectorXd& xgrid, const VectorXd& fgrid)
 }
 
 
+double liang_g_n_quad_integrand(const int n, const int p_gamma, const double R2,
+								const double u)
+{
+  	const auto a = 3.;
+	return exp((p_gamma / 2. + a / 2. - 2.) * log(1 - u) + -a/2. * log(1. - u * (1. - 1. / n)) + (-(n-1.)/2.) * log(1 - u*R2));
+}
+
 //' Liang's g/n prior quadrature
 //'
 //' @param n The sample size, an integer
@@ -225,11 +232,9 @@ double liang_g_n_quad(const int n, const int p_gamma, const double R2)
   	for (int i = 1; i < NUM_POINTS; i++) {
     	double u_prev = static_cast<double>(i - 1) / static_cast<double>(NUM_POINTS);
     	double u = static_cast<double>(i) / static_cast<double>(NUM_POINTS);
-    	auto xgrid_prev = u_prev;
-    	auto xgrid = u;
-    	auto fgrid_prev = exp((p_gamma / 2. + a / 2. - 2.) * log(1 - u_prev) + -a/2. * log(1. - u_prev * (1. - 1. / n)) + (-(n-1.)/2.) * log(1 - u_prev*R2));
-    	auto fgrid = exp((p_gamma / 2. + a / 2. - 2.) * log(1 - u) + -a/2. * log(1. - u * (1. - 1. / n)) + (-(n-1.)/2.) * log(1 - u*R2));
-    	sum += 0.5 * (xgrid_prev - xgrid) * (fgrid_prev + fgrid);
+    	auto fgrid = liang_g_n_quad_integrand(n, p_gamma, R2, u_prev);
+    	auto fgrid_prev = liang_g_n_quad_integrand(n, p_gamma, R2, u);
+    	sum += 0.5 * (fgrid_prev + fgrid) / static_cast<double>(NUM_POINTS);
   	}
 
   	auto result = log(a - 2.) - log(2. * n) + log(sum);
