@@ -217,7 +217,7 @@ double trapint(const VectorXd& xgrid, const VectorXd& fgrid)
 double liang_g_n_quad(const int n, const int p_gamma, const double R2)
 {
   	auto a = 3.;
-  	const int NUM_POINTS = 10000;
+  	const int NUM_POINTS = 1000;
   	auto sum = 0.;
 #pragma omp parallel for simd\
 	reduction(+:sum)\
