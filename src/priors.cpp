@@ -224,7 +224,7 @@ double liang_g_n_quad_integrand(const int n, const int p_gamma, const double R2,
 double liang_g_n_quad(const int n, const int p_gamma, const double R2)
 {
   	const auto a = 3.;
-  	const int NUM_POINTS = 1000;
+  	const int NUM_POINTS = 10000;
   	auto sum = 0.;
 #pragma omp parallel for simd\
 	reduction(+:sum)\
