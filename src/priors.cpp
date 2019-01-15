@@ -218,20 +218,19 @@ double liang_g_n_quad(const int n, const int p_gamma, const double R2)
 {
   	auto a = 3.;
   	const int NUM_POINTS = 10000;
-  	VectorXd xgrid(NUM_POINTS);
-  	VectorXd fgrid(NUM_POINTS);
-    xgrid(0) = 0;
-    fgrid(0) = exp((p_gamma / 2. + a / 2. - 2.) * log(1) + -a/2. * log(1. * (1. - 1. / n)) + (-(n-1.)/2.) * log(1));
   	auto sum = 0.;
 #pragma omp parallel for simd\
 	reduction(+:sum)\
 	shared(xgrid, fgrid, a)\
 	default(none)
-  	for (int i = 0; i < (NUM_POINTS - 1); i++) {
+  	for (int i = 1; i < NUM_POINTS; i++) {
+    	double u_prev = static_cast<double>(i - 1) / static_cast<double>(NUM_POINTS);
     	double u = static_cast<double>(i) / static_cast<double>(NUM_POINTS);
-    	xgrid(i + 1) = u;
-    	fgrid(i + 1) = exp((p_gamma / 2. + a / 2. - 2.) * log(1 - u) + -a/2. * log(1. - u * (1. - 1. / n)) + (-(n-1.)/2.) * log(1 - u*R2));
-    	sum += 0.5 * (xgrid(i + 1) - xgrid(i)) * (fgrid(i) + fgrid(i + 1));
+    	auto xgrid_prev = u_prev;
+    	auto xgrid = u;
+    	auto fgrid_prev = exp((p_gamma / 2. + a / 2. - 2.) * log(1 - u_prev) + -a/2. * log(1. - u_prev * (1. - 1. / n)) + (-(n-1.)/2.) * log(1 - u_prev*R2));
+    	auto fgrid = exp((p_gamma / 2. + a / 2. - 2.) * log(1 - u) + -a/2. * log(1. - u * (1. - 1. / n)) + (-(n-1.)/2.) * log(1 - u*R2));
+    	sum += 0.5 * (xgrid_prev - xgrid) * (fgrid_prev + fgrid);
   	}
 
   	auto result = log(a - 2.) - log(2. * n) + log(sum);
