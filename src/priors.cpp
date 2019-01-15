@@ -225,7 +225,7 @@ double liang_g_n_quad(const int n, const int p_gamma, const double R2)
   	auto sum = 0.;
 #pragma omp parallel for simd\
 	reduction(+:sum)\
-	shared(xgrid, fgrid, a, sum)\
+	shared(xgrid, fgrid, a)\
 	default(none)
   	for (int i = 0; i < (NUM_POINTS - 1); i++) {
     	double u = static_cast<double>(i) / static_cast<double>(NUM_POINTS);
