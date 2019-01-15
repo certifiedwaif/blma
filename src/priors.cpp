@@ -221,7 +221,7 @@ double liang_g_n_quad(const int n, const int p_gamma, const double R2)
   	auto sum = 0.;
 #pragma omp parallel for simd\
 	reduction(+:sum)\
-	shared(a)\
+	shared(n, p_gamma, R2, a, NUM_POINTS)\
 	default(none)
   	for (int i = 1; i < NUM_POINTS; i++) {
     	double u_prev = static_cast<double>(i - 1) / static_cast<double>(NUM_POINTS);
