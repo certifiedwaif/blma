@@ -196,7 +196,7 @@ double trapint(const VectorXd& xgrid, const VectorXd& fgrid)
 {
   	auto sum = 0.;
 
-#pragma omp parallel for reduction(+:sum)
+#pragma omp parallel for simd reduction(+:sum)
   	for (auto i = 0; i < xgrid.size() - 1; i++) {
     	sum += 0.5 * (xgrid(i + 1) - xgrid(i)) * (fgrid(i) + fgrid(i + 1));
   	}
@@ -220,15 +220,21 @@ double liang_g_n_quad(const int n, const int p_gamma, const double R2)
   	const int NUM_POINTS = 10000;
   	VectorXd xgrid(NUM_POINTS);
   	VectorXd fgrid(NUM_POINTS);
-#pragma omp parallel for\
-	shared(xgrid, fgrid, a)\
+    xgrid(0) = 0;
+    fgrid(0) = exp((p_gamma / 2. + a / 2. - 2.) * log(1) + -a/2. * log(1. * (1. - 1. / n)) + (-(n-1.)/2.) * log(1));
+  	auto sum = 0.;
+#pragma omp parallel for simd\
+	reduction(+:sum)\
+	shared(xgrid, fgrid, a, sum)\
 	default(none)
-  	for (int i = 0; i < NUM_POINTS; i++) {
+  	for (int i = 0; i < (NUM_POINTS - 1); i++) {
     	double u = static_cast<double>(i) / static_cast<double>(NUM_POINTS);
-    	xgrid(i) = u;
-    	fgrid(i) = exp((p_gamma / 2. + a / 2. - 2.) * log(1 - u) + -a/2. * log(1. - u * (1. - 1. / n)) + (-(n-1.)/2.) * log(1 - u*R2));
+    	xgrid(i + 1) = u;
+    	fgrid(i + 1) = exp((p_gamma / 2. + a / 2. - 2.) * log(1 - u) + -a/2. * log(1. - u * (1. - 1. / n)) + (-(n-1.)/2.) * log(1 - u*R2));
+    	sum += 0.5 * (xgrid(i + 1) - xgrid(i)) * (fgrid(i) + fgrid(i + 1));
   	}
-  	auto result = log(a - 2.) - log(2. * n) + log(trapint(xgrid, fgrid));
+
+  	auto result = log(a - 2.) - log(2. * n) + log(sum);
 #ifdef DEBUG
   	Rcpp::Rcout << "liang_g_n_quad(" << n << ", " << p << ", " << R2 << ", " << p_gamma << ") = " << result << std::endl;
 #endif
