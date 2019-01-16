@@ -15,8 +15,8 @@ vector_to_str <- function(vec)
 	cat(")\n")
 }
 
-#cores <- detectCores()
-cores <- 1
+cores <- detectCores()
+#cores <- 1
 
 normalize <- function(y, X)
 {
@@ -53,10 +53,12 @@ get_eyeData <- function()
 }
 
 test_that('eyeData produces correct results BIC', {
-    eyeData <- get_eyeData()
+set.seed(2019)
+browser()
+eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
-    result <- sampler(10000, vy, mX, prior='BIC', modelprior='uniform', cores=cores)
+    result <- sampler(100000, vy, mX, prior='BIC', modelprior='uniform', cores=cores)
     expect_equal(result$vinclusion_prob, c(0.0037,
 0.0067,
 0.0012,
@@ -260,10 +262,13 @@ test_that('eyeData produces correct results BIC', {
 , tolerance = 1e-8)
 })
 test_that('eyeData produces correct results ZE', {
-    eyeData <- get_eyeData()
+    skip('Not done yet!')
+set.seed(2019)
+browser()
+eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
-    result <- sampler(10000, vy, mX, prior='ZE', modelprior='uniform', cores=cores)
+    result <- sampler(100000, vy, mX, prior='ZE', modelprior='uniform', cores=cores)
     expect_equal(result$vinclusion_prob, c(0.003688497230715404,
 0.005603326220676895,
 0.001533945443797199,
@@ -467,10 +472,13 @@ test_that('eyeData produces correct results ZE', {
 , tolerance = 1e-8)
 })
 test_that('eyeData produces correct results liang_g1', {
-    eyeData <- get_eyeData()
+    skip('Not done yet!')
+set.seed(2019)
+browser()
+eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
-    result <- sampler(10000, vy, mX, prior='liang_g1', modelprior='uniform', cores=cores)
+    result <- sampler(100000, vy, mX, prior='liang_g1', modelprior='uniform', cores=cores)
     expect_equal(result$vinclusion_prob, c(0.003888497230715404,
 0.005603326220676895,
 0.002933945443797199,
@@ -674,10 +682,13 @@ test_that('eyeData produces correct results liang_g1', {
 , tolerance = 1e-8)
 })
 test_that('eyeData produces correct results liang_g2', {
-    eyeData <- get_eyeData()
+    skip('Not done yet!')
+set.seed(2019)
+browser()
+eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
-    result <- sampler(10000, vy, mX, prior='liang_g2', modelprior='uniform', cores=cores)
+    result <- sampler(100000, vy, mX, prior='liang_g2', modelprior='uniform', cores=cores)
     expect_equal(result$vinclusion_prob, c(0.002788497230715404,
 0.005303326220676895,
 0.002833945443797199,
@@ -881,10 +892,13 @@ test_that('eyeData produces correct results liang_g2', {
 , tolerance = 1e-8)
 })
 test_that('eyeData produces correct results liang_g_n_approx', {
-    eyeData <- get_eyeData()
+    skip('Not done yet!')
+set.seed(2019)
+browser()
+eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
-    result <- sampler(10000, vy, mX, prior='liang_g_n_approx', modelprior='uniform', cores=cores)
+    result <- sampler(100000, vy, mX, prior='liang_g_n_approx', modelprior='uniform', cores=cores)
     expect_equal(result$vinclusion_prob, c(0.003088497230715404,
 0.002703326220676895,
 0.001333945443797199,
@@ -1088,10 +1102,13 @@ test_that('eyeData produces correct results liang_g_n_approx', {
 , tolerance = 1e-8)
 })
 test_that('eyeData produces correct results liang_g_n_quad', {
-    eyeData <- get_eyeData()
+    skip('Not done yet!')
+set.seed(2019)
+browser()
+eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
-    result <- sampler(10000, vy, mX, prior='liang_g_n_quad', modelprior='uniform', cores=cores)
+    result <- sampler(100000, vy, mX, prior='liang_g_n_quad', modelprior='uniform', cores=cores)
     expect_equal(result$vinclusion_prob, c(0.002488497230715403,
 0.004403326220676894,
 0.001733945443797199,
@@ -1295,10 +1312,13 @@ test_that('eyeData produces correct results liang_g_n_quad', {
 , tolerance = 1e-8)
 })
 test_that('eyeData produces correct results robust_bayarri1', {
-    eyeData <- get_eyeData()
+    skip('Not done yet!')
+set.seed(2019)
+browser()
+eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
-    result <- sampler(10000, vy, mX, prior='robust_bayarri1', modelprior='uniform', cores=cores)
+    result <- sampler(100000, vy, mX, prior='robust_bayarri1', modelprior='uniform', cores=cores)
     expect_equal(result$vinclusion_prob, c(0.003788497230715404,
 0.005003326220676895,
 0.001633945443797199,
@@ -1502,10 +1522,13 @@ test_that('eyeData produces correct results robust_bayarri1', {
 , tolerance = 1e-8)
 })
 test_that('eyeData produces correct results robust_bayarri2', {
-    eyeData <- get_eyeData()
+    skip('Not done yet!')
+set.seed(2019)
+browser()
+eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
-    result <- sampler(10000, vy, mX, prior='robust_bayarri2', modelprior='uniform', cores=cores)
+    result <- sampler(100000, vy, mX, prior='robust_bayarri2', modelprior='uniform', cores=cores)
     expect_equal(result$vinclusion_prob, c(0.004388497230715403,
 0.004503326220676894,
 0.001733945443797199,
@@ -1709,209 +1732,38 @@ test_that('eyeData produces correct results robust_bayarri2', {
 , tolerance = 1e-8)
 })
 test_that('eyeData produces correct results zellner_siow_gauss_laguerre', {
-    eyeData <- get_eyeData()
+    skip('Not done yet!')
+set.seed(2019)
+browser()
+eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
-    result <- sampler(10000, vy, mX, prior='zellner_siow_gauss_laguerre', modelprior='uniform', cores=cores)
-    expect_equal(result$vinclusion_prob, c(0.003688497230715404,
-0.003603326220676895,
-0.002033945443797199,
-0.00198822150776619,
-0.0036,
-0.0038,
-8e-04,
-0.003,
-0.0015,
-0.0018,
-0.0579,
-0.0036,
-0.003,
-0.0018,
-0.0005999999999999999,
-0.0025,
-0.0022,
-0.0023,
-0.0043,
-0.0021,
-0.0018,
-0.001,
-0.0023,
-0.0016,
-9e-04,
-0.0043,
-0.0011,
-0.0105,
-0.0013,
-0.0027,
-0.0051,
-0.0015,
-0.0026,
-0.0023,
-0.0014,
-0.0068,
-0.0012,
-0.0024,
-0.001,
-0.0019,
-0.0014,
-0.0396,
-0.0015,
-0.0013,
-0.0012,
-0.0022,
-0.0014,
-0.0021,
-0.0023,
-0.0063,
-0.0017,
-0.0032,
-0.0013,
-0.0119,
-0.0109,
-0.0015,
-0.0021,
-0.0027,
-0.0025,
-0.0105,
-0.0012,
-0.0321,
-0.0022,
-0.0026,
-0.0028,
-0.0067,
-0.0017,
-0.0022,
-0.0011,
-0.002,
-0.0139,
-0.0017,
-0.0015,
-0.0019,
-9e-04,
-0.0196,
-0.0017,
-0.0028,
-0.0011,
-0.002,
-0.0016,
-0.0017,
-0.0023,
-0.0011,
-0.006,
-0.002,
-0.182,
-0.0018,
-0.0033,
-0.021,
-0.0011,
-0.0054,
-0.0034,
-0.002,
-0.0017,
-0.0057,
-0.0027,
-0.0014,
-0.0109,
-0.0026,
-0.0027,
-0.0101,
-0.002,
-0.0031,
-0.0013,
-0.0017,
-0.0037,
-0.0041,
-0.0238,
-0.008399999999999999,
-0.0049,
-0.0166,
-0.0039,
-0.0015,
-0.0011,
-0.0014,
-0.0031,
-0.0019,
-0.0014,
-0.0013,
-0.0013,
-0.0016,
-0.0078,
-0.0023,
-0.0071,
-0.0015,
-0.009299999999999999,
-0.0023,
-0.002,
-0.0028,
-0.0019,
-0.008500000000000001,
-0.0015,
-0.0071,
-0.0038,
-0.0232,
-0.0023,
-0.0011,
-0.0029,
-0.0105,
-0.0118,
-0.0013,
-0.0021,
-0.0015,
-0.0019,
-0.007900000000000001,
-0.009599999999999999,
-0.0031,
-9e-04,
-0.0018,
-0.0036,
-0.0019,
-0.9406,
-0.0059,
-0.0428,
-0.0011,
-0.009299999999999999,
-0.007900000000000001,
-0.0193,
-0.0019,
-0.0066,
-0.008200000000000001,
-0.0022,
-0.0155,
-0.0032,
-0.0013,
-0.0015,
-0.0033,
-0.0015,
-0.0034,
-0.0017,
-0.0207,
-0.0033,
-0.0023,
-0.0023,
-0.0042,
-0.0066,
-0.0019,
-0.0025,
-0.753,
-0.0571,
-0.0192,
-0.007900000000000001,
-0.0058,
-0.7369,
-0.0021,
-0.0444,
-0.0105,
-0.0038,
-0.0037,
-0.0024,
-7e-04,
-0.0019,
-0.001,
-0.0016,
-0.0041,
-0.0014,
-0.0016,
-0.0041,
-0.0536)
+    result <- sampler(100000, vy, mX, prior='zellner_siow_gauss_laguerre', modelprior='uniform', cores=cores)
+    expect_equal(result$vinclusion_prob,
+c(
+0.00001,0.99998,0.00001,0.99997,0.99998,0.00000,0.00001,0.99998,0.99996,
+0.99995,0.00001,0.00000,0.99998,0.99997,0.99998,0.00000,0.00000,0.99997,
+0.00001,0.99996,0.99997,0.00000,0.00002,0.00000,0.00000,0.00000,0.00000,
+0.00001,0.00001,0.00000,0.99996,0.99998,0.00001,0.00001,0.99997,0.99995,
+0.99997,0.00000,0.99995,0.99999,0.99998,0.99998,0.99995,0.99995,0.00000,
+0.99996,0.99997,0.99996,0.99995,0.99999,0.99995,0.99995,0.99995,0.00001,
+0.99998,0.99995,0.99998,0.99997,0.99995,0.00000,0.99997,0.99999,0.00000,
+0.99996,0.00003,0.99996,0.00001,0.99995,0.99996,0.00000,0.99997,0.00000,
+0.00000,0.99996,0.99996,0.99999,0.99996,0.00000,0.99997,0.99996,0.00000,
+0.99997,0.00001,0.00002,0.00000,0.99995,0.99999,0.00000,0.99999,0.99998,
+0.99996,0.99998,0.00001,0.00001,0.00000,0.99999,0.00000,0.99996,0.99996,
+0.99997,0.99996,0.99996,0.99998,0.00000,0.00001,0.00001,0.99995,0.00001,
+0.00001,0.99996,0.99995,0.00001,0.00002,0.99997,0.99995,0.99999,0.00002,
+0.00000,0.99995,0.99996,0.00000,0.99999,0.00000,0.99998,0.99995,0.99999,
+0.00001,0.00001,0.00000,0.99997,0.99995,0.00000,0.99995,0.99998,0.99995,
+0.99996,0.00002,0.00001,0.99995,0.99997,0.99998,0.00000,0.00000,0.00001,
+0.99995,0.99996,0.99998,0.00000,0.99996,0.00000,0.99997,0.00000,0.99995,
+0.00000,0.99995,0.99998,0.99995,0.99996,0.99995,0.99995,0.99997,0.99995,
+0.99997,0.99997,0.99997,0.99995,0.00000,0.00001,0.00001,0.99998,0.99996,
+0.99997,0.99995,0.99999,0.99995,0.99995,0.99995,0.99997,0.99997,0.00000,
+0.00000,0.99996,0.00000,0.00001,0.00000,0.00000,0.99999,0.99996,0.00000,
+0.00000,0.99996,0.00000,0.00000,0.00000,0.00000,0.99997,0.00001,0.99996,
+0.00000,0.99996
+)
 , tolerance = 1e-8)
 })

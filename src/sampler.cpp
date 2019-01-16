@@ -162,11 +162,11 @@ List sampler(const int iterations,
 {
   	// Try using the parallelisation in Eigen. This is an inherently serial algorithm,
   	// and I don't think OpenMP is going to help us here. More cores might
-  	// help us with the linear algebra though.
+  	// help us with the linear algebra and numerical integration though.
 #ifdef _OPENMP
-    //Eigen::initParallel();
+	Eigen::initParallel();
     omp_set_num_threads(cores);
-    //Eigen::setNbThreads(cores);
+	Eigen::setNbThreads(cores);
 #endif
 
   	VectorXd vy(vy_in.length());   // = Rcpp::as<Eigen::Map<Eigen::VectorXd>>(vy_in);
