@@ -5,6 +5,7 @@
 // [[Rcpp::depends(RcppEigen)]]
 // [[Rcpp::depends(RcppGSL)]]
 #include <RcppEigen.h>
+#define EIGEN_USE_BLAS
 #include <vector>
 #include <cmath>
 #include <sstream>
