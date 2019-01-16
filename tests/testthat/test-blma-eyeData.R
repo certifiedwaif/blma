@@ -54,7 +54,6 @@ get_eyeData <- function()
 
 test_that('eyeData produces correct results BIC', {
 set.seed(2019)
-browser()
 eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
