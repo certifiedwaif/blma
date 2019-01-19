@@ -293,8 +293,8 @@ c(
 , tolerance = 1e-5)
 })
 test_that('comCrime produces correct results robust_bayarri1', {
-    		  set.seed(2019)
-    		  browser()
+	skip("I don't care about this right now")
+    set.seed(2019)
     comCrime <- get_comCrime()
     vy <- comCrime$vy
     mX <- comCrime$mX
