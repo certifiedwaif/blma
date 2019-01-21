@@ -5,6 +5,7 @@
 #include <string>
 #include <Rcpp.h>
 #include <RcppEigen.h>
+#define EIGEN_USE_BLAS
 #include "graycode.h"
 #include "priors.h"
 typedef unsigned int uint;

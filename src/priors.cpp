@@ -10,6 +10,7 @@
 // [[Rcpp::plugins(openmp)]]
 // [[Rcpp::depends(RcppEigen)]]
 #include <RcppEigen.h>
+#define EIGEN_USE_BLAS
 
 // [[Rcpp::depends(RcppGSL)]]
 #include <gsl/gsl_sf_hyperg.h>
