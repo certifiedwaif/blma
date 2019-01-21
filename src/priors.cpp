@@ -93,6 +93,18 @@ double log_hyperg_2F1(double b, double c, double x)
   	return val;
 }
 
+void priors_new_handler (const char * reason, 
+              const char * file, 
+              int line, 
+              int gsl_errno)
+{
+	std::stringstream ss;
+	ss << reason << file << line << gsl_errno << std::endl;
+#pragma omp master 
+	{
+		Rcpp::stop(ss.str());
+	}
+}
 
 //' log_hyperg_2F1_naive
 //'
@@ -104,6 +116,7 @@ double log_hyperg_2F1(double b, double c, double x)
 // [[Rcpp::export]]
 double log_hyperg_2F1_naive(double b, double c, double x)
 {
+	const gsl_error_handler_t *old_handler = gsl_set_error_handler(priors_new_handler);
   	auto val = log(gsl_sf_hyperg_2F1( b, 1, c, x));
   	return val;
 }
@@ -119,6 +132,7 @@ double log_hyperg_2F1_naive(double b, double c, double x)
 // [[Rcpp::export]]
 double liang_g1(const int n, const int p_gamma, const double R2)
 {
+	const gsl_error_handler_t *old_handler = gsl_set_error_handler(priors_new_handler);
   	auto a = 3.;
   	double log_p_g;
   	log_p_g = log(a - 2) - log(p_gamma + a - 2) + log(gsl_sf_hyperg_2F1(0.5*(n-1), 1, 0.5*(p_gamma + a), R2));
