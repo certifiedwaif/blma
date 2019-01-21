@@ -54,7 +54,6 @@ get_eyeData <- function()
 
 test_that('eyeData produces correct results BIC', {
 	set.seed(2019)
-	browser()
 	eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
@@ -134,7 +133,6 @@ c(
 })
 test_that('eyeData produces correct results ZE', {
 	set.seed(2019)
-	browser()
 	eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
@@ -215,7 +213,6 @@ c(
 test_that('eyeData produces correct results liang_g1', {
 	#skip('This fails with a gsl hyperg_2F1 error handler error')
 	set.seed(2019)
-	browser()
 	eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
@@ -296,7 +293,6 @@ c(
 test_that('eyeData produces correct results liang_g2', {
     #skip("I don't care about this right now")
 	set.seed(2019)
-	browser()
 	eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
@@ -377,7 +373,6 @@ c(
 test_that('eyeData produces correct results liang_g_n_approx', {
     #skip("I don't care about this right now")
 	set.seed(2019)
-	browser()
 	eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
@@ -457,7 +452,6 @@ c(
 })
 test_that('eyeData produces correct results liang_g_n_quad', {
 	set.seed(2019)
-	browser()
 	eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
@@ -537,7 +531,6 @@ c(
 })
 test_that('eyeData produces correct results robust_bayarri1', {
 	set.seed(2019)
-	browser()
 	eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
@@ -617,7 +610,6 @@ c(
 })
 test_that('eyeData produces correct results robust_bayarri2', {
 	set.seed(2019)
-	browser()
 	eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX
@@ -697,7 +689,6 @@ c(
 })
 test_that('eyeData produces correct results zellner_siow_gauss_laguerre', {
 	set.seed(2019)
-	browser()
 	eyeData <- get_eyeData()
     vy <- eyeData$vy
     mX <- eyeData$mX

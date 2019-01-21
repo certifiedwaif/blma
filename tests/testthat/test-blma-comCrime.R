@@ -368,7 +368,6 @@ c(
 })
 test_that('comCrime produces correct results zellner_siow_gauss_laguerre', {
 	set.seed(2019)
-	browser()
     comCrime <- get_comCrime()
     vy <- comCrime$vy
     mX <- comCrime$mX
