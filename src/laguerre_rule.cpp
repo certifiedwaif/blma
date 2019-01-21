@@ -1,3 +1,4 @@
+#include <Rcpp.h>
 #include "laguerre_rule.h"
 
 using namespace std;
@@ -655,7 +656,7 @@ void imtqlx ( int n, double d[], double e[], double z[] )
   double g;
   int i;
   int ii;
-  int itn = 30;
+  int itn = 300;
   int j;
   int k;
   int l;
@@ -699,10 +700,11 @@ void imtqlx ( int n, double d[], double e[], double z[] )
       }
       if ( itn <= j )
       {
-        cout << "\n";
-        cout << "IMTQLX - Fatal error!\n";
-        cout << "  Iteration limit exceeded\n";
-        exit ( 1 );
+		std::stringstream ss;
+        ss << "\n";
+        ss << "IMTQLX - Fatal error!\n";
+        ss << "  Iteration limit exceeded\n";
+    	Rcpp::stop(ss.str());
       }
       j = j + 1;
       g = ( d[l] - p ) / ( 2.0 * e[l-1] );
