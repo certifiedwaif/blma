@@ -1,3 +1,4 @@
+#include <Rcpp.h>
 #include "laguerre_rule.h"
 
 using namespace std;
@@ -436,10 +437,11 @@ double class_matrix ( int kind, int m, double alpha, double beta, double aj[],
 
   if ( 500.0 * temp < fabs ( pow ( tgamma ( temp2 ), 2 ) - pi ) )
   {
-    cout << "\n";
-    cout << "CLASS_MATRIX - Fatal error!\n";
-    cout << "  Gamma function does not match machine parameters.\n";
-    exit ( 1 );
+	std::stringstream ss;
+    ss << "\n";
+    ss << "CLASS_MATRIX - Fatal error!\n";
+    ss << "  Gamma function does not match machine parameters.\n";
+    Rcpp::stop(ss.str());
   }
 
   if ( kind == 1 )
@@ -699,10 +701,11 @@ void imtqlx ( int n, double d[], double e[], double z[] )
       }
       if ( itn <= j )
       {
-        cout << "\n";
-        cout << "IMTQLX - Fatal error!\n";
-        cout << "  Iteration limit exceeded\n";
-        exit ( 1 );
+		std::stringstream ss;
+        ss << "\n";
+        ss << "IMTQLX - Fatal error!\n";
+        ss << "  Iteration limit exceeded\n";
+    	Rcpp::stop(ss.str());
       }
       j = j + 1;
       g = ( d[l] - p ) / ( 2.0 * e[l-1] );

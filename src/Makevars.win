@@ -1,6 +1,7 @@
 CPPFLAGS= -Wno-ignored-attributes -Wno-unused-variable -Wno-unused-function -Wno-deprecated-declarations  -Wno-sign-compare -std=c++11 -lstdc++
+PKG_CFLAGS= $(SHLIB_OPENMP_CFLAGS)
 PKG_CPPFLAGS= -Wno-ignored-attributes -Wno-unused-variable -Wno-unused-function -Wno-deprecated-declarations -Wno-sign-compare -fopenmp -O4 -I../windows/gsl-2.4/include -std=c++11 -lstdc++
-PKG_LIBS= -fopenmp -O4 -L../windows/gsl-2.4/lib${R_ARCH} -lgsl -lgslcblas  -std=c++11  -lstdc++
+PKG_LIBS= $(SHLIB_OPENMP_CFLAGS) -fopenmp -O4 -L../windows/gsl-2.4/lib${R_ARCH} -lgsl -lgslcblas  -std=c++11  -lstdc++
 CXX_STD = CXX11
 all: clean winlibs
 
