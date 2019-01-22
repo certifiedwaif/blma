@@ -437,10 +437,11 @@ double class_matrix ( int kind, int m, double alpha, double beta, double aj[],
 
   if ( 500.0 * temp < fabs ( pow ( tgamma ( temp2 ), 2 ) - pi ) )
   {
-    cout << "\n";
-    cout << "CLASS_MATRIX - Fatal error!\n";
-    cout << "  Gamma function does not match machine parameters.\n";
-    exit ( 1 );
+	std::stringstream ss;
+    ss << "\n";
+    ss << "CLASS_MATRIX - Fatal error!\n";
+    ss << "  Gamma function does not match machine parameters.\n";
+    Rcpp::stop(ss.str());
   }
 
   if ( kind == 1 )
@@ -656,7 +657,7 @@ void imtqlx ( int n, double d[], double e[], double z[] )
   double g;
   int i;
   int ii;
-  int itn = 300;
+  int itn = 30;
   int j;
   int k;
   int l;
