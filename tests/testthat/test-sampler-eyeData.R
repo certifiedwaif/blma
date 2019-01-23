@@ -211,7 +211,6 @@ c(
 , tolerance = 1e-8)
 })
 test_that('eyeData produces correct results liang_g1', {
-	#skip('This fails with a gsl hyperg_2F1 error handler error')
 	set.seed(2019)
 	eyeData <- get_eyeData()
     vy <- eyeData$vy
@@ -291,7 +290,6 @@ c(
 , tolerance = 1e-8)
 })
 test_that('eyeData produces correct results liang_g2', {
-    #skip("I don't care about this right now")
 	set.seed(2019)
 	eyeData <- get_eyeData()
     vy <- eyeData$vy
@@ -371,7 +369,6 @@ c(
 , tolerance = 1e-8)
 })
 test_that('eyeData produces correct results liang_g_n_approx', {
-    #skip("I don't care about this right now")
 	set.seed(2019)
 	eyeData <- get_eyeData()
     vy <- eyeData$vy

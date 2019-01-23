@@ -56,7 +56,6 @@ normalize <- function(y, X)
   return(list(vy = vy, mX = mX, mu.y = mu.y, sigma2.y = sigma2.y, mu.x = mu.x, sigma2.x = sigma2.x))
 }
 test_that('comCrime produces correct results BIC', {
-  skip("I don't care about this right now!")
 	set.seed(2019)
     comCrime <- get_comCrime()
     vy <- comCrime$vy
@@ -101,7 +100,6 @@ c(
 , tolerance = 1e-5)
 })
 test_that('comCrime produces correct results ZE', {
-	skip("I don't care about this right now")
 	set.seed(2019)
     comCrime <- get_comCrime()
     vy <- comCrime$vy
@@ -146,7 +144,6 @@ test_that('comCrime produces correct results ZE', {
 , tolerance = 1e-5)
 })
 test_that('comCrime produces correct results liang_g1', {
-	skip("I don't care about this right now")
 	set.seed(2019)
     comCrime <- get_comCrime()
     vy <- comCrime$vy
@@ -183,7 +180,6 @@ test_that('comCrime produces correct results liang_g1', {
 , tolerance = 1e-5)
 })
 test_that('comCrime produces correct results liang_g2', {
-	skip("I don't care about this right now")
 	set.seed(2019)
     comCrime <- get_comCrime()
     vy <- comCrime$vy
@@ -219,7 +215,6 @@ test_that('comCrime produces correct results liang_g2', {
 , tolerance = 1e-5)
 })
 test_that('comCrime produces correct results liang_g_n_approx', {
-	skip("I don't care about this right now")
 	set.seed(2019)
     comCrime <- get_comCrime()
     vy <- comCrime$vy
@@ -256,7 +251,6 @@ c(
 , tolerance = 1e-5)
 })
 test_that('comCrime produces correct results liang_g_n_quad', {
-	skip("I don't care about this right now")
 	set.seed(2019)
     comCrime <- get_comCrime()
     vy <- comCrime$vy
@@ -293,7 +287,6 @@ c(
 , tolerance = 1e-5)
 })
 test_that('comCrime produces correct results robust_bayarri1', {
-	skip("I don't care about this right now")
     set.seed(2019)
     comCrime <- get_comCrime()
     vy <- comCrime$vy
@@ -330,7 +323,6 @@ c(
 , tolerance = 1e-8)
 })
 test_that('comCrime produces correct results robust_bayarri2', {
-			  skip("I don't care about this right now!")
 	set.seed(2019)
     comCrime <- get_comCrime()
     vy <- comCrime$vy
