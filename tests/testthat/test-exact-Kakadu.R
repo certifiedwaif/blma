@@ -110,7 +110,7 @@ test_that("Kakadu produces correct results liang_g_n_appell", {
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
-	result <- blma(vy, mX, prior="liang_g_n_appell", modelprior="uniform", cores=cores)
+	result <- blma(vy, mX, prior="liang_g_n_appell", modelprior="uniform", cores=1)
 	expect_equal(result$vinclusion_prob, c(
 	), tolerance = 1e-8)
 })
