@@ -112,7 +112,7 @@ test_that("UScrime produces correct results liang_g_n_appell", {
 	vy <- UScrime$vy
 	mX <- UScrime$mX
 	tic("UScrime produces correct results liang_g_n_appell")
-	result <- blma(vy, mX, prior="liang_g_n_appell", modelprior="uniform", cores=1)
+	result <- blma(vy, mX, prior="liang_g_n_appell", modelprior="uniform", cores=cores)
 	toc()
 	expect_equal(result$vinclusion_prob, c(
 	  0.6510317307247586,0.2291245644515895,0.8651014024703148,0.6951167568300936,
@@ -187,7 +187,7 @@ test_that("UScrime produces correct results zellner_siow_gauss_laguerre", {
 	vy <- UScrime$vy
 	mX <- UScrime$mX
 	tic("UScrime produces correct results zellner_siow_gauss_laguerre")
-	result <- blma(vy, mX, prior="zellner_siow_gauss_laguerre", modelprior="uniform", cores=1)
+	result <- blma(vy, mX, prior="zellner_siow_gauss_laguerre", modelprior="uniform", cores=cores)
 	toc()
 	expect_equal(result$vinclusion_prob, 
 c(

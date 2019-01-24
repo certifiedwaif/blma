@@ -120,7 +120,7 @@ test_that("Kakadu produces correct results liang_g_n_appell", {
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
 	tic("Kakadu produces correct results liang_g_n_appell")
-	result <- blma(vy, mX, prior="liang_g_n_appell", modelprior="uniform", cores=1)
+	result <- blma(vy, mX, prior="liang_g_n_appell", modelprior="uniform", cores=cores)
 	toc()
 	expect_equal(result$vinclusion_prob, c(
 	), tolerance = 1e-8)
@@ -199,7 +199,7 @@ test_that("Kakadu produces correct results zellner_siow_gauss_laguerre", {
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
 	tic("Kakadu produces correct results zellner_siow_gauss_laguerre")
-	result <- blma(vy, mX, prior="zellner_siow_gauss_laguerre", modelprior="uniform", cores=1)
+	result <- blma(vy, mX, prior="zellner_siow_gauss_laguerre", modelprior="uniform", cores=cores)
 	toc()
 	expect_equal(result$vinclusion_prob, 
 c(

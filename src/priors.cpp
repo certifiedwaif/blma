@@ -182,7 +182,10 @@ double liang_g_n_appell(const int n, const int p_gamma, const double R2)
 	int32_t userflag = 1;
 	int hyp2f1 = 2; // "michel.stoitsov";
 	bool debug = false;
+#pragma omp master
+	{
 	f1(&a, &b1, &b2, &c, &x, &y, &algoflag, &userflag, &debug, &val, &hyp2f1);
+	}
 	result = log(a_prime_dub - 2.) - log(n) - log(p_gamma + a_prime_dub -
 			2.) + log(val.real());
 #ifdef DEBUG
@@ -450,9 +453,12 @@ double log_BF_Zellner_Siow_quad(const int n, const int p_gamma, const double R2)
   	const double b = 1.;
   	const int kind = 5;
   	
-  	if (!calculated) {
-		cgqf(order, kind, alpha, beta, a, b, x, w);
-		calculated = true;
+#pragma omp master
+	{
+  		if (!calculated) {
+			cgqf(order, kind, alpha, beta, a, b, x, w);
+			calculated = true;
+  		}
   	}
   	
   	//for (auto i = 0; i < order; i++) {
@@ -460,17 +466,25 @@ double log_BF_Zellner_Siow_quad(const int n, const int p_gamma, const double R2)
   	//}
   	
   	auto *logf = new double[order];
-  	double maxval = log_BF_Zellner_Siow_integrand(x[0], n, p_gamma, R2);
+#pragma omp parallel for
   	for (auto i = 0; i < order; i++) {
   		logf[i] = log_BF_Zellner_Siow_integrand(x[i], n, p_gamma, R2);
-  		if (logf[i]>maxval) {
-  			maxval = logf[i];
+  	}
+
+  	double maxval = logf[0];
+#pragma omp parallel for \
+	reduction(max:maxval)
+  	for (auto i = 0; i < order; i++) {
+  		if (logf[i] > maxval) {
+			maxval = logf[i];
   		}
   	}
   	
   	double sumval = 0;
+#pragma omp parallel for \
+	reduction(+:sumval)
   	for (auto i = 0; i < order; i++) {
-  		sumval = sumval + w[i]*exp(logf[i] - maxval);
+  		sumval += w[i] * exp(logf[i] - maxval);
   	}
   	
   	double pi = 3.14159265358979323846264338327950;
