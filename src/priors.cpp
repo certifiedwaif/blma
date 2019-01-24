@@ -199,8 +199,8 @@ double liang_g_n_appell(const int n, const int p_gamma, const double R2)
 double trapint(const VectorXd& xgrid, const VectorXd& fgrid)
 {
   	auto sum = 0.;
-
-#pragma omp parallel for simd reduction(+:sum)
+#pragma omp parallel for \
+	reduction(+:sum)
   	for (auto i = 0; i < xgrid.size() - 1; i++) {
     	sum += 0.5 * (xgrid(i + 1) - xgrid(i)) * (fgrid(i) + fgrid(i + 1));
   	}
@@ -228,7 +228,7 @@ double liang_g_n_quad_integrand(const int n, const int p_gamma, const double R2,
 double liang_g_n_quad(const int n, const int p_gamma, const double R2)
 {
   	const auto a = 3.;
-  	const int NUM_POINTS = 10000;
+  	const int NUM_POINTS = 1000;
   	auto sum = 0.;
 #pragma omp parallel for simd\
 	reduction(+:sum)\
@@ -298,9 +298,9 @@ double robust_bayarri1(const int n, const int p_gamma, const double R2)
   	double r = (1. + n) / (1. + p_gamma);
   	double L = r - 1.;
 
-  	const int NUM_POINTS = 10000;
+  	const int NUM_POINTS = 1000;
   	VectorXd x(NUM_POINTS);
-  	x.setLinSpaced(NUM_POINTS, L, 10000);
+  	x.setLinSpaced(NUM_POINTS, L, 1000);
 
   	VectorXd log_f(NUM_POINTS);
 #pragma omp parallel for\
@@ -447,50 +447,42 @@ double x[order];
 // [[Rcpp::export]]
 double log_BF_Zellner_Siow_quad(const int n, const int p_gamma, const double R2)
 {
-  	const double alpha = 0.;
-  	const double beta = 0.;
-  	const double a = 0.;
-  	const double b = 1.;
-  	const int kind = 5;
-  	
 #pragma omp master
 	{
+  		const double alpha = 0.;
+  		const double beta = 0.;
+  		const double a = 0.;
+  		const double b = 1.;
+  		const int kind = 5;
+  		double *logf;
+  		
   		if (!calculated) {
 			cgqf(order, kind, alpha, beta, a, b, x, w);
 			calculated = true;
   		}
-  	}
-  	
-  	//for (auto i = 0; i < order; i++) {
-  	//	Rcpp::Rcout << "x[" << i << "]=" << x[i] << "w[" << i << "]=" << w[i] << std::endl;
-  	//}
-  	
-  	auto *logf = new double[order];
-#pragma omp parallel for
-  	for (auto i = 0; i < order; i++) {
-  		logf[i] = log_BF_Zellner_Siow_integrand(x[i], n, p_gamma, R2);
-  	}
-
-  	double maxval = logf[0];
-#pragma omp parallel for \
-	reduction(max:maxval)
-  	for (auto i = 0; i < order; i++) {
-  		if (logf[i] > maxval) {
-			maxval = logf[i];
+  		logf = new double[order];
+  		
+  		for (auto i = 0; i < order; i++) {
+  			logf[i] = log_BF_Zellner_Siow_integrand(x[i], n, p_gamma, R2);
   		}
+
+  		double maxval = logf[0];
+  		for (auto i = 0; i < order; i++) {
+  			if (logf[i] > maxval) {
+				maxval = logf[i];
+  			}
+  		}
+  		
+  		double sumval = 0;
+  		for (auto i = 0; i < order; i++) {
+  			sumval += w[i] * exp(logf[i] - maxval);
+  		}
+  		
+  		double pi = 3.14159265358979323846264338327950;
+  		double finalval =  maxval + log(sumval) +  0.5*log(0.5*n/pi) - log(0.5*n);
+  		
+  		delete [] logf;
   	}
-  	
-  	double sumval = 0;
-#pragma omp parallel for \
-	reduction(+:sumval)
-  	for (auto i = 0; i < order; i++) {
-  		sumval += w[i] * exp(logf[i] - maxval);
-  	}
-  	
-  	double pi = 3.14159265358979323846264338327950;
-  	double finalval =  maxval + log(sumval) +  0.5*log(0.5*n/pi) - log(0.5*n);
-  	
-  	delete [] logf;
   	return finalval;
 }
 
