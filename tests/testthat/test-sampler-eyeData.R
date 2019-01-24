@@ -1,4 +1,5 @@
 library(parallel)
+library(tictoc)
 
 context("sampler eyeData")
 

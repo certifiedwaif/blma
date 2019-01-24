@@ -1,6 +1,7 @@
 context("exact UScrime")
 
 library(parallel)
+library(tictoc)
 
 cores <- detectCores()
 

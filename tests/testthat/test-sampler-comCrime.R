@@ -1,5 +1,6 @@
 context('blma comCrime')
 library(parallel)
+library(tictoc)
 cores <- detectCores()
 #cores <- 1
 get_comCrime  <- function()
