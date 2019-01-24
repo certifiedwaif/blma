@@ -1,6 +1,7 @@
 context("exact Kakadu")
 
 library(parallel)
+library(tictoc)
 
 cores <- detectCores()
 
@@ -44,7 +45,9 @@ test_that("Kakadu produces correct results BIC", {
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
+	tic("Kakadu produces correct results BIC")
 	result <- blma(vy, mX, prior="BIC", modelprior="uniform", cores=cores)
+	toc()
 	expect_equal(result$vinclusion_prob, c(
 		0.11956375866122319,0.43598166701152036,0.03004602756871903,
 		0.37141951236536819,0.81868011537400154,0.16833752435869168,
@@ -61,7 +64,9 @@ test_that("Kakadu produces correct results ZE", {
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
+	tic("Kakadu produces correct results ZE")
 	result <- blma(vy, mX, prior="ZE", modelprior="uniform", cores=cores)
+	toc()
 	expect_equal(result$vinclusion_prob, c(
 		0.20355684150991538,0.47244398575065949,0.07485696352142855,
 		0.42017464791967363,0.86114935243204360,0.26671059509879097,
@@ -78,7 +83,9 @@ test_that("Kakadu produces correct results liang_g1", {
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
+	tic("Kakadu produces correct results liang_g1")
 	result <- blma(vy, mX, prior="liang_g1", modelprior="uniform", cores=cores)
+	toc()
 	expect_equal(result$vinclusion_prob, c(
 		0.3469442223401997,0.5033763713275147,0.1710391998737254,0.4686716902393477,
 		0.9041282693203453,0.4182787535192226,0.2152694787243199,0.2365794398160191,
@@ -94,7 +101,9 @@ test_that("Kakadu produces correct results liang_g2", {
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
+	tic("Kakadu produces correct results liang_g2")
 	result <- blma(vy, mX, prior="liang_g2", modelprior="uniform", cores=cores)
+	toc()
 	expect_equal(result$vinclusion_prob, c(
 		0.3469442223402000,0.5033763713275141,0.1710391998737261,0.4686716902393479,
 		0.9041282693203457,0.4182787535192236,0.2152694787243207,0.2365794398160196,
@@ -110,7 +119,9 @@ test_that("Kakadu produces correct results liang_g_n_appell", {
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
+	tic("Kakadu produces correct results liang_g_n_appell")
 	result <- blma(vy, mX, prior="liang_g_n_appell", modelprior="uniform", cores=cores)
+	toc()
 	expect_equal(result$vinclusion_prob, c(
 	), tolerance = 1e-8)
 })
@@ -119,7 +130,9 @@ test_that("Kakadu produces correct results liang_g_n_approx", {
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
+	tic("Kakadu produces correct results liang_g_n_approx")
 	result <- blma(vy, mX, prior="liang_g_n_approx", modelprior="uniform", cores=cores)
+	toc()
 	expect_equal(result$vinclusion_prob, c(
 		0.3296136691294210,0.4997609497180022,0.1579846499019243,0.4631387408540441,
 		0.9006995511063154,0.4005475083511888,0.1982925439416997,0.2209076900143787,
@@ -134,7 +147,9 @@ test_that("Kakadu produces correct results liang_g_n_quad", {
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
+	tic("Kakadu produces correct results liang_g_n_quad")
 	result <- blma(vy, mX, prior="liang_g_n_quad", modelprior="uniform", cores=cores)
+	toc()
 	expect_equal(result$vinclusion_prob, c(
 		0.3203591831238068,0.4977774306550474,0.1512859110442455,0.4601315123732897,
 		0.8984723576023463,0.3910244742565688,0.1894701351919556,0.2126145072480971,
@@ -149,7 +164,9 @@ test_that("Kakadu produces correct results robust_bayarri1", {
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
+	tic("Kakadu produces correct results robust_bayarri1")
 	result <- blma(vy, mX, prior="robust_bayarri1", modelprior="uniform", cores=cores)
+	toc()
 	expect_equal(result$vinclusion_prob, c(
 		0.2645609801935807,0.4872708351002377,0.1119549057643435,0.4428310083494666,
 		0.8859403686981394,0.3327165328332443,0.1381842637777420,0.1633673877360185,
@@ -164,6 +181,8 @@ test_that("kakadu produces correct results robust_bayarri2", {
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
+	tic("kakadu produces correct results robust_bayarri2")
+	toc()
 	result <- blma(vy, mX, prior="robust_bayarri2", modelprior="uniform", cores=cores)
 	expect_equal(result$vinclusion_prob, c(
 		0.2645609801933496,0.4872708350999790,0.1119549057642774,0.4428310083492054,
@@ -179,7 +198,9 @@ test_that("Kakadu produces correct results zellner_siow_gauss_laguerre", {
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
+	tic("Kakadu produces correct results zellner_siow_gauss_laguerre")
 	result <- blma(vy, mX, prior="zellner_siow_gauss_laguerre", modelprior="uniform", cores=1)
+	toc()
 	expect_equal(result$vinclusion_prob, 
 c(
 0.20578507196599863,0.47307551042974938,0.07612923670551421,
@@ -200,7 +221,9 @@ test_that("Kakadu produces correct results modelprior beta-binomial", {
 	vy <- Kakadu$vy
 	mX <- Kakadu$mX
 	p <- ncol(mX)
+	tic("Kakadu produces correct results modelprior beta-binomial")
 	result <- blma(vy, mX, prior="BIC", modelprior="beta-binomial", modelpriorvec = c(1, p), cores=cores)
+	toc()
 	expect_equal(result$vinclusion_prob, c(
 		0.056281843799996970,0.306314199561247891,0.007552489928519051,
 		0.247616597500152053,0.742709650039889202,0.095631352679238363,

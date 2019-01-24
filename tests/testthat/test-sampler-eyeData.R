@@ -58,7 +58,9 @@ test_that('eyeData produces correct results BIC', {
     vy <- eyeData$vy
     mX <- eyeData$mX
     p <- ncol(mX)
+    tic('eyeData produces correct results BIC')
     result <- sampler(100000, vy, mX, prior='BIC', modelprior='beta-binomial', modelpriorvec=c(1, p), cores=cores)
+    toc()
     expect_equal(result$vinclusion_prob, 
 c(
 0.003070000000000000,0.004640000000000000,0.001520000000000000,
@@ -137,7 +139,9 @@ test_that('eyeData produces correct results ZE', {
     vy <- eyeData$vy
     mX <- eyeData$mX
     p <- ncol(mX)
+    tic('eyeData produces correct results ZE')
     result <- sampler(100000, vy, mX, prior='ZE', modelprior='beta-binomial', modelpriorvec=c(1, p), cores=cores)
+    toc()
     expect_equal(result$vinclusion_prob, 
 c(
 0.003210000000000000,0.004930000000000000,0.001490000000000000,
@@ -216,7 +220,9 @@ test_that('eyeData produces correct results liang_g1', {
     vy <- eyeData$vy
     mX <- eyeData$mX
     p <- ncol(mX)
+    tic('eyeData produces correct results liang_g1')
     result <- sampler(100000, vy, mX, prior='liang_g1', modelprior='beta-binomial', modelpriorvec=c(1, p), cores=cores)
+    toc()
     expect_equal(result$vinclusion_prob, 
 c(
 0.004290000000000000,0.006320000000000000,0.002080000000000000,
@@ -295,7 +301,9 @@ test_that('eyeData produces correct results liang_g2', {
     vy <- eyeData$vy
     mX <- eyeData$mX
     p <- ncol(mX)
+    tic('eyeData produces correct results liang_g2')
     result <- sampler(100000, vy, mX, prior='liang_g2', modelprior='beta-binomial', modelpriorvec=c(1, p), cores=cores)
+    toc()
     expect_equal(result$vinclusion_prob, 
 c(
 0.004290000000000000,0.006320000000000000,0.002080000000000000,
@@ -374,7 +382,9 @@ test_that('eyeData produces correct results liang_g_n_approx', {
     vy <- eyeData$vy
     mX <- eyeData$mX
     p <- ncol(mX)
+    tic('eyeData produces correct results liang_g_n_approx')
     result <- sampler(100000, vy, mX, prior='liang_g_n_approx', modelprior='beta-binomial', modelpriorvec=c(1, p), cores=cores)
+    toc()
     expect_equal(result$vinclusion_prob, 
 c(
 0.002960000000000000,0.004160000000000000,0.001310000000000000,
@@ -453,7 +463,9 @@ test_that('eyeData produces correct results liang_g_n_quad', {
     vy <- eyeData$vy
     mX <- eyeData$mX
     p <- ncol(mX)
+    tic('eyeData produces correct results liang_g_n_quad')
     result <- sampler(100000, vy, mX, prior='liang_g_n_quad', modelprior='beta-binomial', modelpriorvec=c(1, p), cores=cores)
+    toc()
     expect_equal(result$vinclusion_prob, 
 c(
 0.003250000000000000,0.005040000000000000,0.001490000000000000,
@@ -532,7 +544,9 @@ test_that('eyeData produces correct results robust_bayarri1', {
     vy <- eyeData$vy
     mX <- eyeData$mX
     p <- ncol(mX)
+    tic('eyeData produces correct results robust_bayarri1')
     result <- sampler(100000, vy, mX, prior='robust_bayarri1', modelprior='beta-binomial', modelpriorvec=c(1, p), cores=cores)
+    toc()
     expect_equal(result$vinclusion_prob, 
 c(
 0.003640000000000000,0.005560000000000000,0.001800000000000000,
@@ -611,7 +625,9 @@ test_that('eyeData produces correct results robust_bayarri2', {
     vy <- eyeData$vy
     mX <- eyeData$mX
     p <- ncol(mX)
+    tic('eyeData produces correct results robust_bayarri2')
     result <- sampler(100000, vy, mX, prior='robust_bayarri2', modelprior='beta-binomial', modelpriorvec=c(1, p), cores=cores)
+    toc()
     expect_equal(result$vinclusion_prob, 
 c(
 0.003630000000000000,0.005550000000000000,0.001810000000000000,
@@ -690,7 +706,9 @@ test_that('eyeData produces correct results zellner_siow_gauss_laguerre', {
     vy <- eyeData$vy
     mX <- eyeData$mX
     p <- ncol(mX)
+    tic('eyeData produces correct results zellner_siow_gauss_laguerre')
     result <- sampler(100000, vy, mX, prior='zellner_siow_gauss_laguerre', modelprior='beta-binomial', modelpriorvec=c(1, p), cores=cores)
+    toc()
     expect_equal(result$vinclusion_prob,
 c(
 0.003350000000000000,0.005180000000000000,0.001600000000000000,
