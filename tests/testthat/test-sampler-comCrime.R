@@ -60,7 +60,9 @@ test_that('comCrime produces correct results BIC', {
     comCrime <- get_comCrime()
     vy <- comCrime$vy
     mX <- comCrime$mX
+    tic('comCrime produces correct results BIC')
     result <- sampler(100000, vy, mX, prior='BIC', modelprior='uniform', cores=cores)
+    toc()
     expect_equal(result$vinclusion_prob, 
 c(
 0.94740000000000002,0.26622000000000001,0.08648000000000000,
@@ -104,7 +106,9 @@ test_that('comCrime produces correct results ZE', {
     comCrime <- get_comCrime()
     vy <- comCrime$vy
     mX <- comCrime$mX
+    tic('comCrime produces correct results ZE')
     result <- sampler(100000, vy, mX, prior='ZE', modelprior='uniform', cores=cores)
+    toc()
     expect_equal(result$vinclusion_prob, 
 				 c(
 0.94652000000000003,0.76881999999999995,0.21004000000000000,
@@ -148,7 +152,9 @@ test_that('comCrime produces correct results liang_g1', {
     comCrime <- get_comCrime()
     vy <- comCrime$vy
     mX <- comCrime$mX
+    tic('comCrime produces correct results liang_g1')
     result <- sampler(100000, vy, mX, prior='liang_g1', modelprior='uniform', cores=cores)
+    toc()
     expect_equal(result$vinclusion_prob, 
 		c(
 0.9544200000000000,0.8700100000000000,0.3064800000000000,0.8621200000000000,
@@ -184,7 +190,9 @@ test_that('comCrime produces correct results liang_g2', {
     comCrime <- get_comCrime()
     vy <- comCrime$vy
     mX <- comCrime$mX
+    tic('comCrime produces correct results liang_g2')
     result <- sampler(100000, vy, mX, prior='liang_g2', modelprior='uniform', cores=cores)
+    toc()
     expect_equal(result$vinclusion_prob, c(
 		0.9544200000000000,0.8700100000000000,0.3064800000000000,0.8621200000000000,
 		0.2789700000000000,0.6560600000000000,0.2510500000000000,0.4098600000000000,
@@ -219,7 +227,9 @@ test_that('comCrime produces correct results liang_g_n_approx', {
     comCrime <- get_comCrime()
     vy <- comCrime$vy
     mX <- comCrime$mX
+    tic('comCrime produces correct results liang_g_n_approx')
     result <- sampler(100000, vy, mX, prior='liang_g_n_approx', modelprior='uniform', cores=cores)
+    toc()
     expect_equal(result$vinclusion_prob, 
 c(
 0.9538600000000000,0.8663999999999999,0.3010200000000000,0.8603200000000000,
@@ -255,7 +265,9 @@ test_that('comCrime produces correct results liang_g_n_quad', {
     comCrime <- get_comCrime()
     vy <- comCrime$vy
     mX <- comCrime$mX
+    tic('comCrime produces correct results liang_g_n_quad')
     result <- sampler(100000, vy, mX, prior='liang_g_n_quad', modelprior='uniform', cores=cores)
+    toc()
     expect_equal(result$vinclusion_prob, 
 c(
 0.9547500000000000,0.8645200000000000,0.2978900000000000,0.8612300000000001,
@@ -291,7 +303,9 @@ test_that('comCrime produces correct results robust_bayarri1', {
     comCrime <- get_comCrime()
     vy <- comCrime$vy
     mX <- comCrime$mX
+    tic('comCrime produces correct results robust_bayarri1')
     result <- sampler(100000, vy, mX, prior='robust_bayarri1', modelprior='uniform', cores=cores)
+    toc()
     expect_equal(result$vinclusion_prob, 
 c(
 0.9558700000000000,0.8629100000000000,0.2797800000000000,0.8637200000000000,
@@ -327,7 +341,9 @@ test_that('comCrime produces correct results robust_bayarri2', {
     comCrime <- get_comCrime()
     vy <- comCrime$vy
     mX <- comCrime$mX
+    tic('comCrime produces correct results robust_bayarri2')
     result <- sampler(100000, vy, mX, prior='robust_bayarri2', modelprior='uniform', cores=cores)
+    toc()
     expect_equal(result$vinclusion_prob, 
 c(
 0.9554700000000000,0.8661799999999999,0.2813900000000000,0.8647899999999999,
@@ -363,7 +379,9 @@ test_that('comCrime produces correct results zellner_siow_gauss_laguerre', {
     comCrime <- get_comCrime()
     vy <- comCrime$vy
     mX <- comCrime$mX
+    tic('comCrime produces correct results zellner_siow_gauss_laguerre')
     result <- sampler(100000, vy, mX, prior='zellner_siow_gauss_laguerre', modelprior='uniform', cores=cores)
+    toc()
     expect_equal(result$vinclusion_prob, 
 c(
 0.9481000000000001,0.7679700000000000,0.2098300000000000,0.8056400000000000,
