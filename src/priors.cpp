@@ -182,7 +182,10 @@ double liang_g_n_appell(const int n, const int p_gamma, const double R2)
 	int32_t userflag = 1;
 	int hyp2f1 = 2; // "michel.stoitsov";
 	bool debug = false;
+#pragma omp master
+	{
 	f1(&a, &b1, &b2, &c, &x, &y, &algoflag, &userflag, &debug, &val, &hyp2f1);
+	}
 	result = log(a_prime_dub - 2.) - log(n) - log(p_gamma + a_prime_dub -
 			2.) + log(val.real());
 #ifdef DEBUG
@@ -225,7 +228,7 @@ double liang_g_n_quad_integrand(const int n, const int p_gamma, const double R2,
 double liang_g_n_quad(const int n, const int p_gamma, const double R2)
 {
   	const auto a = 3.;
-  	const int NUM_POINTS = 10000;
+  	const int NUM_POINTS = 1000;
   	auto sum = 0.;
 #pragma omp parallel for simd\
 	reduction(+:sum)\
