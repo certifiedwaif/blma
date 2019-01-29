@@ -5,48 +5,6 @@ library(tictoc)
 
 cores <- detectCores()
 
-normalize <- function(y, X)
-{
-  n <- length(y)
-  p <- ncol(X)
-
-  mu.y <- mean(y)
-  sigma2.y <- (n - 1) * var(y) / n
-  vy <- (y - mu.y) / sqrt(sigma2.y)
-
-  # Normalise covariates
-  mX <- matrix(0, n, p)
-  mu.x <- c()
-  sigma2.x <- c()
-  for (j in 1:p)
-  {
-    mu.x[j] <- mean(X[, j])
-    sigma2.x[j] <- (n - 1) * var(X[, j]) / n
-    mX[, j] <- (X[, j] - mu.x[j]) / sqrt(sigma2.x[j])
-  }
-
-  return(list(vy = vy, mX = mX, mu.y = mu.y, sigma2.y = sigma2.y, mu.x = mu.x, sigma2.x = sigma2.x))
-}
-
-get_UScrime <- function()
-{
-	mD <- MASS::UScrime
-
-	notlog <- c(2,ncol(MASS::UScrime))
-
-	mD[,-notlog] <- log(mD[,-notlog])
-
-	for (j in 1:ncol(mD)) {
-		mD[,j] <- (mD[,j] - mean(mD[,j]))/sd(mD[,j])
-	}
-	vy <- mD$y
-	mX <- data.matrix(cbind(mD[1:15]))
-	norm <- normalize(vy, mX)
-	vy <- norm$vy
-	mX <- norm$mX
-	return(list(vy=vy, mX=mX))
-}
-
 # modelprior = uniform
 test_that("UScrime produces correct results BIC", {
 	UScrime <- get_UScrime()
