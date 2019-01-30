@@ -27,11 +27,11 @@ save_table_data <- function()
 			}
 			tic()
 			if (data_set %in% c("Kakadu", "UScrime")) {
-				cat(" exact")
+				cat(" exact ")
 				modelprior <- "uniform"
 				results[[data_set]][[prior]] <- blma(vy, mX, prior = prior, modelprior = modelprior, cores = cores)
 			} else {
-				cat(" sampler")
+				cat(" sampler ")
 				modelprior <- "beta-binomial"
 				modelpriorvec <- c(1, p)
 				results[[data_set]][[prior]] <- sampler(
