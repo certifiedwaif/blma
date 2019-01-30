@@ -45,7 +45,6 @@ save_table_data <- function()
 			}
 			results[[data_set]][[prior]][["tictoc"]] <- toc()
 			save(results, file="results.RData")
-			cat("\n")
 		}
 	}
 }
