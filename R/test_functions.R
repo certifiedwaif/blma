@@ -21,6 +21,10 @@ normalize <- function(y, X)
   return(list(vy = vy, mX = mX, mu.y = mu.y, sigma2.y = sigma2.y, mu.x = mu.x, sigma2.x = sigma2.x))
 }
 
+#' get_Kakadu
+#'
+#' @return A list containing vy and mX for the Kakadu data set
+#' @export
 get_Kakadu <- function()
 {
 	data(Kakadu)
@@ -33,6 +37,10 @@ get_Kakadu <- function()
 	return(list(vy=vy, mX=mX))
 }
 
+#' get_UScrime
+#'
+#' @return A list containing vy and mX for the UScrime data set
+#' @export
 get_UScrime <- function()
 {
 	mD <- MASS::UScrime
@@ -52,6 +60,10 @@ get_UScrime <- function()
 	return(list(vy=vy, mX=mX))
 }
 
+#' get_eyeData
+#'
+#' @return A list containing vy and mX for the eyeData data set
+#' @export
 get_eyeData <- function()
 {
     data(eyeData)
@@ -63,6 +75,10 @@ get_eyeData <- function()
     return(list(vy=vy, mX=mX))
 }
 
+#' get_comCrime
+#'
+#' @return A list containing vy and mX for the comCrime data set
+#' @export
 get_comCrime  <- function()
 {
     # Fill in

@@ -1,3 +1,4 @@
+library(blma)
 library(parallel)
 library(tictoc)
 
@@ -8,7 +9,7 @@ save_table_data <- function()
 	results <- list()
 	for (data_set in data_sets) {
 		results[data_set] <- list()
-		for (prior in prior) {
+		for (prior in priors) {
 			cat(data_set, prior)
 			ds <- NULL
 			if (data_set == "Kakadu") ds <- get_Kakadu()
@@ -48,3 +49,5 @@ save_table_data <- function()
 		}
 	}
 }
+
+save_table_data()
