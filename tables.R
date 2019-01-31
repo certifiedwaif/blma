@@ -30,12 +30,13 @@ save_table_data <- function()
 			if (data_set %in% c("Kakadu", "UScrime")) {
 				cat(" exact ")
 				modelprior <- "uniform"
-				results[[data_set]][[prior]] <- blma(vy, mX, prior = prior, modelprior = modelprior, cores = cores)
+				vinclusion_prob <- blma(vy, mX, prior = prior, modelprior = modelprior, cores = cores)$vinclusion_prob
+				results[[data_set]][[prior]] <- list(vinclusion_prob=vinclusion_prob)
 			} else {
 				cat(" sampler ")
 				modelprior <- "beta-binomial"
 				modelpriorvec <- c(1, p)
-				results[[data_set]][[prior]] <- sampler(
+				vinclusion_prob <- sampler(
 												100000,
 												vy,
 												mX,
@@ -43,7 +44,8 @@ save_table_data <- function()
 												modelprior = modelprior,
 												modelpriorvec=modelpriorvec,
 												cores = cores
-											)
+											)$vinclusion_prob
+				results[[data_set]][[prior]] <- list(vinclusion_prob=vinclusion_prob)
 			}
 			results[[data_set]][[prior]][["tictoc"]] <- toc()
 			save(results, file="results.RData")
