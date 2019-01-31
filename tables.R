@@ -2,11 +2,14 @@ library(blma)
 library(parallel)
 library(tictoc)
 library(tidyverse)
+library(glue)
+
+RESULTS_FILE_NAME <- "results.RData"
+data_sets <- c("Kakadu", "UScrime", "comCrime", "eyeData")
+priors <- c("BIC", "ZE", "liang_g1", "liang_g2", "liang_g_n_approx", "liang_g_n_quad", "robust_bayarri1", "robust_bayarri2", "zellner_siow_gauss_laguerre")
 
 save_table_data <- function()
 {
-	data_sets <- c("Kakadu", "UScrime", "comCrime", "eyeData")
-	priors <- c("BIC", "ZE", "liang_g1", "liang_g2", "liang_g_n_approx", "liang_g_n_quad", "robust_bayarri1", "robust_bayarri2", "zellner_siow_gauss_laguerre")
 	results <- list()
 	for (data_set in data_sets) {
 		results[[data_set]] <- list()
@@ -48,9 +51,53 @@ save_table_data <- function()
 				results[[data_set]][[prior]] <- list(vinclusion_prob=vinclusion_prob)
 			}
 			results[[data_set]][[prior]][["tictoc"]] <- toc()
-			save(results, file="results.RData")
+			save(results, file=RESULTS_FILE_NAME)
 		}
+	}
+	return(results)
+}
+
+produce_tables <- function(results)
+{
+	for (data_set in names(results)) {
+		produce_table(results[[data_set]])
 	}
 }
 
-save_table_data()
+produce_table <- function(result)
+{
+	table_cols <- length(result)
+	table_rows <- length(result[[1]]$vinclusion_prob)
+	# Produce start of table
+	cat("\\begin{sidewaystable}[h!]\n\\begin{center}\n{\\tiny\n\\tabular{\n")
+	cat("c|")
+	# TODO(Mark): Write code to put | at the column splits
+	for (col in 1:table_cols) {
+		cat("r")
+	}
+	cat("}\n")
+	# Produce header rows
+	cat("Package")
+	for (col in 1:table_cols) {
+		cat("&", "BLMA")
+	}
+	# Produce each table row for inclusion probabilities
+	for (row in 1:table_rows) {
+		cat(row, "&")
+		for (col in 1:table_cols) {
+			cat(round(result[[col]]$vinclusion_prob[row] * 100.0, 2))
+			if (col < table_cols) cat("&")
+		}
+		cat("\\\\")
+	}
+	# Produce end of table
+	cat("\\hline\n")
+	cat("\\end{tabular}\n}\n\\end{center}")
+}
+
+if (file.exists(RESULTS_FILE_NAME)) {
+	load(file=RESULTS_FILE_NAME)
+} else {
+	results <- save_table_data()
+}
+produce_tables(results)
