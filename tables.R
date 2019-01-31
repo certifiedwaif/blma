@@ -1,6 +1,7 @@
 library(blma)
 library(parallel)
 library(tictoc)
+library(tidyverse)
 
 save_table_data <- function()
 {
@@ -35,6 +36,7 @@ save_table_data <- function()
 				modelprior <- "beta-binomial"
 				modelpriorvec <- c(1, p)
 				results[[data_set]][[prior]] <- sampler(
+												100000,
 												vy,
 												mX,
 												prior = prior,

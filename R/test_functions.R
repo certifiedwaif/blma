@@ -83,8 +83,9 @@ get_comCrime  <- function()
 {
     # Fill in
     data(comData)
-    Y <- comData[, 1:18]
-    X <- comData[, 19:142]
+    comDataDf <- as.data.frame(comData)
+    Y <- comDataDf[, 1:18]
+    X <- comDataDf[, 19:142]
     # Data preparation
 
     sum.na <- function(x) {  sum(is.na(x)); }
@@ -96,7 +97,7 @@ get_comCrime  <- function()
     inds <- which(is.na(y))
 
     vy <- y[-inds]
-    mX <- X3[-inds,] %>% as.matrix
+    mX <- as.matrix(X3[-inds,])
     mX.til <- cbind(1,mX)
 
     n <- length(vy)
