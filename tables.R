@@ -40,14 +40,14 @@ save_table_data <- function()
 				modelprior <- "beta-binomial"
 				modelpriorvec <- c(1, p)
 				vinclusion_prob <- sampler(
-												100000,
-												vy,
-												mX,
-												prior = prior,
-												modelprior = modelprior,
-												modelpriorvec=modelpriorvec,
-												cores = cores
-											)$vinclusion_prob
+										   100000,
+										   vy,
+										   mX,
+										   prior = prior,
+										   modelprior = modelprior,
+										   modelpriorvec=modelpriorvec,
+										   cores = cores
+										   )$vinclusion_prob
 				results[[data_set]][[prior]] <- list(vinclusion_prob=vinclusion_prob)
 			}
 			results[[data_set]][[prior]][["tictoc"]] <- toc()
@@ -69,7 +69,7 @@ produce_table <- function(result)
 	table_cols <- length(result)
 	table_rows <- length(result[[1]]$vinclusion_prob)
 	# Produce start of table
-	cat("\\begin{sidewaystable}[h!]\n\\begin{center}\n{\\tiny\n\\tabular{\n")
+	cat("\\begin{sidewaystable}[h!]\n\\begin{center}\n{\\tiny\n\\tabular{")
 	cat("c|")
 	# TODO(Mark): Write code to put | at the column splits
 	for (col in 1:table_cols) {
@@ -81,18 +81,28 @@ produce_table <- function(result)
 	for (col in 1:table_cols) {
 		cat("&", "BLMA")
 	}
+	cat("\\\\\n")
 	# Produce each table row for inclusion probabilities
 	for (row in 1:table_rows) {
-		cat(row, "&")
+		# TODO(Mark): Subset rows for tables for data sets with many columns
+		cat(row, "& ")
 		for (col in 1:table_cols) {
 			cat(round(result[[col]]$vinclusion_prob[row] * 100.0, 2))
-			if (col < table_cols) cat("&")
+			if (col < table_cols) cat(" & ")
 		}
-		cat("\\\\")
+		cat(" \\\\\n")
 	}
-	# Produce end of table
 	cat("\\hline\n")
-	cat("\\end{tabular}\n}\n\\end{center}")
+	# Produce times
+	cat("Time (s)")
+	for (col in 1:table_cols) {
+		tictoc <- result[[col]]$tictoc
+		elapsed <- tictoc$toc - tictoc$tic
+		cat(" &", round(elapsed, 2))
+	}
+	cat("\\\\\n")
+	# Produce end of table
+	cat("\\end{tabular}\n}\n\\end{center}\n\n")
 }
 
 if (file.exists(RESULTS_FILE_NAME)) {
@@ -100,4 +110,6 @@ if (file.exists(RESULTS_FILE_NAME)) {
 } else {
 	results <- save_table_data()
 }
+#sink("tables.tex")
 produce_tables(results)
+#sink()
