@@ -19,3 +19,9 @@ for test_fn in test_fns:
     name = name.replace(' ', '_')
     print(name)
     open(f'tests/testthat/test-{name}.R', 'w').write(test_fn)
+    # TODO: Need to include
+    # library(parallel); cores <- detectCores()
+    # library(tictoc)
+    # Then
+    # library(testthat)
+    # test_file(f'tests/testthat/test-{name}.R')
