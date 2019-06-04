@@ -11,6 +11,15 @@ for fname in filenames:
     matches: List[str] = re.findall('(test_that\(.*?\\{.*?\}\))', s, flags=re.DOTALL)
     test_fns.extend(matches)
 
+preamble: str = """
+library(testthat)
+library(blma)
+library(tictoc)
+library(parallel)
+
+cores <- detectCores()
+
+"""
 for test_fn in test_fns:
     print(test_fn.split("\n")[0])
     name_matches = re.match('.*["\'](.*)["\'].*', test_fn)
@@ -18,7 +27,7 @@ for test_fn in test_fns:
     name = name_matches.group(1)
     name = name.replace(' ', '_')
     print(name)
-    open(f'tests/testthat/test-{name}.R', 'w').write(test_fn)
+    open(f'tests/testthat/test-{name}.R', 'w').write(preamble + test_fn)
     # TODO: Need to include
     # library(parallel); cores <- detectCores()
     # library(tictoc)

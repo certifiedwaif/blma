@@ -1,3 +1,11 @@
+
+library(testthat)
+library(blma)
+library(tictoc)
+library(parallel)
+
+cores <- detectCores()
+
 test_that("Kakadu produces correct results zellner_siow_gauss_laguerre", {
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy

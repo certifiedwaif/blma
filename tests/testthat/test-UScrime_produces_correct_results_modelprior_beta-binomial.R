@@ -1,3 +1,11 @@
+
+library(testthat)
+library(blma)
+library(tictoc)
+library(parallel)
+
+cores <- detectCores()
+
 test_that("UScrime produces correct results modelprior beta-binomial", {
 	UScrime <- get_UScrime()
 	vy <- UScrime$vy

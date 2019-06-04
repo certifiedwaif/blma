@@ -1,3 +1,11 @@
+
+library(testthat)
+library(blma)
+library(tictoc)
+library(parallel)
+
+cores <- detectCores()
+
 test_that("Kakadu produces correct results BIC", {
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy

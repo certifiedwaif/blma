@@ -1,3 +1,11 @@
+
+library(testthat)
+library(blma)
+library(tictoc)
+library(parallel)
+
+cores <- detectCores()
+
 test_that('eyeData produces correct results liang_g_n_approx', {
 	set.seed(2019)
 	eyeData <- get_eyeData()

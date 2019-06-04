@@ -1,3 +1,11 @@
+
+library(testthat)
+library(blma)
+library(tictoc)
+library(parallel)
+
+cores <- detectCores()
+
 test_that('comCrime produces correct results liang_g2', {
 	set.seed(2019)
     comCrime <- get_comCrime()

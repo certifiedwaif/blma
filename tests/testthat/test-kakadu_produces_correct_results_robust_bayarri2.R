@@ -1,3 +1,11 @@
+
+library(testthat)
+library(blma)
+library(tictoc)
+library(parallel)
+
+cores <- detectCores()
+
 test_that("kakadu produces correct results robust_bayarri2", {
 	Kakadu <- get_Kakadu()
 	vy <- Kakadu$vy

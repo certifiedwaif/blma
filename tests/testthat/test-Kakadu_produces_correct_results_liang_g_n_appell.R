@@ -1,3 +1,11 @@
+
+library(testthat)
+library(blma)
+library(tictoc)
+library(parallel)
+
+cores <- detectCores()
+
 test_that("Kakadu produces correct results liang_g_n_appell", {
 	skip("We were unable to get this case to work. It's too numerically difficult.")
 	Kakadu <- get_Kakadu()
