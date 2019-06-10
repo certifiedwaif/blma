@@ -1,0 +1,601 @@
+
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: eyedata-produces-correct-results-bic
+spec:
+  template:
+    spec:
+      containers:
+      - name: eyedata-produces-correct-results-bic
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-eyeData_produces_correct_results_BIC.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: eyedata-produces-correct-results-ze
+spec:
+  template:
+    spec:
+      containers:
+      - name: eyedata-produces-correct-results-ze
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-eyeData_produces_correct_results_ZE.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: eyedata-produces-correct-results-liang-g1
+spec:
+  template:
+    spec:
+      containers:
+      - name: eyedata-produces-correct-results-liang-g1
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-eyeData_produces_correct_results_liang_g1.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: eyedata-produces-correct-results-liang-g2
+spec:
+  template:
+    spec:
+      containers:
+      - name: eyedata-produces-correct-results-liang-g2
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-eyeData_produces_correct_results_liang_g2.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: eyedata-produces-correct-results-liang-g-n-approx
+spec:
+  template:
+    spec:
+      containers:
+      - name: eyedata-produces-correct-results-liang-g-n-approx
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-eyeData_produces_correct_results_liang_g_n_approx.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: eyedata-produces-correct-results-liang-g-n-quad
+spec:
+  template:
+    spec:
+      containers:
+      - name: eyedata-produces-correct-results-liang-g-n-quad
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-eyeData_produces_correct_results_liang_g_n_quad.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: eyedata-produces-correct-results-robust-bayarri1
+spec:
+  template:
+    spec:
+      containers:
+      - name: eyedata-produces-correct-results-robust-bayarri1
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-eyeData_produces_correct_results_robust_bayarri1.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: eyedata-produces-correct-results-robust-bayarri2
+spec:
+  template:
+    spec:
+      containers:
+      - name: eyedata-produces-correct-results-robust-bayarri2
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-eyeData_produces_correct_results_robust_bayarri2.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: eyedata-produces-correct-results-zellner-siow-gauss-laguerre
+spec:
+  template:
+    spec:
+      containers:
+      - name: eyedata-produces-correct-results-zellner-siow-gauss-laguerre
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-eyeData_produces_correct_results_zellner_siow_gauss_laguerre.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: uscrime-produces-correct-results-bic
+spec:
+  template:
+    spec:
+      containers:
+      - name: uscrime-produces-correct-results-bic
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-UScrime_produces_correct_results_BIC.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: uscrime-produces-correct-results-ze
+spec:
+  template:
+    spec:
+      containers:
+      - name: uscrime-produces-correct-results-ze
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-UScrime_produces_correct_results_ZE.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: uscrime-produces-correct-results-liang-g1
+spec:
+  template:
+    spec:
+      containers:
+      - name: uscrime-produces-correct-results-liang-g1
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-UScrime_produces_correct_results_liang_g1.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: uscrime-produces-correct-results-liang-g2
+spec:
+  template:
+    spec:
+      containers:
+      - name: uscrime-produces-correct-results-liang-g2
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-UScrime_produces_correct_results_liang_g2.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: uscrime-produces-correct-results-liang-g-n-appell
+spec:
+  template:
+    spec:
+      containers:
+      - name: uscrime-produces-correct-results-liang-g-n-appell
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-UScrime_produces_correct_results_liang_g_n_appell.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: uscrime-produces-correct-results-liang-g-n-approx
+spec:
+  template:
+    spec:
+      containers:
+      - name: uscrime-produces-correct-results-liang-g-n-approx
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-UScrime_produces_correct_results_liang_g_n_approx.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: uscrime-produces-correct-results-liang-g-n-quad
+spec:
+  template:
+    spec:
+      containers:
+      - name: uscrime-produces-correct-results-liang-g-n-quad
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-UScrime_produces_correct_results_liang_g_n_quad.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: uscrime-produces-correct-results-robust-bayarri1
+spec:
+  template:
+    spec:
+      containers:
+      - name: uscrime-produces-correct-results-robust-bayarri1
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-UScrime_produces_correct_results_robust_bayarri1.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: uscrime-produces-correct-results-robust-bayarri2
+spec:
+  template:
+    spec:
+      containers:
+      - name: uscrime-produces-correct-results-robust-bayarri2
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-UScrime_produces_correct_results_robust_bayarri2.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: uscrime-produces-correct-results-zellner-siow-gauss-laguerre
+spec:
+  template:
+    spec:
+      containers:
+      - name: uscrime-produces-correct-results-zellner-siow-gauss-laguerre
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-UScrime_produces_correct_results_zellner_siow_gauss_laguerre.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: uscrime-produces-correct-results-modelprior-beta-binomial
+spec:
+  template:
+    spec:
+      containers:
+      - name: uscrime-produces-correct-results-modelprior-beta-binomial
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-UScrime_produces_correct_results_modelprior_beta-binomial.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: comcrime-produces-correct-results-bic
+spec:
+  template:
+    spec:
+      containers:
+      - name: comcrime-produces-correct-results-bic
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-comCrime_produces_correct_results_BIC.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: comcrime-produces-correct-results-ze
+spec:
+  template:
+    spec:
+      containers:
+      - name: comcrime-produces-correct-results-ze
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-comCrime_produces_correct_results_ZE.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: comcrime-produces-correct-results-liang-g1
+spec:
+  template:
+    spec:
+      containers:
+      - name: comcrime-produces-correct-results-liang-g1
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-comCrime_produces_correct_results_liang_g1.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: comcrime-produces-correct-results-liang-g2
+spec:
+  template:
+    spec:
+      containers:
+      - name: comcrime-produces-correct-results-liang-g2
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-comCrime_produces_correct_results_liang_g2.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: comcrime-produces-correct-results-liang-g-n-approx
+spec:
+  template:
+    spec:
+      containers:
+      - name: comcrime-produces-correct-results-liang-g-n-approx
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-comCrime_produces_correct_results_liang_g_n_approx.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: comcrime-produces-correct-results-liang-g-n-quad
+spec:
+  template:
+    spec:
+      containers:
+      - name: comcrime-produces-correct-results-liang-g-n-quad
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-comCrime_produces_correct_results_liang_g_n_quad.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: comcrime-produces-correct-results-robust-bayarri1
+spec:
+  template:
+    spec:
+      containers:
+      - name: comcrime-produces-correct-results-robust-bayarri1
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-comCrime_produces_correct_results_robust_bayarri1.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: comcrime-produces-correct-results-robust-bayarri2
+spec:
+  template:
+    spec:
+      containers:
+      - name: comcrime-produces-correct-results-robust-bayarri2
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-comCrime_produces_correct_results_robust_bayarri2.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: comcrime-produces-correct-results-zellner-siow-gauss-laguerre
+spec:
+  template:
+    spec:
+      containers:
+      - name: comcrime-produces-correct-results-zellner-siow-gauss-laguerre
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-comCrime_produces_correct_results_zellner_siow_gauss_laguerre.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kakadu-produces-correct-results-bic
+spec:
+  template:
+    spec:
+      containers:
+      - name: kakadu-produces-correct-results-bic
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-Kakadu_produces_correct_results_BIC.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kakadu-produces-correct-results-ze
+spec:
+  template:
+    spec:
+      containers:
+      - name: kakadu-produces-correct-results-ze
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-Kakadu_produces_correct_results_ZE.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kakadu-produces-correct-results-liang-g1
+spec:
+  template:
+    spec:
+      containers:
+      - name: kakadu-produces-correct-results-liang-g1
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-Kakadu_produces_correct_results_liang_g1.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kakadu-produces-correct-results-liang-g2
+spec:
+  template:
+    spec:
+      containers:
+      - name: kakadu-produces-correct-results-liang-g2
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-Kakadu_produces_correct_results_liang_g2.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kakadu-produces-correct-results-liang-g-n-appell
+spec:
+  template:
+    spec:
+      containers:
+      - name: kakadu-produces-correct-results-liang-g-n-appell
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-Kakadu_produces_correct_results_liang_g_n_appell.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kakadu-produces-correct-results-liang-g-n-approx
+spec:
+  template:
+    spec:
+      containers:
+      - name: kakadu-produces-correct-results-liang-g-n-approx
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-Kakadu_produces_correct_results_liang_g_n_approx.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kakadu-produces-correct-results-liang-g-n-quad
+spec:
+  template:
+    spec:
+      containers:
+      - name: kakadu-produces-correct-results-liang-g-n-quad
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-Kakadu_produces_correct_results_liang_g_n_quad.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kakadu-produces-correct-results-robust-bayarri1
+spec:
+  template:
+    spec:
+      containers:
+      - name: kakadu-produces-correct-results-robust-bayarri1
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-Kakadu_produces_correct_results_robust_bayarri1.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kakadu-produces-correct-results-robust-bayarri2
+spec:
+  template:
+    spec:
+      containers:
+      - name: kakadu-produces-correct-results-robust-bayarri2
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-kakadu_produces_correct_results_robust_bayarri2.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kakadu-produces-correct-results-zellner-siow-gauss-laguerre
+spec:
+  template:
+    spec:
+      containers:
+      - name: kakadu-produces-correct-results-zellner-siow-gauss-laguerre
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-Kakadu_produces_correct_results_zellner_siow_gauss_laguerre.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kakadu-produces-correct-results-modelprior-beta-binomial
+spec:
+  template:
+    spec:
+      containers:
+      - name: kakadu-produces-correct-results-modelprior-beta-binomial
+        image: certifiedwaif/blma
+        command: ["R", "-e", "testthat::test_file('tests/testthat/test-Kakadu_produces_correct_results_modelprior_beta-binomial.R')"]
+      restartPolicy: Never
+  backoffLimit: 4
+---

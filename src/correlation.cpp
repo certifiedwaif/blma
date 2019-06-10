@@ -403,9 +403,17 @@ void calculate_probabilities(const std::string prior, const std::string modelpri
   	set_log_prob(prior, log_prob);
   	const auto nmodels = vR2_all.size();
 
+    // The version of gcc that Windows Rtools uses has a different idea of what
+    // needs to be included in shared() than the Linux/MacOS X version does.
+#ifdef _WIN32
+#pragma omp parallel for\
+	shared(vlogp_all, log_prob, vpgamma_all, vR2_all, modelprior, modelpriorvec, graycode)\
+	default(none)
+#else
 #pragma omp parallel for\
 	shared(vlogp_all, log_prob, vpgamma_all, vR2_all, modelpriorvec, graycode)\
 	default(none)
+#endif
   	for (auto i = 0; i < nmodels; i++) {
     	vlogp_all(i) = log_prob(n, vpgamma_all(i), vR2_all(i));
     	if (modelprior == "beta-binomial") {
