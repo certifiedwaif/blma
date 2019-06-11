@@ -36,7 +36,7 @@ const bool NUMERIC_FIX = false;
 // #define DEBUG
 
 
-vector<uint>& get_indices_from_dbitset(const dbitset& gamma, vector<uint>& v)
+vector<int>& get_indices_from_dbitset(const dbitset& gamma, vector<int>& v)
 {
   	for (size_t i = 0; i < gamma.size(); i++) {
     	if (gamma[i]) {
@@ -54,7 +54,7 @@ vector<uint>& get_indices_from_dbitset(const dbitset& gamma, vector<uint>& v)
 MatrixXd& get_cols(const MatrixXd& m1, const dbitset& gamma, MatrixXd& m2)
 {
   	// Special case of get_rows_and_cols
-  	vector<uint> columns;
+  	vector<int> columns;
   	columns = get_indices_from_dbitset(gamma, columns);
 
   	for (size_t i = 0; i < columns.size(); i++) {
@@ -68,7 +68,7 @@ MatrixXd& get_cols(const MatrixXd& m1, const dbitset& gamma, MatrixXd& m2)
 MatrixXd& get_rows(const MatrixXd& m1, const dbitset& gamma, MatrixXd& m2)
 {
   	// Special case of get_rows_and_cols
-  	vector<uint> rows;
+  	vector<int> rows;
   	rows = get_indices_from_dbitset(gamma, rows);
   	// MatrixXd m2(rows.size(), m1.cols());
 
@@ -83,9 +83,9 @@ MatrixXd& get_rows(const MatrixXd& m1, const dbitset& gamma, MatrixXd& m2)
 MatrixXd& get_rows_and_cols(const MatrixXd& m1, const dbitset& rows_bs,
 		const dbitset& cols_bs, MatrixXd& m2)
 {
-  	vector<uint> row_indices;
+  	vector<int> row_indices;
   	row_indices = get_indices_from_dbitset(rows_bs, row_indices);
-  	vector<uint> col_indices;
+  	vector<int> col_indices;
   	col_indices = get_indices_from_dbitset(cols_bs, col_indices);
 
   	// Matrices are stored in column major order, so the intent is to access contiguous memory in
@@ -181,8 +181,8 @@ void show_matrix_difference(ostream& os, const MatrixXd& m1, const MatrixXd& m2,
 
 
 // Perform the rank one update on (X_gamma^T X_gamma)^{-1}
-MatrixXd& rank_one_update(const dbitset& gamma, const uint col_abs, const uint min_idx,
-  		const uint fixed,
+MatrixXd& rank_one_update(const dbitset& gamma, const int col_abs, const int min_idx,
+  		const int fixed,
 		const MatrixXd& mXTX, const MatrixXd& mA, MatrixXd& mA_prime, bool& bLow)
 {
   	auto p = mXTX.cols();
@@ -276,7 +276,7 @@ MatrixXd& rank_one_update(const dbitset& gamma, const uint col_abs, const uint m
 
 
 // Perform the rank one downdate on (X_gamma^T X_gamma)^{-1}
-MatrixXd& rank_one_downdate(const uint col_abs, const uint min_idx, const uint fixed,
+MatrixXd& rank_one_downdate(const int col_abs, const int min_idx, const int fixed,
 		const MatrixXd& mA, MatrixXd& mA_prime)
 {
   	auto p_gamma_prime = mA_prime.cols();
@@ -325,7 +325,7 @@ MatrixXd& rank_one_downdate(const uint col_abs, const uint min_idx, const uint f
 
 
 void update_mA_prime(bool bUpdate, const dbitset& gamma,
-		const uint col, const uint min_idx, const uint fixed,
+		const int col, const int min_idx, const int fixed,
 		const MatrixXd& mXTX, const MatrixXd& mA, MatrixXd& mA_prime,
 		bool& bLow)
 {
@@ -455,9 +455,9 @@ void calculate_probabilities(const std::string prior, const std::string modelpri
 // Calculate the correlations for every subset of the covariates in mX
 List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, std::string prior,
   		std::string modelprior, VectorXd modelpriorvec,
-  		const uint fixed, const uint intercept_col, const uint max_iterations, const bool bNatural_Order = false,
+  		const int fixed, const int intercept_col, const int max_iterations, const bool bNatural_Order = false,
   		const bool bIntercept = false,
-  		const bool bCentre = true, uint cores = 1L)
+  		const bool bCentre = true, int cores = 1L)
 {
 #ifdef _OPENMP
     Eigen::initParallel();
@@ -472,18 +472,18 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
     omp_set_num_threads(1);
 #endif
 
-  	const uint n = mX.rows();                  // The number of observations
-  	const uint p = mX.cols();                  // The number of covariates
+  	const int n = mX.rows();                  // The number of observations
+  	const int p = mX.cols();                  // The number of covariates
   	VectorXd vR2_all(max_iterations);          // Vector of correlations for all models
   	VectorXi vpgamma_all(max_iterations);      // Vector of number of covariates included in each model
   	bool bmA_set = false;                      // Whether mA has been set yet
   	bool bUpdate;                              // True for an update, false for a downdate
-  	uint diff_idx;                             // The covariate which is changing
-  	uint min_idx;                              // The minimum bit which is set in gamma_prime
+  	int diff_idx;                             // The covariate which is changing
+  	int min_idx;                              // The minimum bit which is set in gamma_prime
   	dbitset gamma(p);                          // The model gamma
   	dbitset gamma_prime(p);                    // The model gamma_prime
-  	uint p_gamma_prime = 0;                        // The number of columns in the matrix mX_gamma_prime
-  	uint p_gamma = 0;                              // The number of columns in the matrix mX_gamma
+  	int p_gamma_prime = 0;                        // The number of columns in the matrix mX_gamma_prime
+  	int p_gamma = 0;                              // The number of columns in the matrix mX_gamma
   	vector<MatrixXd> vec_mA(p);
   	vector<MatrixXd> vec_mX_gamma(p);
   	vector<MatrixXd> vec_m1(p);
@@ -500,7 +500,7 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
   	}
 
   	// Pre-allocate memory
-  	for (uint i = 0; i < p; i++) {
+  	for (int i = 0; i < p; i++) {
     	vec_mA[i].resize(i + 1, i + 1);
     	vec_mX_gamma[i].resize(n, i + 1);
     	vec_m1[i].resize(i + 1, 1);
@@ -530,7 +530,7 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
     private(diff_idx, min_idx, p_gamma_prime, p_gamma, bUpdate)\
     shared(mX, vR2_all, vpgamma_all, graycode)\
     default(none)
-  	for (uint idx = 1; idx < max_iterations; idx++) {
+  	for (int idx = 1; idx < max_iterations; idx++) {
 #ifdef DEBUG
     	Rcpp::Rcout << endl << "Iteration " << idx << endl;
 #endif
@@ -633,7 +633,7 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
   	VectorXd se_beta_hat = (1 - R2_full) * mXTX.inverse().diagonal();
   	VectorXd t_beta = vbeta_hat.array() / se_beta_hat.array();
   	double threshold = ::Rf_qt(0.975, n - p, 1, 0);
-  	for (uint i = 1; i < p; i++) {
+  	for (int i = 1; i < p; i++) {
     	if (abs(t_beta(i)) > threshold)
       		p_star++;
   	}
@@ -660,7 +660,7 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
 #pragma omp parallel for\
 		shared(vR2, vR2_all, graycode, vp_gamma, vpgamma_all, vlogp, vlogp_all)\
 		default(none)
-    	for (uint i = 1; i < max_iterations; i++) {
+    	for (int i = 1; i < max_iterations; i++) {
       		vR2(i) = vR2_all(graycode.gray_to_binary(i));
       		vp_gamma(i) = vpgamma_all(graycode.gray_to_binary(i));
       		vlogp(i) = vlogp_all(graycode.gray_to_binary(i));
@@ -676,13 +676,13 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
 // [[Rcpp:export]]
 List blma_cpp(VectorXd vy, MatrixXd mX, std::string prior, std::string modelprior,
         VectorXd modelpriorvec,
-        const uint intercept_col,
+        const int intercept_col,
         const bool bNatural_Order, const bool bIntercept, const bool bCentre,
-        const uint cores)
+        const int cores)
 {
-  	const uint p = mX.cols();
-  	const uint fixed = 0;
-  	const uint max_iterations = 1 << p;
+  	const int p = mX.cols();
+  	const int fixed = 0;
+  	const int max_iterations = 1 << p;
 
   	Graycode graycode(p);
   	return all_correlations_main(graycode, vy, mX, prior, modelprior, modelpriorvec,
@@ -695,14 +695,14 @@ List blma_cpp(VectorXd vy, MatrixXd mX, std::string prior, std::string modelprio
 // [[Rcpp:export]]
 List blma_fixed_cpp(VectorXd vy, MatrixXd mX, MatrixXd mZ, std::string prior,
         std::string modelprior, VectorXd modelpriorvec,
-        const uint intercept_col, const bool bNatural_Order, const bool bIntercept,
-        const bool bCentre, const uint cores)
+        const int intercept_col, const bool bNatural_Order, const bool bIntercept,
+        const bool bCentre, const int cores)
 {
-  	const uint n = mX.rows();
-  	const uint p1 = mX.cols();
-  	const uint p2 = mZ.cols();
+  	const int n = mX.rows();
+  	const int p1 = mX.cols();
+  	const int p2 = mZ.cols();
   	MatrixXd mC(n, p1 + p2);
-  	const uint max_iterations = 1 << p2;
+  	const int max_iterations = 1 << p2;
 
   	// mC << mX, mZ;
   	mC.leftCols(p1) = mX;
@@ -716,9 +716,9 @@ List blma_fixed_cpp(VectorXd vy, MatrixXd mX, MatrixXd mZ, std::string prior,
 
 VectorXd one_correlation(VectorXd vy, MatrixXd mX, MatrixXd mZ)
 {
-  	const uint n = mX.rows();
-  	const uint p = mX.cols();
-  	const uint m = mZ.cols();
+  	const int n = mX.rows();
+  	const int p = mX.cols();
+  	const int m = mZ.cols();
 
   	MatrixXd mC(n, p + m);
   	mC << mX, mZ;

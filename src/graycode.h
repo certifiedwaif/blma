@@ -18,22 +18,21 @@ using Eigen::MatrixXi;
 using namespace std;
 
 typedef dynamic_bitset<> dbitset;
-typedef unsigned int uint;
 
 struct Graycode {
-  Graycode(uint _p);
-  Graycode(uint _fixed, uint _varying);
-  const uint fixed;
-  const uint varying;
-  const uint size;
+  Graycode(int _p);
+  Graycode(int _fixed, int _varying);
+  const int fixed;
+  const int varying;
+  const int size;
 
-  uint binary_to_gray(const uint num) const;
-  uint gray_to_binary(const uint num) const;
-  VectorXd binary_to_vec(const uint num);
-  VectorXd gray_vec(const uint i);
+  int binary_to_gray(const int num) const;
+  int gray_to_binary(const int num) const;
+  VectorXd binary_to_vec(const int num);
+  VectorXd gray_vec(const int i);
   MatrixXi to_MatrixXi() const;
-  dbitset operator[](const uint idx) const;
+  dbitset operator[](const int idx) const;
   void change(const dbitset& gamma_prime, const dbitset& gamma,
-              bool& update, uint& diff_idx, uint& min_idx,
-              uint& bits_set) const;
+              bool& update, int& diff_idx, int& min_idx,
+              int& bits_set) const;
 };

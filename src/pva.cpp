@@ -36,7 +36,7 @@ namespace boost
 }
 
 
-double calculate_log_prob(const uint n, const uint p, const double R2, const uint p_gamma,
+double calculate_log_prob(const int n, const int p, const double R2, const int p_gamma,
                           const dbitset& gamma,
                           const log_prob_fn log_prob,
                           const std::string modelprior, const VectorXd& modelpriorvec)
@@ -173,7 +173,7 @@ void calculate_mXTX_inv_prime(const dbitset& gamma, const dbitset& gamma_prime, 
                               MatrixXd& mXTX_inv_prime,  bool bUpdate)
 {
   bool bLow;
-  uint min_idx = std::min(gamma.find_first(), gamma_prime.find_first());
+  int min_idx = std::min(gamma.find_first(), gamma_prime.find_first());
   #ifdef DEBUG
   Rcpp::Rcout << "min_idx " << min_idx << std::endl;
   #endif
@@ -204,7 +204,7 @@ void calculate_mXTX_inv_prime(const dbitset& gamma, const dbitset& gamma_prime, 
 }
 
 
-double calculate_sigma2_prime(const uint n, const uint p_gamma_prime,
+double calculate_sigma2_prime(const int n, const int p_gamma_prime,
                               const MatrixXd& mX, const dbitset& gamma_prime,
                               const VectorXd& vy,
                               const MatrixXd& mXTX_inv_prime)
@@ -407,7 +407,7 @@ List pva(const NumericVector vy_in, const NumericMatrix mX_in,
       mGamma(i, j) = mGamma_in(i, j);
   const MatrixXd mXTX = mX.transpose() * mX;
   const MatrixXd mXTy = mX.transpose() * vy;
-  const uint K = mGamma.rows();
+  const int K = mGamma.rows();
   vector< dbitset > gamma(K);
   VectorXd log_probs(K);
   VectorXd w(K);
@@ -713,7 +713,7 @@ List pva(const NumericVector vy_in, const NumericMatrix mX_in,
   VectorXd vmodel_prob = (log_probs.array() - M).array().exp() / (log_probs.array() - M).array().exp().sum();
   VectorXd vinclusion_prob = mGamma_prime.transpose() * vmodel_prob;
 
-  uint max_idx = 0;
+  int max_idx = 0;
   VectorXd vgamma_hat = mGamma_prime.row(max_idx);
 
   List result = List::create(Named("mGamma") = mGamma_prime,

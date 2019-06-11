@@ -23,7 +23,7 @@
 using namespace std;
 using namespace Rcpp;
 
-double calculate_log_prob(const uint n, const uint p, const double R2, const uint p_gamma,
+double calculate_log_prob(const int n, const int p, const double R2, const int p_gamma,
                           const dbitset& gamma,
                           const log_prob_fn log_prob,
                           const std::string modelprior, const VectorXd& modelpriorvec);
@@ -42,7 +42,7 @@ void gamma_to_MatrixXd(const vector< dbitset >& gamma, VectorXd& m);
 void calculate_mXTX_inv_prime(const dbitset& gamma, const dbitset& gamma_prime, int j,
                               const MatrixXd& mXTX, const MatrixXd& mXTX_inv,
                               MatrixXd& mXTX_inv_prime,  bool bUpdate);
-double calculate_sigma2_prime(const uint n, const uint p_gamma_prime,
+double calculate_sigma2_prime(const int n, const int p_gamma_prime,
                               const MatrixXd& mX, const dbitset& gamma_prime,
                               const VectorXd& vy,
                               const MatrixXd& mXTX_inv_prime);

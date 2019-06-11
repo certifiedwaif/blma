@@ -131,7 +131,7 @@ using namespace std;
 List blma(NumericVector vy, NumericMatrix mX, std::string prior,
           std::string modelprior = "uniform",
 	  Nullable<NumericVector> modelpriorvec = R_NilValue,
-          const unsigned int cores = 1) {
+          const int cores = 1) {
   Map<VectorXd> vy_m = as< Map<VectorXd> >(vy);
   Map<MatrixXd> mX_m = as< Map<MatrixXd> >(mX);
   NumericVector modelpriorvec_r(0);
@@ -268,7 +268,7 @@ List blma_fixed(NumericVector vy, NumericMatrix mX, NumericMatrix mZ,
 		std::string prior,
 		std::string modelprior = "uniform",
 		Nullable<NumericVector> modelpriorvec = R_NilValue,
-                const unsigned int cores = 1) {
+                const int cores = 1) {
   Map<VectorXd> vy_m = as< Map<VectorXd> >(vy);
   Map<MatrixXd> mX_m = as< Map<MatrixXd> >(mX);
   Map<MatrixXd> mZ_m = as< Map<MatrixXd> >(mZ);
@@ -297,7 +297,13 @@ List blma_fixed(NumericVector vy, NumericMatrix mX, NumericMatrix mZ,
 //' or not.
 //' @export
 // [[Rcpp::export]]
-IntegerMatrix graycode(unsigned int varying, unsigned int fixed = 0) {
+IntegerMatrix graycode(int varying, int fixed = 0) {
+  if (varying < 0) {
+    Rcpp::stop("You're passing me a negative integer for the number of varying parameters. That's unlikely to work very well.");
+  }
+  if (fixed < 0) {
+    Rcpp::stop("You're passing me a negative integer for the number of fixed parameters. That's unlikely to work very well.");
+  }
   Graycode gray(fixed, varying);
   MatrixXi result = gray.to_MatrixXi();
   return wrap(result);

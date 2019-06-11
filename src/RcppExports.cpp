@@ -224,7 +224,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // blma
-List blma(NumericVector vy, NumericMatrix mX, std::string prior, std::string modelprior, Nullable<NumericVector> modelpriorvec, const unsigned int cores);
+List blma(NumericVector vy, NumericMatrix mX, std::string prior, std::string modelprior, Nullable<NumericVector> modelpriorvec, const int cores);
 RcppExport SEXP _blma_blma(SEXP vySEXP, SEXP mXSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvecSEXP, SEXP coresSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -234,13 +234,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< std::string >::type prior(priorSEXP);
     Rcpp::traits::input_parameter< std::string >::type modelprior(modelpriorSEXP);
     Rcpp::traits::input_parameter< Nullable<NumericVector> >::type modelpriorvec(modelpriorvecSEXP);
-    Rcpp::traits::input_parameter< const unsigned int >::type cores(coresSEXP);
+    Rcpp::traits::input_parameter< const int >::type cores(coresSEXP);
     rcpp_result_gen = Rcpp::wrap(blma(vy, mX, prior, modelprior, modelpriorvec, cores));
     return rcpp_result_gen;
 END_RCPP
 }
 // blma_fixed
-List blma_fixed(NumericVector vy, NumericMatrix mX, NumericMatrix mZ, std::string prior, std::string modelprior, Nullable<NumericVector> modelpriorvec, const unsigned int cores);
+List blma_fixed(NumericVector vy, NumericMatrix mX, NumericMatrix mZ, std::string prior, std::string modelprior, Nullable<NumericVector> modelpriorvec, const int cores);
 RcppExport SEXP _blma_blma_fixed(SEXP vySEXP, SEXP mXSEXP, SEXP mZSEXP, SEXP priorSEXP, SEXP modelpriorSEXP, SEXP modelpriorvecSEXP, SEXP coresSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -251,19 +251,19 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< std::string >::type prior(priorSEXP);
     Rcpp::traits::input_parameter< std::string >::type modelprior(modelpriorSEXP);
     Rcpp::traits::input_parameter< Nullable<NumericVector> >::type modelpriorvec(modelpriorvecSEXP);
-    Rcpp::traits::input_parameter< const unsigned int >::type cores(coresSEXP);
+    Rcpp::traits::input_parameter< const int >::type cores(coresSEXP);
     rcpp_result_gen = Rcpp::wrap(blma_fixed(vy, mX, mZ, prior, modelprior, modelpriorvec, cores));
     return rcpp_result_gen;
 END_RCPP
 }
 // graycode
-IntegerMatrix graycode(unsigned int varying, unsigned int fixed);
+IntegerMatrix graycode(int varying, int fixed);
 RcppExport SEXP _blma_graycode(SEXP varyingSEXP, SEXP fixedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< unsigned int >::type varying(varyingSEXP);
-    Rcpp::traits::input_parameter< unsigned int >::type fixed(fixedSEXP);
+    Rcpp::traits::input_parameter< int >::type varying(varyingSEXP);
+    Rcpp::traits::input_parameter< int >::type fixed(fixedSEXP);
     rcpp_result_gen = Rcpp::wrap(graycode(varying, fixed));
     return rcpp_result_gen;
 END_RCPP
