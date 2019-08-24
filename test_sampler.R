@@ -28,5 +28,6 @@ call_sampler <- function(data_set, prior)
   sampler(100000, vy, mX, prior=prior, modelprior=modelprior, modelpriorvec=modelpriorvec, cores=cores)
 }
 
-sampler_calls <- cross_df(list(data_set=data_sets, prior=priors)) %>%
-                   pmap(~call_sampler(.x, .y))
+sampler_calls <- cross2(data_sets, priors) %>%
+                   transpose %>%
+                   pmap(call_sampler)
