@@ -67,8 +67,8 @@ get_UScrime <- function()
 get_eyeData <- function()
 {
     data(eyeData)
-    vy <- y
-    mX <- x
+    vy <- eyeData$vy
+    mX <- eyeData$mX
     norm <- normalize(vy, mX)
     vy <- norm$vy
     mX <- norm$mX
