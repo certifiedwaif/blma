@@ -40,3 +40,13 @@ sampler_calls <- cross2(data_sets, priors) %>%
                    transpose %>%
                    pmap(call_sampler)
 save(sampler_calls, file='sampler_calls.rda')
+sampler_calls_df <- cross_df(list(data_sets=data_sets, priors=priors)) %>%
+                      mutate(sampler_calls=sampler_calls)
+save(sampler_calls_df, file='sampler_calls_df.rda')
+
+get_top_inclusions <- function(result) {
+  ord <- order(result$vinclusion_prob, decreasing=TRUE)[1:10]
+  vinclusion_probs <- result$vinclusion_prob[ord]
+  colnames(vinclusion_probs) <- colnames(eyeData$mX)[ord]
+  vinclusion_probs
+}
