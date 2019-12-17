@@ -27,6 +27,7 @@ using namespace std;
 using namespace Rcpp;
 
 
+/*
 namespace boost
 {
   template <typename B, typename A>
@@ -34,6 +35,7 @@ namespace boost
     return boost::hash_value(bs.m_bits);
   }
 }
+*/
 
 
 double calculate_log_prob(const int n, const int p, const double R2, const int p_gamma,
