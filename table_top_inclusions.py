@@ -27,6 +27,16 @@ def print_table_rows(top_inclusions: List[Dict[str, Union[str, Dict[str, List[Un
 def print_table_row(data_set: str, prior: str, inclusion_probs: List[float], top_columns: List[int]):
     columns_inclusions: str = ''
     assert len(inclusion_probs) == len(top_columns)
+    # FIXME - This isn't really good enough. You should make a table within a
+    # table. Like this https://tex.stackexchange.com/questions/7958/how-to-nest-tables
+    # \begin{tabular}
+    # for idx in range(len(top_columns)):
+    #   top_columns[idx] &
+    # \\
+    # for idx in range(len(top_columns)):
+    #   inclusion_probs[idx] &
+    # \\
+    # \end{tabular}
     for idx in range(len(top_columns)):
         columns_inclusions += f'{top_columns[idx]}:{inclusion_probs[idx]} '
     print(data_set, prior, columns_inclusions, sep='&', end='')
