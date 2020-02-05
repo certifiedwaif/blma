@@ -30,20 +30,20 @@ def print_table_row(data_set: str, prior: str, inclusion_probs: List[float], top
     # FIXME - This isn't really good enough. You should make a table within a
     # table. Like this https://tex.stackexchange.com/questions/7958/how-to-nest-tables
     print(f'{data_set} & {prior} & ', end='')
-    print(r'\begin{tabular}')
+    column_format: str = 'l' * len(top_columns)
+    print(r'\begin{tabular}{%s}' % column_format)
     for idx in range(len(top_columns)):
       print(top_columns[idx], end='')
-      if idx < len(top_columns): print('&', end='')
+      if idx < len(top_columns) - 1: print('&', end='')
     print(r'\\')
     for idx in range(len(inclusion_probs)):
       print(inclusion_probs[idx], end='')
-      if idx < len(inclusion_probs): print('&', end='')
+      if idx < len(inclusion_probs) - 1: print('&', end='')
     print(r'\\')
     print(r'\end{tabular}')
     # for idx in range(len(top_columns)):
     #     columns_inclusions += f'{top_columns[idx]}:{inclusion_probs[idx]} '
     # print(data_set, prior, columns_inclusions, sep='&', end='')
-    print(r'\\')
 
 
 def print_footer_row():
