@@ -25,21 +25,25 @@ def print_table_rows(top_inclusions: List[Dict[str, Union[str, Dict[str, List[Un
 
 
 def print_table_row(data_set: str, prior: str, inclusion_probs: List[float], top_columns: List[int]):
-    columns_inclusions: str = ''
+    # columns_inclusions: str = ''
     assert len(inclusion_probs) == len(top_columns)
     # FIXME - This isn't really good enough. You should make a table within a
     # table. Like this https://tex.stackexchange.com/questions/7958/how-to-nest-tables
-    # \begin{tabular}
-    # for idx in range(len(top_columns)):
-    #   top_columns[idx] &
-    # \\
-    # for idx in range(len(top_columns)):
-    #   inclusion_probs[idx] &
-    # \\
-    # \end{tabular}
+    print(f'{data_set} & {prior} & ', end='')
+    print(r'\begin{tabular}')
     for idx in range(len(top_columns)):
-        columns_inclusions += f'{top_columns[idx]}:{inclusion_probs[idx]} '
-    print(data_set, prior, columns_inclusions, sep='&', end='')
+      print(top_columns[idx], end='')
+      if idx < len(top_columns): print('&', end='')
+    print(r'\\')
+    for idx in range(len(inclusion_probs)):
+      print(inclusion_probs[idx], end='')
+      if idx < len(inclusion_probs): print('&', end='')
+    print(r'\\')
+    print(r'\end{tabular}')
+    # for idx in range(len(top_columns)):
+    #     columns_inclusions += f'{top_columns[idx]}:{inclusion_probs[idx]} '
+    # print(data_set, prior, columns_inclusions, sep='&', end='')
+    print(r'\\')
 
 
 def print_footer_row():
