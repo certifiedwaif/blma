@@ -30,7 +30,14 @@ def print_table_row(data_set: str, prior: str, inclusion_probs: List[float], top
     # FIXME - This isn't really good enough. You should make a table within a
     # table. Like this https://tex.stackexchange.com/questions/7958/how-to-nest-tables
     data_set_sanitised: str = data_set.replace('_', ' ') 
-    print(f'{data_set_sanitised} & {prior} & ', end='')
+    priorDict: Dict[str, str] = {
+        'BIC': 'BIC',
+        'liang_g1': 'Liang',
+        'robust_bayarri1': 'Bayarri',
+        'zellner_siow_gauss_laguerre': 'Zellner-Siow'
+    }
+    mapped_prior: str = priorDict[prior]
+    print(f'{data_set_sanitised} & {mapped_prior} & ', end='')
     column_format: str = 'l' * len(top_columns)
     print(r'\begin{tabular}{%s}' % column_format)
     for idx in range(len(top_columns)):
