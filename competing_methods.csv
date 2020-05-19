@@ -1,0 +1,19 @@
+Data set, Method, g-prior, Time (s)
+UScrime, BayesVarSel, Robust prior, 190.261 
+UScrime, BayesVarSel, Liang et al, 186.858
+UScrime, BayesVarSel, ZellnerSiow, 186.683
+UScrime, BAS, BIC, 0.133
+UScrime, BAS, hyper-g, 0.372 
+UScrime, BAS, hyper-g-laplace, 0.162 
+UScrime, BAS, hyper-g-n, 0.272 
+UScrime, BAS, ZS-null, 0.162 
+UScrime, BAS, ZS-full, 0.145 
+UScrime, BMS, hyper=3, 7.26553
+Kakadu, BayesVarSel, Robust prior, 4132.567
+Kakadu, BAS, BIC, 3.884
+Kakadu, BAS, hyper-g, 8.71
+Kakadu, BAS, hyper-g-laplace, 4.802
+Kakadu, BAS, hyper-g-n, 4.16
+Kakadu, BAS, ZS-null, 4.257
+Kakadu, BAS, ZS-full, 4.11
+Kakadu, BMS, hyper=3, 910.846
