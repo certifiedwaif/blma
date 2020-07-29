@@ -100,6 +100,8 @@ VectorXd gamma_to_row(const dbitset& gamma)
 //' @return The object returned is a list containing:
 //' \itemize{
 //'   \item{"mGamma"}{-- An iterations by p binary matrix containing the sampled models.}
+//'   \item{"vinclusion_prob"}{-- The vector of inclusion probabilities.}
+//'   \item{"vlog_prob"}{-- The vector of log probabilities of the models in mGamma.}
 //' }
 //' @examples
 //' mD <- MASS::UScrime
