@@ -196,6 +196,7 @@ List sampler(const int iterations,
   	int q;
   	double R2;
   	MatrixXd mGamma(iterations, p);
+    VectorXd vlog_prob(iterations);
   	dbitset gamma(p);
   	mGamma.row(0) = gamma_to_row(gamma);
   	double log_BF_curr;
@@ -270,6 +271,7 @@ List sampler(const int iterations,
     	}
 
     	mGamma.row(i) = gamma_to_row(gamma);
+      vlog_prob(i) = log_BF_curr;
   	}
   	VectorXd vinclusion_prob(p);
 #pragma omp parallel for \
@@ -280,5 +282,6 @@ List sampler(const int iterations,
   	}
 
   	return List::create(Named("mGamma") = mGamma,
-						Named("vinclusion_prob") = vinclusion_prob);
+						Named("vinclusion_prob") = vinclusion_prob,
+            Named("vlog_prob") = vlog_prob);
 }
