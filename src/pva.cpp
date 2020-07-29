@@ -307,7 +307,7 @@ double calculate_sigma2_prime(const int n, const int p_gamma_prime,
 //'
 //'   \item{"vgamma.hat"}{-- The most probable model found by pva}
 //'
-//'   \item{"vlogp"}{-- The null-based Bayes factor for each model in the population}
+//'   \item{"vlogBF"}{-- The null-based Bayes factor for each model in the population}
 //'
 //'   \item{"posterior_model_probabilities"}{-- The estimated posterior model parameters for each model in
 //'   the population.}
@@ -720,7 +720,7 @@ List pva(const NumericVector vy_in, const NumericMatrix mX_in,
 
   List result = List::create(Named("mGamma") = mGamma_prime,
                              Named("vgamma.hat") = vgamma_hat,
-                             Named("vlogp") = log_probs,
+                             Named("vlogBF") = log_probs,
                              Named("posterior_model_probabilities") = vmodel_prob,
                              Named("posterior_inclusion_probabilities") = vinclusion_prob,
                              Named("vR2") = 1. - sigma2.array(),

@@ -78,7 +78,7 @@ using namespace std;
 //' \describe{
 //' \item{vR2}{the vector of correlations for each model}
 //' \item{vp_gamma}{the vector of number of covariates for each model}
-//' \item{vlogp}{the vector of logs of the likelihoods of each model}
+//' \item{vlogBF}{the vector of logs of the Bayes Factors of each model}
 //' \item{vinclusion_prob}{the vector of inclusion probabilities for each of the
 //' covariates}
 //' }

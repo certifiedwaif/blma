@@ -668,7 +668,7 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
 
     	return List::create(Named("vR2") = vR2,
                 Named("vp_gamma") = vp_gamma,
-                Named("vlogp") = vlogp,
+                Named("vlogBF") = vlogp,
                 Named("vinclusion_prob") = vinclusion_prob);
   	}
 }
