@@ -651,7 +651,7 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
   	if (!bNatural_Order) {
     	return List::create(Named("vR2") = vR2_all,
                 Named("vp_gamma") = vpgamma_all,
-                Named("vlogp") = vlogp_all,
+                Named("vlogBF") = vlogp_all,
                 Named("vinclusion_prob") = vinclusion_prob);
   	} else {
     	VectorXd vR2(max_iterations);
