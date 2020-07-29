@@ -101,7 +101,7 @@ VectorXd gamma_to_row(const dbitset& gamma)
 //' \itemize{
 //'   \item{"mGamma"}{-- An iterations by p binary matrix containing the sampled models.}
 //'   \item{"vinclusion_prob"}{-- The vector of inclusion probabilities.}
-//'   \item{"vlog_prob"}{-- The vector of log probabilities of the models in mGamma.}
+//'   \item{"vlogBF"}{-- The vector of logs of the Bayes Factors of the models in mGamma.}
 //' }
 //' @examples
 //' mD <- MASS::UScrime
@@ -198,7 +198,7 @@ List sampler(const int iterations,
   	int q;
   	double R2;
   	MatrixXd mGamma(iterations, p);
-    VectorXd vlog_prob(iterations);
+    VectorXd vlogBF(iterations);
   	dbitset gamma(p);
   	mGamma.row(0) = gamma_to_row(gamma);
   	double log_BF_curr;
@@ -273,7 +273,7 @@ List sampler(const int iterations,
     	}
 
     	mGamma.row(i) = gamma_to_row(gamma);
-      vlog_prob(i) = log_BF_curr;
+      vlogBF(i) = log_BF_curr;
   	}
   	VectorXd vinclusion_prob(p);
 #pragma omp parallel for \
@@ -285,5 +285,5 @@ List sampler(const int iterations,
 
   	return List::create(Named("mGamma") = mGamma,
 						Named("vinclusion_prob") = vinclusion_prob,
-            Named("vlog_prob") = vlog_prob);
+            Named("vlogBF") = vlogBF);
 }
