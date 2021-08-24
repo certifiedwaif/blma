@@ -411,7 +411,7 @@ void calculate_probabilities(const std::string prior, const std::string modelpri
 	default(none)
 #else
 #pragma omp parallel for\
-	shared(vlogp_all, log_prob, vpgamma_all, vR2_all, modelpriorvec, graycode)\
+	shared(vlogp_all, log_prob, vpgamma_all, vR2_all, modelprior, p, n, nmodels, modelpriorvec, graycode)\
 	default(none)
 #endif
   	for (auto i = 0; i < nmodels; i++) {
@@ -441,7 +441,7 @@ void calculate_probabilities(const std::string prior, const std::string modelpri
     for (int j = 0; j < p; j++) {
     	auto sum = 0.;
 #pragma omp parallel for reduction(+:sum)\
-		shared(vinclusion_prob, graycode, vmodel_prob, j)\
+		shared(vinclusion_prob, graycode, vmodel_prob, j, nmodels)\
 		default(none)
   		for (int i = 0; i < nmodels; i++) {
       		auto gamma = graycode[i][j] ? 1. : 0.;
@@ -528,7 +528,7 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
 #pragma omp parallel for\
     firstprivate(gamma, gamma_prime, bmA_set, vec_mX_gamma, vec_mA, vec_m1)\
     private(diff_idx, min_idx, p_gamma_prime, p_gamma, bUpdate)\
-    shared(mX, vR2_all, vpgamma_all, graycode)\
+    shared(mX, mXTX, mXTy, yTy, vR2_all, fixed, max_iterations, vpgamma_all, graycode)\
     default(none)
   	for (int idx = 1; idx < max_iterations; idx++) {
 #ifdef DEBUG
@@ -658,7 +658,7 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
     	VectorXi vp_gamma(max_iterations);
     	VectorXd vlogp(max_iterations);
 #pragma omp parallel for\
-		shared(vR2, vR2_all, graycode, vp_gamma, vpgamma_all, vlogp, vlogp_all)\
+		shared(vR2, vR2_all, graycode, vp_gamma, vpgamma_all, vlogp, vlogp_all, max_iterations)\
 		default(none)
     	for (int i = 1; i < max_iterations; i++) {
       		vR2(i) = vR2_all(graycode.gray_to_binary(i));

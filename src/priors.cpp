@@ -232,6 +232,7 @@ double liang_g_n_quad(const int n, const int p_gamma, const double R2)
   	auto sum = 0.;
 #pragma omp parallel for simd\
 	reduction(+:sum)\
+    shared(NUM_POINTS, p_gamma, n, R2)\
 	default(none)
   	for (int i = 1; i < NUM_POINTS; i++) {
     	double u_prev = static_cast<double>(i - 1) / static_cast<double>(NUM_POINTS);
@@ -304,7 +305,7 @@ double robust_bayarri1(const int n, const int p_gamma, const double R2)
 
   	VectorXd log_f(NUM_POINTS);
 #pragma omp parallel for\
-	shared(log_f, x, r)\
+	shared(log_f, x, r, NUM_POINTS, p_gamma, R2, n)\
 	default(none)
   	for (int i = 0; i < NUM_POINTS; i++) {
     	log_f(i) = -log(2.) + 0.5 * log(r) + 0.5 * (n - p_gamma - 4.) * log(1. + x(i)) - 0.5 * (n - 1.) * log(1. + x(i) * (1. - R2));

@@ -277,7 +277,7 @@ List sampler(const int iterations,
   	}
   	VectorXd vinclusion_prob(p);
 #pragma omp parallel for \
-	shared(mGamma, vinclusion_prob) \
+	shared(mGamma, vinclusion_prob, p) \
 	default(none)
   	for (auto i = 0; i < p; i++) {
   		vinclusion_prob(i) = mGamma.col(i).mean();
