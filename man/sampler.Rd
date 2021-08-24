@@ -74,6 +74,8 @@ of the the ith covariate being included in the model.}
 The object returned is a list containing:
 \itemize{
   \item{"mGamma"}{-- An iterations by p binary matrix containing the sampled models.}
+  \item{"vinclusion_prob"}{-- The vector of inclusion probabilities.}
+  \item{"vlogBF"}{-- The vector of logs of the Bayes Factors of the models in mGamma.}
 }
 }
 \description{

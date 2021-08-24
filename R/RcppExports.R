@@ -228,7 +228,7 @@ log_BF_Zellner_Siow_quad <- function(n, p_gamma, R2) {
 #'
 #'   \item{"vgamma.hat"}{-- The most probable model found by pva}
 #'
-#'   \item{"vlogp"}{-- The null-based Bayes factor for each model in the population}
+#'   \item{"vlogBF"}{-- The null-based Bayes factor for each model in the population}
 #'
 #'   \item{"posterior_model_probabilities"}{-- The estimated posterior model parameters for each model in
 #'   the population.}
@@ -360,7 +360,7 @@ pva <- function(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in = N
 #' \describe{
 #' \item{vR2}{the vector of correlations for each model}
 #' \item{vp_gamma}{the vector of number of covariates for each model}
-#' \item{vlogp}{the vector of logs of the likelihoods of each model}
+#' \item{vlogBF}{the vector of logs of the Bayes Factors of each model}
 #' \item{vinclusion_prob}{the vector of inclusion probabilities for each of the
 #' covariates}
 #' }
@@ -478,7 +478,7 @@ blma <- function(vy, mX, prior, modelprior = "uniform", modelpriorvec = NULL, co
 #' \describe{
 #' \item{vR2}{the vector of correlations for each model}
 #' \item{vp_gamma}{the vector of number of covariates for each model}
-#' \item{vlogp}{the vector of logs of the likelihoods of each model}
+#' \item{vlogBF}{the vector of logs of the Bayes Factors of each model}
 #' \item{vinclusion_prob}{the vector of inclusion probabilities for each of the
 #'       covariates}
 #' }
@@ -608,6 +608,8 @@ graycode <- function(varying, fixed = 0L) {
 #' @return The object returned is a list containing:
 #' \itemize{
 #'   \item{"mGamma"}{-- An iterations by p binary matrix containing the sampled models.}
+#'   \item{"vinclusion_prob"}{-- The vector of inclusion probabilities.}
+#'   \item{"vlogBF"}{-- The vector of logs of the Bayes Factors of the models in mGamma.}
 #' }
 #' @examples
 #' mD <- MASS::UScrime

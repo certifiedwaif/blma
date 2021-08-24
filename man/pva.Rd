@@ -4,8 +4,17 @@
 \alias{pva}
 \title{Run a Collapsed Variational Approximation to find the K best linear models}
 \usage{
-pva(vy_in, mX_in, mGamma_in, prior, modelprior, modelpriorvec_in = NULL,
-  bUnique = TRUE, lambda = 1, cores = 1L)
+pva(
+  vy_in,
+  mX_in,
+  mGamma_in,
+  prior,
+  modelprior,
+  modelpriorvec_in = NULL,
+  bUnique = TRUE,
+  lambda = 1,
+  cores = 1L
+)
 }
 \arguments{
 \item{vy_in}{Vector of responses}
@@ -75,7 +84,7 @@ The object returned is a list containing:
 
   \item{"vgamma.hat"}{-- The most probable model found by pva}
 
-  \item{"vlogp"}{-- The null-based Bayes factor for each model in the population}
+  \item{"vlogBF"}{-- The null-based Bayes factor for each model in the population}
 
   \item{"posterior_model_probabilities"}{-- The estimated posterior model parameters for each model in
   the population.}

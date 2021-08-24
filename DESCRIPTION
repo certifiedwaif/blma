@@ -17,7 +17,7 @@ LinkingTo: Rcpp (>= 0.12.5),
     RcppEigen,
     RcppGSL,
     BH
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
