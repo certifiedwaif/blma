@@ -1,0 +1,193 @@
+Script started on 2021-09-08 16:47:36+10:00 [TERM="xterm" TTY="/dev/pts/1" COLUMNS="204" LINES="58"]
+[1m[7m%[27m[1m[0m                                                                                                                                                                                                            ]2;markg@markg-HP-Z800-Workstation:~/github.com/blma]1;..thub.com/blma[0m[27m[24m[J[01;32m➜  [36mblma[00m [01;34mgit:([31mmaster[34m) [33m✗[00m [K[?1h=[?2004h
+bck-i-search: _[K[A[8Csc[4mr[24mipt test_blma.log[1B[29Dr_[A[9Cdo[24mcker [4mr[4mu[24mn -it certifiedwaif/blma[1B[41Du_[A[13C[1C[4mu[4mn[24m[1B[17Dn_[A[12C[24mr[24mu[24mn[1B[K[A[30C[?1l>[?2004l[1B]2;docker run -it certifiedwaif/blma]1;docker
+R version 4.1.1 (2021-08-10) -- "Kick Things"
+Copyright (C) 2021 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(testthat)
+> test_dir('tests/testthat')
+✔ |  OK [38;5;214mF[39m [35mW[39m [34mS[39m | Context
+⠏ |   0       | comCrime_produces_correct_results_BIC                                                                                                                                                       comCrime produces correct results BIC: 91.279 sec elapsed
+⠋ |   1       | comCrime_produces_correct_results_BIC                                                                                                                                                       [32m✔[39m |   1       | comCrime_produces_correct_results_BIC[36m [91.8 s][39m
+⠏ |   0       | comCrime_produces_correct_results_liang_g_n_approx                                                                                                                                          comCrime produces correct results liang_g_n_approx: 173.503 sec elapsed
+⠋ |   1       | comCrime_produces_correct_results_liang_g_n_approx                                                                                                                                          [32m✔[39m |   1       | comCrime_produces_correct_results_liang_g_n_approx[36m [173.7 s][39m
+⠏ |   0       | comCrime_produces_correct_results_liang_g_n_quad                                                                                                                                            comCrime produces correct results liang_g_n_quad: 319.617 sec elapsed
+⠋ |   1       | comCrime_produces_correct_results_liang_g_n_quad                                                                                                                                            [32m✔[39m |   1       | comCrime_produces_correct_results_liang_g_n_quad[36m [319.8 s][39m
+⠏ |   0       | comCrime_produces_correct_results_liang_g1                                                                                                                                                  comCrime produces correct results liang_g1: 307.742 sec elapsed
+⠋ |   1       | comCrime_produces_correct_results_liang_g1                                                                                                                                                  [32m✔[39m |   1       | comCrime_produces_correct_results_liang_g1[36m [307.9 s][39m
+⠏ |   0       | comCrime_produces_correct_results_liang_g2                                                                                                                                                  comCrime produces correct results liang_g2: 177.231 sec elapsed
+⠋ |   1       | comCrime_produces_correct_results_liang_g2                                                                                                                                                  [32m✔[39m |   1       | comCrime_produces_correct_results_liang_g2[36m [177.4 s][39m
+⠏ |   0       | comCrime_produces_correct_results_robust_bayarri1                                                                                                                                           comCrime produces correct results robust_bayarri1: 1553.137 sec elapsed
+⠋ |   1       | comCrime_produces_correct_results_robust_bayarri1                                                                                                                                           [32m✔[39m |   1       | comCrime_produces_correct_results_robust_bayarri1[36m [1553.3 s][39m
+⠏ |   0       | comCrime_produces_correct_results_robust_bayarri2                                                                                                                                           comCrime produces correct results robust_bayarri2: 165.472 sec elapsed
+⠋ |   1       | comCrime_produces_correct_results_robust_bayarri2                                                                                                                                           [32m✔[39m |   1       | comCrime_produces_correct_results_robust_bayarri2[36m [165.6 s][39m
+⠏ |   0       | comCrime_produces_correct_results_ZE                                                                                                                                                        comCrime produces correct results ZE: 131.673 sec elapsed
+⠋ |   1       | comCrime_produces_correct_results_ZE                                                                                                                                                        [32m✔[39m |   1       | comCrime_produces_correct_results_ZE[36m [131.8 s][39m
+⠏ |   0       | comCrime_produces_correct_results_zellner_siow_gauss_laguerre                                                                                                                               comCrime produces correct results zellner_siow_gauss_laguerre: 998.461 sec elapsed
+⠋ |   1       | comCrime_produces_correct_results_zellner_siow_gauss_laguerre                                                                                                                               [32m✔[39m |   1       | comCrime_produces_correct_results_zellner_siow_gauss_laguerre[36m [998.6 s][39m
+⠏ |   0       | eyeData_produces_correct_results_BIC                                                                                                                                                        eyeData produces correct results BIC: 87.614 sec elapsed
+⠋ |   1       | eyeData_produces_correct_results_BIC                                                                                                                                                        [32m✔[39m |   1       | eyeData_produces_correct_results_BIC[36m [87.7 s][39m
+⠏ |   0       | eyeData_produces_correct_results_liang_g_n_approx                                                                                                                                           eyeData produces correct results liang_g_n_approx: 101.577 sec elapsed
+[38;5;214m⠋[39m |   0 1     | eyeData_produces_correct_results_liang_g_n_approx                                                                                                                                           [31m✖[39m |   0 1     | eyeData_produces_correct_results_liang_g_n_approx[36m [101.6 s][39m
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+[1m[38;5;214mFailure[39m (test-eyeData_produces_correct_results_liang_g_n_approx.R:18:5): eyeData produces correct results liang_g_n_approx[22m
+result$vinclusion_prob not equal to c(...).
+169/200 mismatches (average diff: 8.91e-05)
+[2]  0.00419 - 0.00416 ==  0.00003
+[3]  0.00129 - 0.00131 == -0.00002
+[4]  0.00158 - 0.00159 == -0.00001
+[5]  0.00247 - 0.00241 ==  0.00006
+[6]  0.00293 - 0.00300 == -0.00007
+[7]  0.00124 - 0.00121 ==  0.00003
+[8]  0.00338 - 0.00332 ==  0.00006
+[11] 0.05273 - 0.05221 ==  0.00052
+[13] 0.00246 - 0.00245 ==  0.00001
+...
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+⠏ |   0       | eyeData_produces_correct_results_liang_g_n_quad                                                                                                                                             eyeData produces correct results liang_g_n_quad: 419.537 sec elapsed
+[38;5;214m⠋[39m |   0 1     | eyeData_produces_correct_results_liang_g_n_quad                                                                                                                                             [31m✖[39m |   0 1     | eyeData_produces_correct_results_liang_g_n_quad[36m [419.6 s][39m
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+[1m[38;5;214mFailure[39m (test-eyeData_produces_correct_results_liang_g_n_quad.R:18:5): eyeData produces correct results liang_g_n_quad[22m
+result$vinclusion_prob not equal to c(...).
+185/200 mismatches (average diff: 0.000121)
+[1]  0.00329 - 0.00325 ==  0.00004
+[3]  0.00150 - 0.00149 ==  0.00001
+[4]  0.00176 - 0.00173 ==  0.00003
+[5]  0.00268 - 0.00265 ==  0.00003
+[6]  0.00364 - 0.00351 ==  0.00013
+[7]  0.00143 - 0.00141 ==  0.00002
+[8]  0.00390 - 0.00379 ==  0.00011
+[9]  0.00178 - 0.00179 == -0.00001
+[10] 0.00214 - 0.00209 ==  0.00005
+...
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+⠏ |   0       | eyeData_produces_correct_results_liang_g1                                                                                                                                                   eyeData produces correct results liang_g1: 262.682 sec elapsed
+⠋ |   1       | eyeData_produces_correct_results_liang_g1                                                                                                                                                   [32m✔[39m |   1       | eyeData_produces_correct_results_liang_g1[36m [262.7 s][39m
+⠏ |   0       | eyeData_produces_correct_results_liang_g2                                                                                                                                                   eyeData produces correct results liang_g2: 104.964 sec elapsed
+⠋ |   1       | eyeData_produces_correct_results_liang_g2                                                                                                                                                   [32m✔[39m |   1       | eyeData_produces_correct_results_liang_g2[36m [105.0 s][39m
+⠏ |   0       | eyeData_produces_correct_results_robust_bayarri1                                                                                                                                            eyeData produces correct results robust_bayarri1: 2914.193 sec elapsed
+⠋ |   1       | eyeData_produces_correct_results_robust_bayarri1                                                                                                                                            [32m✔[39m |   1       | eyeData_produces_correct_results_robust_bayarri1[36m [2914.2 s][39m
+⠏ |   0       | eyeData_produces_correct_results_robust_bayarri2                                                                                                                                            eyeData produces correct results robust_bayarri2: 104.776 sec elapsed
+⠋ |   1       | eyeData_produces_correct_results_robust_bayarri2                                                                                                                                            [32m✔[39m |   1       | eyeData_produces_correct_results_robust_bayarri2[36m [104.8 s][39m
+⠏ |   0       | eyeData_produces_correct_results_ZE                                                                                                                                                         eyeData produces correct results ZE: 90.514 sec elapsed
+⠋ |   1       | eyeData_produces_correct_results_ZE                                                                                                                                                         [32m✔[39m |   1       | eyeData_produces_correct_results_ZE[36m [90.6 s][39m
+⠏ |   0       | eyeData_produces_correct_results_zellner_siow_gauss_laguerre                                                                                                                                eyeData produces correct results zellner_siow_gauss_laguerre: 1803.237 sec elapsed
+⠋ |   1       | eyeData_produces_correct_results_zellner_siow_gauss_laguerre                                                                                                                                [32m✔[39m |   1       | eyeData_produces_correct_results_zellner_siow_gauss_laguerre[36m [1803.3 s][39m
+⠏ |   0       | Kakadu_produces_correct_results_BIC                                                                                                                                                         Kakadu produces correct results BIC: 2.2 sec elapsed
+⠋ |   1       | Kakadu_produces_correct_results_BIC                                                                                                                                                         [32m✔[39m |   1       | Kakadu_produces_correct_results_BIC[36m [2.3 s][39m
+⠏ |   0       | Kakadu_produces_correct_results_liang_g_n_appell                                                                                                                                            [32m✔[39m |   0     1 | Kakadu_produces_correct_results_liang_g_n_appell
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+[1m[34mSkip[39m (test-Kakadu_produces_correct_results_liang_g_n_appell.R:10:2): Kakadu produces correct results liang_g_n_appell[22m
+Reason: We were unable to get this case to work. It's too numerically difficult.
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+⠏ |   0       | Kakadu_produces_correct_results_liang_g_n_approx                                                                                                                                            Kakadu produces correct results liang_g_n_approx: 2.413 sec elapsed
+⠋ |   1       | Kakadu_produces_correct_results_liang_g_n_approx                                                                                                                                            [32m✔[39m |   1       | Kakadu_produces_correct_results_liang_g_n_approx[36m [2.5 s][39m
+⠏ |   0       | Kakadu_produces_correct_results_liang_g_n_quad                                                                                                                                              Kakadu produces correct results liang_g_n_quad: 49.814 sec elapsed
+[38;5;214m⠋[39m |   0 1     | Kakadu_produces_correct_results_liang_g_n_quad                                                                                                                                              [31m✖[39m |   0 1     | Kakadu_produces_correct_results_liang_g_n_quad[36m [49.9 s][39m
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+[1m[38;5;214mFailure[39m (test-Kakadu_produces_correct_results_liang_g_n_quad.R:16:2): Kakadu produces correct results liang_g_n_quad[22m
+result$vinclusion_prob not equal to c(...).
+20/22 mismatches (average diff: 5.92e-06)
+[1] 0.320 - 0.320 == 7.24e-06
+[2] 0.498 - 0.498 == 1.95e-06
+[3] 0.151 - 0.151 == 4.46e-06
+[4] 0.460 - 0.460 == 2.92e-06
+[5] 0.898 - 0.898 == 2.77e-06
+[6] 0.391 - 0.391 == 7.94e-06
+[7] 0.189 - 0.189 == 5.81e-06
+[8] 0.213 - 0.213 == 6.18e-06
+[9] 0.151 - 0.151 == 4.58e-06
+...
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+⠏ |   0       | Kakadu_produces_correct_results_liang_g1                                                                                                                                                    Kakadu produces correct results liang_g1: 4.31 sec elapsed
+⠋ |   1       | Kakadu_produces_correct_results_liang_g1                                                                                                                                                    [32m✔[39m |   1       | Kakadu_produces_correct_results_liang_g1[36m [4.4 s][39m
+⠏ |   0       | Kakadu_produces_correct_results_liang_g2                                                                                                                                                    Kakadu produces correct results liang_g2: 2.427 sec elapsed
+⠋ |   1       | Kakadu_produces_correct_results_liang_g2                                                                                                                                                    [32m✔[39m |   1       | Kakadu_produces_correct_results_liang_g2[36m [2.5 s][39m
+⠏ |   0       | Kakadu_produces_correct_results_modelprior_beta-binomial                                                                                                                                    Kakadu produces correct results modelprior beta-binomial: 2.261 sec elapsed
+⠋ |   1       | Kakadu_produces_correct_results_modelprior_beta-binomial                                                                                                                                    [32m✔[39m |   1       | Kakadu_produces_correct_results_modelprior_beta-binomial[36m [2.3 s][39m
+⠏ |   0       | Kakadu_produces_correct_results_robust_bayarri1                                                                                                                                             Kakadu produces correct results robust_bayarri1: 182.037 sec elapsed
+⠋ |   1       | Kakadu_produces_correct_results_robust_bayarri1                                                                                                                                             [32m✔[39m |   1       | Kakadu_produces_correct_results_robust_bayarri1[36m [182.1 s][39m
+⠏ |   0       | kakadu_produces_correct_results_robust_bayarri2                                                                                                                                             kakadu produces correct results robust_bayarri2: 0 sec elapsed
+⠋ |   1       | kakadu_produces_correct_results_robust_bayarri2                                                                                                                                             [32m✔[39m |   1       | kakadu_produces_correct_results_robust_bayarri2[36m [2.5 s][39m
+⠏ |   0       | Kakadu_produces_correct_results_ZE                                                                                                                                                          Kakadu produces correct results ZE: 2.364 sec elapsed
+⠋ |   1       | Kakadu_produces_correct_results_ZE                                                                                                                                                          [32m✔[39m |   1       | Kakadu_produces_correct_results_ZE[36m [2.4 s][39m
+⠏ |   0       | Kakadu_produces_correct_results_zellner_siow_gauss_laguerre                                                                                                                                 Kakadu produces correct results zellner_siow_gauss_laguerre: 351.922 sec elapsed
+⠋ |   1       | Kakadu_produces_correct_results_zellner_siow_gauss_laguerre                                                                                                                                 [32m✔[39m |   1       | Kakadu_produces_correct_results_zellner_siow_gauss_laguerre[36m [352.0 s][39m
+⠏ |   0       | UScrime_produces_correct_results_BIC                                                                                                                                                        UScrime produces correct results BIC: 0.017 sec elapsed
+[32m✔[39m |   1       | UScrime_produces_correct_results_BIC
+⠏ |   0       | UScrime_produces_correct_results_liang_g_n_appell                                                                                                                                           UScrime produces correct results liang_g_n_appell: 9.105 sec elapsed
+⠋ |   1       | UScrime_produces_correct_results_liang_g_n_appell                                                                                                                                           [32m✔[39m |   1       | UScrime_produces_correct_results_liang_g_n_appell[36m [9.1 s][39m
+⠏ |   0       | UScrime_produces_correct_results_liang_g_n_approx                                                                                                                                           UScrime produces correct results liang_g_n_approx: 0.025 sec elapsed
+[31m✖[39m |   0 1     | UScrime_produces_correct_results_liang_g_n_approx
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+[1m[38;5;214mFailure[39m (test-UScrime_produces_correct_results_liang_g_n_approx.R:16:2): UScrime produces correct results liang_g_n_approx[22m
+result$vinclusion_prob not equal to c(...).
+15/15 mismatches (average diff: 7.61e-07)
+[1] 0.657 - 0.657 == 1.33e-06
+[2] 0.225 - 0.225 == 4.76e-07
+[3] 0.872 - 0.872 == 1.86e-06
+[4] 0.699 - 0.699 == 5.55e-08
+[5] 0.419 - 0.419 == 1.95e-07
+[6] 0.197 - 0.197 == 4.20e-07
+[7] 0.320 - 0.320 == 6.80e-07
+[8] 0.571 - 0.571 == 1.22e-06
+[9] 0.357 - 0.357 == 7.22e-07
+...
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+⠏ |   0       | UScrime_produces_correct_results_liang_g_n_quad                                                                                                                                             UScrime produces correct results liang_g_n_quad: 0.416 sec elapsed
+[38;5;214m⠋[39m |   0 1     | UScrime_produces_correct_results_liang_g_n_quad                                                                                                                                             [31m✖[39m |   0 1     | UScrime_produces_correct_results_liang_g_n_quad[36m [0.5 s][39m
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+[1m[38;5;214mFailure[39m (test-UScrime_produces_correct_results_liang_g_n_quad.R:16:2): UScrime produces correct results liang_g_n_quad[22m
+result$vinclusion_prob not equal to c(...).
+15/15 mismatches (average diff: 1.54e-05)
+[1] 0.651 - 0.651 ==  3.06e-05
+[2] 0.229 - 0.229 ==  1.42e-05
+[3] 0.865 - 0.865 ==  2.84e-05
+[4] 0.695 - 0.695 ==  1.85e-06
+[5] 0.425 - 0.425 ==  5.95e-06
+[6] 0.203 - 0.203 ==  1.19e-05
+[7] 0.326 - 0.326 == -5.89e-07
+[8] 0.566 - 0.566 ==  2.00e-05
+[9] 0.356 - 0.356 ==  2.17e-05
+...
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+⠏ |   0       | UScrime_produces_correct_results_liang_g1                                                                                                                                                   UScrime produces correct results liang_g1: 0.025 sec elapsed
+[32m✔[39m |   1       | UScrime_produces_correct_results_liang_g1
+⠏ |   0       | UScrime_produces_correct_results_liang_g2                                                                                                                                                   UScrime produces correct results liang_g2: 0.015 sec elapsed
+[32m✔[39m |   1       | UScrime_produces_correct_results_liang_g2
+⠏ |   0       | UScrime_produces_correct_results_modelprior_beta-binomial                                                                                                                                   UScrime produces correct results modelprior beta-binomial: 0.014 sec elapsed
+[32m✔[39m |   1       | UScrime_produces_correct_results_modelprior_beta-binomial
+⠏ |   0       | UScrime_produces_correct_results_robust_bayarri1                                                                                                                                            UScrime produces correct results robust_bayarri1: 1.471 sec elapsed
+⠋ |   1       | UScrime_produces_correct_results_robust_bayarri1                                                                                                                                            [32m✔[39m |   1       | UScrime_produces_correct_results_robust_bayarri1[36m [1.5 s][39m
+⠏ |   0       | UScrime_produces_correct_results_robust_bayarri2                                                                                                                                            UScrime produces correct results robust_bayarri2: 0.017 sec elapsed
+[32m✔[39m |   1       | UScrime_produces_correct_results_robust_bayarri2
+⠏ |   0       | UScrime_produces_correct_results_ZE                                                                                                                                                         UScrime produces correct results ZE: 0.013 sec elapsed
+[32m✔[39m |   1       | UScrime_produces_correct_results_ZE
+⠏ |   0       | UScrime_produces_correct_results_zellner_siow_gauss_laguerre                                                                                                                                UScrime produces correct results zellner_siow_gauss_laguerre: 2.862 sec elapsed
+⠋ |   1       | UScrime_produces_correct_results_zellner_siow_gauss_laguerre                                                                                                                                [32m✔[39m |   1       | UScrime_produces_correct_results_zellner_siow_gauss_laguerre[36m [2.9 s][39m
+⠏ |   0       | testthat                                                                                                                                                                                    
+══ [1mResults[22m ═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+[36mDuration: 10426.5 s[39m
+
+── Skipped tests  ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+• We were unable to get this case to work. It's too numerically difficult. (1)
+
+[ [38;5;214mFAIL[39m 5 | [35mWARN[39m 0 | [34mSKIP[39m 1 | [32mPASS[39m 34 ]
+Error: Test failures
+> 
+[?25h[1m[7m%[27m[1m[0m                                                                                                                                                                                                            ]2;markg@markg-HP-Z800-Workstation:~/github.com/blma]1;..thub.com/blma[0m[27m[24m[J[01;32m➜  [36mblma[00m [01;34mgit:([31mmaster[34m) [33m✗[00m [K[?1h=[?2004h[?2004l
+
+Script done on 2021-09-08 20:15:23+10:00 [COMMAND_EXIT_CODE="0"]
