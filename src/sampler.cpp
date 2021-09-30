@@ -276,9 +276,15 @@ List sampler(const int iterations,
       vlogBF(i) = log_BF_curr;
   	}
   	VectorXd vinclusion_prob(p);
+#ifdef _WIN32
+#pragma omp parallel for \
+	shared(mGamma, vinclusion_prob) \
+	default(none)
+#else
 #pragma omp parallel for \
 	shared(mGamma, vinclusion_prob, p) \
 	default(none)
+#endif
   	for (auto i = 0; i < p; i++) {
   		vinclusion_prob(i) = mGamma.col(i).mean();
   	}

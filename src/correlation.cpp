@@ -407,7 +407,7 @@ void calculate_probabilities(const std::string prior, const std::string modelpri
     // needs to be included in shared() than the Linux/MacOS X version does.
 #ifdef _WIN32
 #pragma omp parallel for\
-	shared(vlogp_all, log_prob, vpgamma_all, vR2_all, modelprior, modelpriorvec, graycode)\
+	shared(vlogp_all, log_prob, vpgamma_all, vR2_all, modelpriorvec, graycode)\
 	default(none)
 #else
 #pragma omp parallel for\
@@ -440,9 +440,15 @@ void calculate_probabilities(const std::string prior, const std::string modelpri
   	vinclusion_prob = VectorXd::Zero(p);
     for (int j = 0; j < p; j++) {
     	auto sum = 0.;
+#ifdef _WIN32
+#pragma omp parallel for reduction(+:sum)\
+		shared(vinclusion_prob, graycode, vmodel_prob, j)\
+		default(none)
+#else
 #pragma omp parallel for reduction(+:sum)\
 		shared(vinclusion_prob, graycode, vmodel_prob, j, nmodels)\
 		default(none)
+#endif
   		for (int i = 0; i < nmodels; i++) {
       		auto gamma = graycode[i][j] ? 1. : 0.;
       		sum += gamma * vmodel_prob(i);
@@ -525,11 +531,19 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
 
   	// Loop through models, updating and downdating mA as necessary
   	Rcpp::checkUserInterrupt();
+#ifdef _WIN32
+#pragma omp parallel for\
+    firstprivate(gamma, gamma_prime, bmA_set, vec_mX_gamma, vec_mA, vec_m1)\
+    private(diff_idx, min_idx, p_gamma_prime, p_gamma, bUpdate)\
+    shared(mX, vR2_all, vpgamma_all, graycode)\
+    default(none)
+#else
 #pragma omp parallel for\
     firstprivate(gamma, gamma_prime, bmA_set, vec_mX_gamma, vec_mA, vec_m1)\
     private(diff_idx, min_idx, p_gamma_prime, p_gamma, bUpdate)\
     shared(mX, mXTX, mXTy, yTy, vR2_all, fixed, max_iterations, vpgamma_all, graycode)\
     default(none)
+#endif
   	for (int idx = 1; idx < max_iterations; idx++) {
 #ifdef DEBUG
     	Rcpp::Rcout << endl << "Iteration " << idx << endl;
@@ -657,9 +671,15 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
     	VectorXd vR2(max_iterations);
     	VectorXi vp_gamma(max_iterations);
     	VectorXd vlogp(max_iterations);
+#ifdef _WIN32
+#pragma omp parallel for\
+		shared(vR2, vR2_all, graycode, vp_gamma, vpgamma_all, vlogp, vlogp_all)\
+		default(none)
+#else
 #pragma omp parallel for\
 		shared(vR2, vR2_all, graycode, vp_gamma, vpgamma_all, vlogp, vlogp_all, max_iterations)\
 		default(none)
+#endif
     	for (int i = 1; i < max_iterations; i++) {
       		vR2(i) = vR2_all(graycode.gray_to_binary(i));
       		vp_gamma(i) = vpgamma_all(graycode.gray_to_binary(i));
