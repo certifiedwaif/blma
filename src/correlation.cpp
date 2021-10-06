@@ -6,6 +6,7 @@
 // [[Rcpp::depends(RcppEigen)]]
 // [[Rcpp::depends(RcppGSL)]]
 
+#include "normalised.h"
 #include "priors.h"
 #include "correlation.h"
 #include "graycode.h"
@@ -97,65 +98,6 @@ MatrixXd& get_rows_and_cols(const MatrixXd& m1, const dbitset& rows_bs,
   	}
 
   	return m2;
-}
-
-
-double var(const VectorXd& v)
-{
-  	const auto n = v.size();
-  	VectorXd normalised = v.array() - v.mean();
-  	return normalised.squaredNorm() / (n - 1);
-}
-
-
-double sd(const VectorXd& v)
-{
-	return (sqrt(var(v)));
-}
-
-
-Normed normalise(VectorXd& vy, MatrixXd& mX)
-{
-  	const auto n = vy.size();
-#ifdef DEBUG
-  	Rcpp::Rcout << "n " << n << std::endl;
-  	Rcpp::Rcout << "p " << p << std::epdl;
-#endif
-  	const auto p = mX.cols();
-  	VectorXd mu_mX(p);
-  	VectorXd sigma2_mX(p);
-#ifdef DEBUG
-  	Rcpp::Rcout << "vy " << vy.head(10) << std::endl;
-  	Rcpp::Rcout << "mX " << mX.topRows(10) << std::endl;
-#endif
-  	Normed normed;
-  	normed.vy = vy;
-  	normed.mX = mX;
-
-  	// Normalise vy and mX
-  	auto mu_vy = vy.mean();
-  	auto sigma2_vy = (n - 1) * var(vy) / n;
-  	normed.vy = (vy.array() - mu_vy) / sqrt(sigma2_vy);
-#ifdef DEBUG
-  	Rcpp::Rcout << vy.mean() << std::endl;
-  	Rcpp::Rcout << vy.squaredNorm() << std::endl;
-#endif
-  	for (auto i = 0; i < p; i++) {
-    	mu_mX(i) = mX.col(i).mean();
-    	sigma2_mX(i) = (n - 1) * var(mX.col(i)) / n;
-    	normed.mX.col(i) = (mX.col(i).array() - mu_mX(i)) / sqrt(sigma2_mX(i));
-#ifdef DEBUG
-		Rcpp::Rcout << normed.mX.col(i).mean() << std::endl;
-		Rcpp::Rcout << normed.mX.col(i).squaredNorm() << std::endl;
-#endif
-  	}
-#ifdef DEBUG
-  	Rcpp::Rcout << "vy " << vy.head(10) << std::endl;
-  	Rcpp::Rcout << "mX " << mX.topRows(10) << std::endl;
-  	Rcpp::Rcout << "mu_vy " << mu_vy << " sigma2_vy " << sigma2_vy << std::endl;
-  	Rcpp::Rcout << "mu_mX " << mu_mX << " sigma2_mX " << sigma2_mX << std::endl;
-#endif
-  	return normed;
 }
 
 
@@ -546,7 +488,9 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
 #endif
   	for (int idx = 1; idx < max_iterations; idx++) {
 #ifdef DEBUG
+#pragma omp critical {
     	Rcpp::Rcout << endl << "Iteration " << idx << endl;
+}
 #endif
     	// By properties of Greycode, only one element can be different. And it's either one higher or
     	// one lower.

@@ -6,6 +6,7 @@
 #include <Rcpp.h>
 #include <RcppEigen.h>
 #define EIGEN_USE_BLAS
+#include "normalised.h"
 #include "graycode.h"
 #include "priors.h"
 // [[Rcpp::depends(RcppEigen)]]
@@ -18,11 +19,6 @@ using namespace Rcpp;
 using Eigen::VectorXd;
 using Eigen::MatrixXd;
 using std::string;
-
-struct Normed {
-    VectorXd vy;
-    MatrixXd mX;
-};
 
 MatrixXd parseCSVfile_double(string infilename);
 List blma_fixed_cpp(VectorXd vy, MatrixXd mX, MatrixXd mZ, std::string prior, std::string modelprior, VectorXd modelpriorvec,

@@ -18,6 +18,7 @@
 #endif
 
 #include "graycode.h"
+#include "normalised.h"
 #include "correlation.h"
 #include "priors.h"
 #include "pva.h"
