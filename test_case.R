@@ -1,3 +1,7 @@
+R -d gdb
+break all_correlations_main
+y
+run
 library(blma); library(MASS)
 dat <- UScrime
 dat[,-c(2,ncol(UScrime))] <- log(dat[,-c(2,ncol(UScrime))])

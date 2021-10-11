@@ -420,6 +420,20 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
     omp_set_num_threads(1);
 #endif
 
+  	// if (bCentre) {
+  	Normed normed = normalise(vy, mX);
+#ifdef DEBUG
+  	Rcpp::Rcout << normed.vy.mean() << std::endl;
+  	Rcpp::Rcout << normed.vy.sd() << std::endl;
+  	for (auto i = 0; i < p; i++) {
+		Rcpp::Rcout << normed.mX.col(i).mean() << std::endl;
+		Rcpp::Rcout << normed.mX.col(i).squaredNorm() << std::endl;
+  	}
+#endif
+  	vy = normed.vy;
+  	mX = normed.mX;
+
+  	// }
   	const int n = mX.rows();                  // The number of observations
   	const int p = mX.cols();                  // The number of covariates
   	VectorXd vR2_all(max_iterations);          // Vector of correlations for all models
@@ -453,20 +467,6 @@ List all_correlations_main(const Graycode& graycode, VectorXd vy, MatrixXd mX, s
     	vec_mX_gamma[i].resize(n, i + 1);
     	vec_m1[i].resize(i + 1, 1);
   	}
-
-  	// if (bCentre) {
-  	Normed normed = normalise(vy, mX);
-#ifdef DEBUG
-  	Rcpp::Rcout << normed.vy.mean() << std::endl;
-  	Rcpp::Rcout << normed.vy.sd() << std::endl;
-  	for (auto i = 0; i < p; i++) {
-		Rcpp::Rcout << normed.mX.col(i).mean() << std::endl;
-		Rcpp::Rcout << normed.mX.col(i).squaredNorm() << std::endl;
-  	}
-#endif
-  	vy = normed.vy;
-  	mX = normed.mX;
-  	// }
 
   	vpgamma_all(0) = 0;
   	vR2_all(0) = 0.;
